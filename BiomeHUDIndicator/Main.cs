@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace BiomeHUDIndicator
 {
-    public class Entry
+    public class Main
     {
 
     }
