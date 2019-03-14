@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EnzymeChargedBattery")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Adds a post-endgame battery to Subnautica. Very expensive to build.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EnzymeChargedBattery")]

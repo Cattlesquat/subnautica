@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BiomeHUDIndicator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Adds a biome indicator to the HUD via the Scanner Room HUD chip")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BiomeHUDIndicator")]
