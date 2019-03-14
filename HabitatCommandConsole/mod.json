@@ -1,0 +1,10 @@
+{
+  "Id": "Seraphim_HabitatManager",
+  "DisplayName": "Habitat Manager",
+  "Author": "Seraphim Dibble",
+  "Version": "0.0.0.2",
+  "Enable": true,
+  "AssemblyName": "HabitatManager.dll",
+  "EntryMethod": "HabitatManager.Main.Patch",
+  "Config": {}
+}

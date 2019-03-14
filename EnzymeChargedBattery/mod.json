@@ -1,0 +1,11 @@
+{
+  "Id": "EnzymeChargedBattery",
+  "DisplayName": "EnzyneChargedBattery",
+  "Author": "SeraphimRisen with special thanks to PrimeSonic",
+  "Version": "1.0.1",
+  "Enable": true,
+  "AssemblyName": "EnzymeChargedBattery.dll",
+  "EntryMethod": "EnzymeChargedBattery.Main.Patch",
+  "Dependencies": ["SMLHelper"],
+  "LoadAfter": ["MidGameBatteries"]
+}

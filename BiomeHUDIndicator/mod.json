@@ -1,0 +1,10 @@
+{
+   "Id": "BiomeHUDIndicator",
+  "DisplayName": "Biome HUD Indicator",
+  "Author": "SeraphimRisen",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "BiomeHUDIndicator.dll",
+  "EntryMethod": "",
+  "Dependencies": ["SMLHelper"],
+}
