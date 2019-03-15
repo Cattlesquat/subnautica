@@ -61,7 +61,7 @@
         protected EnzymeBatteryCore(string classID, string friendlyName, string description)
             : base(classID, friendlyName, description)
         {
-            // Once all Craftable classes are done, invoke
+            // Once all Fabricator classes are done, invoke
             OnFinishedPatching += SetEquipmentType;
         }
 
