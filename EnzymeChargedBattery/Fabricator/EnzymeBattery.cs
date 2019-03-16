@@ -14,7 +14,7 @@
             OnFinishedPatching += SetStaticTechType;
         }
 
-        protected override TechType BaseType { get; } = TechType.PrecursorIonBattery;
+        protected override TechType BaseType { get; } = TechType.PrecursorIonBattery; // Base it on the precursor ion battery
         protected override float PowerCapacity => BattCap;
         protected override EquipmentType ChargerType { get; } = EquipmentType.BatteryCharger;
 

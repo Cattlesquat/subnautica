@@ -5,6 +5,6 @@
   "Version": "1.0.0",
   "Enable": true,
   "AssemblyName": "BiomeHUDIndicator.dll",
-  "EntryMethod": "",
+  "EntryMethod": "BiomeHUDIndicator.Main.Patch",
   "Dependencies": ["SMLHelper"],
 }

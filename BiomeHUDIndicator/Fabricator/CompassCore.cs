@@ -26,10 +26,13 @@ using UnityEngine;
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "HUD Chip Upgrades", tabIcon);
             UnityEngine.Debug.Log("Crafting tab HUD Chip Upgrades created.");
+            var BiomeChip = new BiomeHUDIndicator();
+            BiomeChip.Patch();
         }
 
         protected abstract TechType BaseType { get; } // Gonna use base type Compass
-        
+        protected abstract EquipmentType Chip { get; } // Should ALWAYS be Chip, I think
+
         // Let's get us some hot constructor action
         protected CompassCore(string classID, string friendlyName, string description) : base(classID, friendlyName, description)
         {
@@ -57,6 +60,8 @@ using UnityEngine;
 
         private void SetEquipmentType()
         {
+            // Make sure it is usable in a chip slot
+            CraftDataHandler.SetEquipmentType(this.TechType, this.Chip);
         }
     }
 }
