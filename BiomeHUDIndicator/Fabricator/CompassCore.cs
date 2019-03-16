@@ -43,7 +43,7 @@ using UnityEngine;
         // This will be built at the workbench, and also set where in the PDA/etc it shows up.
         public override CraftTree.Type FabricatorType { get; } = CraftTree.Type.Workbench;
         public override TechGroup GroupForPDA { get; } = TechGroup.Workbench;
-        public override TechCategory CategoryForPDA { get; } = TechCategory.Equipment;
+        public override TechCategory CategoryForPDA { get; } = TechCategory.Workbench;
         public override string AssetsFolder { get; } = Assets;
         public override string[] StepsToFabricatorTab { get; } = craftPath;
         public override TechType RequiredForUnlock { get; } = TechType.Compass; // This will require the compass to unlock

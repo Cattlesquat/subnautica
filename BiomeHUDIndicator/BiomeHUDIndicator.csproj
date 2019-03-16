@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Fabricator\BiomeHUDIndicator.cs" />
     <Compile Include="Fabricator\CompassCore.cs" />
+    <Compile Include="GottaPatch\uGUI_CompassPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
