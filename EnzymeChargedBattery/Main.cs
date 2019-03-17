@@ -9,13 +9,13 @@
     {
         public static void Patch()
         {
-            UnityEngine.Debug.Log("[EnzymeChargedBattery] Start patching. Version: 1.0.0.1");
+            UnityEngine.Debug.Log("[EnzymeChargedBattery] Start patching. Version: 1.0.1");
             try
             {
                 EnzymeBatteryCore.PatchIt();
                 var harmony = HarmonyInstance.Create("com.enzymechargedbatteries.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("Patching complete.");
+                UnityEngine.Debug.Log("[EnzymeChargedBattery] Patching complete.");
             }
             catch (Exception e)
             {

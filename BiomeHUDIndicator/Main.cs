@@ -15,7 +15,7 @@
                 CompassCore.PatchIt();
                 var harmony = HarmonyInstance.Create("com.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("Patching complete.");
+                UnityEngine.Debug.Log("[BiomeHUDIndicator] Patching complete.");
             }
             catch (Exception e)
             {

@@ -1,0 +1,9 @@
+{
+  "Id": "NoObservatoryMusic",
+  "DisplayName": "No Observatory Music",
+  "Author": "SeraphimRisen",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "NoObservatoryMusic.dll",
+  "EntryMethod": "NoObservatoryMusic.Main.Patch",
+}
