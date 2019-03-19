@@ -25,7 +25,7 @@
                 // The node doesn't exist, so we make it
                 var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Fabricator, BatCraftTab, "Batteries and Power Cells", tabIcon, ResCraftTab, ElecCraftTab);
-                UnityEngine.Debug.Log("Creating the crafting tab, as it does not already exist.");
+                UnityEngine.Debug.Log("[EnzymeChargedBattery] Creating the crafting tab, as it does not already exist.");
                 // Removing the batteries from the old tab
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.Battery.ToString());
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.PrecursorIonBattery.ToString());
@@ -36,21 +36,16 @@
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PowerCell, CraftPath);
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PrecursorIonBattery, CraftPath);
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PrecursorIonPowerCell, CraftPath);
-                var enzBatt = new EnzymeBattery(1000f);
-                enzBatt.Patch();
-                var enzPowerCell = new EnzymePowerCell(enzBatt);
-                enzPowerCell.Patch();
             }
             else
             {
-                // Skip creating the tab and add them right in
-                UnityEngine.Debug.Log("The tab appears to already exist. Adding new batteries to existing tab.");
-                var enzBatt = new EnzymeBattery(1000f);
-                enzBatt.Patch();
-                var enzPowerCell = new EnzymePowerCell(enzBatt);
-                enzPowerCell.Patch();
+                // Skip creating the tab
+                UnityEngine.Debug.Log("[EnzymeChargedBattery] The tab appears to already exist. Adding new batteries to existing tab.");
             }
-
+            var enzBatt = new EnzymeBattery(1000f);
+            enzBatt.Patch();
+            var enzPowerCell = new EnzymePowerCell(enzBatt);
+            enzPowerCell.Patch();
         }
 
         protected abstract TechType BaseType { get; } // Let's borrow the precursor batteries
