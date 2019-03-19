@@ -1,0 +1,10 @@
+{
+  "Id": "StorageInfo",
+  "DisplayName": "Storage Info",
+  "Author": "Dingo",
+  "Version": "1.0.4",
+  "Enable": true,
+  "Game": "Subnautica",
+  "AssemblyName": "StorageInfo.dll",
+  "EntryMethod": "StorageInfo.Entry.Initialize"
+}

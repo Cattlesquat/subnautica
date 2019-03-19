@@ -1,4 +1,10 @@
-﻿namespace EnzymeChargedBattery
+﻿/// <summary>
+/// This class and project were only made possible with the help and guidance of PrimeSonic and his midgamebatteries mod.
+/// Without that mod and its source code, this mod would not have been completed or working.
+/// midgamebatteries repo: https://github.com/PrimeSonic/PrimeSonicSubnauticaMods/tree/master/MidGameBatteries
+/// </summary>
+
+namespace EnzymeChargedBattery
 {
     using System;
     using System.Reflection;
