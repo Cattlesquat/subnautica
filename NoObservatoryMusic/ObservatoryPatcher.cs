@@ -1,11 +1,6 @@
 ﻿namespace NoObservatoryMusic
 {
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Harmony;
-using System.Reflection;
+    using Harmony;
 
     // This should patch the Observatory for us. Let's do it.
     [HarmonyPatch(typeof(ObservatoryAmbientSound))]
