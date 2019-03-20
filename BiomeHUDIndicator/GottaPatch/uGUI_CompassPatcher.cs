@@ -11,17 +11,18 @@ using SMLHelper.V2.Handlers;
 using UnityEngine;
 using Fabricator;
 
-    // All I'm gonna do is log a damn thing
-    [HarmonyPatch(typeof(uGUI_DepthCompass))]
-    [HarmonyPatch("UpdateCompass")]
-    internal class DepthCompass_UpdateCompassLogger
-    {
-        [HarmonyPostfix] // Just need to log this
-        public static void Postfix (ref uGUI_DepthCompass __instance)
-        {
-            UnityEngine.Debug.Log("[BiomeHUDIndicator] result of flag is " + __instance.IsCompassEnabled());
-        }
-    }
+    // Logging this is no longer necessary.
+    /* [HarmonyPatch(typeof(uGUI_DepthCompass))]
+    * [HarmonyPatch("UpdateCompass")]
+    * internal class DepthCompass_UpdateCompassLogger
+    * {
+    *     [HarmonyPostfix] // Just need to log this
+    *     public static void Postfix (ref uGUI_DepthCompass __instance)
+    *     {
+    *         UnityEngine.Debug.Log("[BiomeHUDIndicator] result of flag is " + __instance.IsCompassEnabled());
+    *     }
+    * }
+    */
 
 
     // So I did a dumb and the compass's checks are all in DepthCompass. I just overlooked ALL OF THEM!
@@ -50,46 +51,55 @@ using Fabricator;
         * So this is what we wanna replace.
         */
         [HarmonyPrefix] // We're attempting to replace the entire method
-        public static bool Prefix(ref uGUI_DepthCompass __instance)
+        public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
         {
             if (!__instance._initialized)
             {
+                __result = false;
                 return false;
             }
             if (!uGUI.isMainLevel)
             {
+                __result = false;
                 return false;
             }
             if (LaunchRocket.isLaunching)
             {
+                __result = false;
                 return false;
             }
             if (uGUI.isIntro)
             {
+                __result = false;
                 return false;
             }
             Player main = Player.main;
             if (main == null)
             {
+                __result = false;
                 return false;
             }
             PDA pda = main.GetPDA();
             if (pda != null && pda.isInUse)
             {
+                __result = false;
                 return false;
             }
             Player.Mode mode = main.GetMode();
             if (mode == Player.Mode.Piloting)
             {
+                __result = false;
                 return false;
             }
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                return true;
+                __result = true;
+                return false;
             }
             uGUI_CameraDrone main3 = uGUI_CameraDrone.main;
-            return main3 != null && main3.GetCamera() != null;
+            __result = main3 != null && main3.GetCamera() != null;
+            return false;
         }
 
         private static bool TechTypeCheck(Inventory main3)
