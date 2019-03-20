@@ -25,7 +25,7 @@ using UnityEngine;
             // Nothing else at this time upgrades HUD chips so we'll just go ahead and make the tab. May update at later date
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "HUD Chip Upgrades", tabIcon);
-            UnityEngine.Debug.Log("Crafting tab HUD Chip Upgrades created.");
+            UnityEngine.Debug.Log("[BiomeHUDIndicator] Crafting tab HUD Chip Upgrades created.");
             var BiomeChip = new BiomeHUDIndicator();
             BiomeChip.Patch();
         }

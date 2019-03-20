@@ -21,7 +21,7 @@ using UnityEngine;
 
         protected override TechData GetBlueprintRecipe()
         {
-            UnityEngine.Debug.Log("Establishing Crafting Recipe (comment out when done)");
+            // UnityEngine.Debug.Log("[BiomeHUDIndicator] Establishing Crafting Recipe (comment out when done)");
             return new TechData
             {
                 craftAmount = 1,
