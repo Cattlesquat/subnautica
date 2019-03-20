@@ -49,7 +49,7 @@ using Fabricator;
 		* IL_00A9: ret
         * So this is what we wanna replace.
         */
-        [HarmonyPrefix] // We're attempting to cancel the entire method
+        [HarmonyPrefix] // We're attempting to replace the entire method
         public static bool Prefix(ref uGUI_DepthCompass __instance)
         {
             if (!__instance._initialized)
