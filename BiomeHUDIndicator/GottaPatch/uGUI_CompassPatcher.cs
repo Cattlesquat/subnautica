@@ -11,20 +11,6 @@ using SMLHelper.V2.Handlers;
 using UnityEngine;
 using Fabricator;
 
-    // Logging this is no longer necessary.
-    /* [HarmonyPatch(typeof(uGUI_DepthCompass))]
-    * [HarmonyPatch("UpdateCompass")]
-    * internal class DepthCompass_UpdateCompassLogger
-    * {
-    *     [HarmonyPostfix] // Just need to log this
-    *     public static void Postfix (ref uGUI_DepthCompass __instance)
-    *     {
-    *         UnityEngine.Debug.Log("[BiomeHUDIndicator] result of flag is " + __instance.IsCompassEnabled());
-    *     }
-    * }
-    */
-
-
     // So I did a dumb and the compass's checks are all in DepthCompass. I just overlooked ALL OF THEM!
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -48,7 +34,7 @@ using Fabricator;
 		* IL_00A3: ble IL_00AA
         * IL_00A8: ldc.i4.1
 		* IL_00A9: ret
-        * So this is what we wanna replace.
+        * So this is what we wanna replace. Eventually.
         */
         [HarmonyPrefix] // We're attempting to replace the entire method
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
@@ -102,26 +88,61 @@ using Fabricator;
             return false;
         }
 
-        private static bool TechTypeCheck(Inventory main3)
+        private static bool TechTypeCheck(Inventory inv)
         {
             // Let's try this instead
             int compassID = 0;
             int biomeChip = 0;
-            Boolean chips = false;
-            compassID = main3.equipment.GetCount(TechType.Compass);
-            biomeChip = main3.equipment.GetCount(CompassCore.BiomeChipID);
+            bool chips = false;
+            compassID = inv.equipment.GetCount(TechType.Compass);
+            biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
             // UnityEngine.Debug.Log("[BiomeHUDIndicator] compassID is " + compassID + " and biomeCHIP is " + biomeChip);
             if(compassID > 0 || biomeChip > 0)
             {
                 chips = true;
                 return chips;
             }
-            else
-            {
-                
-            }
             // UnityEngine.Debug.Log("[BiomeHUDIndicator] chips is " + chips);
             return chips;
         }
     }
+
+    [HarmonyPatch(typeof(uGUI_DepthCompass))]
+    [HarmonyPatch("UpdateDepth")]
+    internal class DepthCompass_UpdateDepth
+    {
+        [HarmonyPostfix] // Gonna run this after existing UpdateDepth
+        public static void Postfix (ref uGUI_DepthCompass __instance)
+        {
+            if (BiomeChipCheck(Inventory.main))
+            {
+                
+            }
+        }
+
+        private static bool BiomeChipCheck(Inventory inv)
+        {
+            bool chip = false;
+            int biomeChip = 0;
+            biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
+            if (biomeChip > 0)
+            {
+                chip = true;
+            }
+            return chip;
+        }
+    }
+
+    // Logging this is no longer necessary.
+    /* [HarmonyPatch(typeof(uGUI_DepthCompass))]
+    * [HarmonyPatch("UpdateCompass")]
+    * internal class DepthCompass_UpdateCompassLogger
+    * {
+    *     [HarmonyPostfix] // Just need to log this
+    *     public static void Postfix (ref uGUI_DepthCompass __instance)
+    *     {
+    *         UnityEngine.Debug.Log("[BiomeHUDIndicator] result of flag is " + __instance.IsCompassEnabled());
+    *     }
+    * }
+    */
 }
