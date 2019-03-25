@@ -1,11 +1,8 @@
 ﻿namespace NoObservatoryMusic
 {
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using Harmony;
-using UnityEngine;
+    using System;
+    using System.Reflection;
+    using Harmony;
 
     // If all goes as planned this should basically instantly nullify the observatory player biome
     public static class Main

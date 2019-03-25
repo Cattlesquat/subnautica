@@ -39,6 +39,11 @@ using Fabricator;
         [HarmonyPrefix] // We're attempting to replace the entire method
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
         {
+            if (__instance == null)
+            {
+                __result = false;
+                return false;
+            }
             if (!__instance._initialized)
             {
                 __result = false;
