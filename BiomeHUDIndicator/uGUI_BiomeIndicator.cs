@@ -9,16 +9,18 @@
     using UnityEngine;
     using UnityEngine.UI;
 
-    internal class uGUI_BiomeIndicator
+    internal class uGUI_BiomeIndicator : MonoBehaviour
     {
         // Setting up some cached values in case I need them
-        public Text _cachedBiome;
+        private string _cachedBiome;
+        private string _cachedBiomeFriendly;
         // This space reserved for fields the class needs to work with
-        public Color32 textColor = new Color32();
+        private Color32 textColor = new Color32();
         [Header("Biome Indicator")] public Image shadow;
         private bool _initialized;
         private bool _showing;
-        public GameObject biomeDisplay;
+        public Text biomeDisplay;
+        public RectTransform rectTrans;
 
         // Rather than a gajillion if/else statements, gonna use a dictionary
         private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
@@ -97,8 +99,6 @@
             {
                 return;
             }
-            this._cachedBiome.text = "None";
-
             this._initialized = true;
         }
 
@@ -126,20 +126,20 @@
         // UpdateBiome method
         private void Update()
         {
-            if(!_initialized)
+            if(!_initialized || !uGUI_SceneLoading.IsLoadingScreenFinished || uGUI.main.loading.isLoading)
             {
                 return;
             }
             Player main = Player.main;
             string curBiome = main.GetBiomeString();
+            int index = curBiome.IndexOf('_');
+            curBiome = curBiome.Substring(0, index);
             curBiome = curBiome.ToLower();
+            UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome);
             // This IF tree should get almost any biome
-            if (curBiome != _cachedBiome.text)
+            if (curBiome != _cachedBiome)
             {
-                if (_initialized)
-                {
-
-                }
+                _cachedBiomeFriendly = biomeList[curBiome];
             }
         }
     }
