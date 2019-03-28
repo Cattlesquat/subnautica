@@ -19,7 +19,6 @@
         [Header("Biome Indicator")] public Image shadow;
         private bool _initialized;
         private bool _showing;
-        private Text biomeDisplay;
         private RectTransform rectTrans;
         private GameObject textPrefab;
         private bool isVisible = false;
@@ -69,16 +68,7 @@
         // Putting Awake here
         private void Awake()
         {
-            while (biomeDisplay == null)
-            {
-                biomeDisplay = GameObject.FindObjectOfType<HandReticle>().interactPrimaryText;
-            }
-            biomeDisplay.supportRichText = true;
-            biomeDisplay.color = textColor;
-            biomeDisplay.text = _cachedBiomeFriendly;
-            biomeDisplay.alignment = TextAnchor.UpperCenter;
-            RectTransformExtensions.SetParams(biomeDisplay.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), null);
-            biomeDisplay.gameObject.SetActive(true);
+            textPrefab.SetActive(true);
 
         }
 
@@ -86,6 +76,7 @@
         private void Start()
         {
             this.shadow.material = new Material(this.shadow.material);
+            // biomeDisplay.enabled = true;
         }
 
         // OnDisable method goes here
@@ -167,9 +158,8 @@
                 UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
                 UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
                 UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
-                biomeDisplay.text = _cachedBiomeFriendly;
+                // biomeDisplay.text = _cachedBiomeFriendly;
             }
-            biomeDisplay.enabled = true;
         }
     }
 }
