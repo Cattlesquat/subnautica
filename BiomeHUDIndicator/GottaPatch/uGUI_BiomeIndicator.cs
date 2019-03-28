@@ -15,12 +15,14 @@
         private string _cachedBiome;
         private string _cachedBiomeFriendly;
         // This space reserved for fields the class needs to work with
-        private Color32 textColor = new Color32();
+        private Color32 textColor = new Color32(255, 255, 255, 255);
         [Header("Biome Indicator")] public Image shadow;
         private bool _initialized;
         private bool _showing;
-        public Text biomeDisplay;
-        public RectTransform rectTrans;
+        private Text biomeDisplay;
+        private RectTransform rectTrans;
+        private GameObject textPrefab;
+        private bool isVisible = false;
 
         // Rather than a gajillion if/else statements, gonna use a dictionary
         private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
@@ -99,6 +101,15 @@
             {
                 return;
             }
+            while (biomeDisplay == null)
+            {
+                biomeDisplay = GameObject.FindObjectOfType<HandReticle>().interactPrimaryText;
+            }
+            biomeDisplay.supportRichText = true;
+            biomeDisplay.color = textColor;
+            biomeDisplay.text = _cachedBiomeFriendly;
+            biomeDisplay.alignment = TextAnchor.UpperCenter;
+            RectTransformExtensions.SetParams(biomeDisplay.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), null);
             this._initialized = true;
         }
 
@@ -117,6 +128,12 @@
             }
         }
 
+        // A method to setVisible(), will be implemented after the text is displaying on screen and updating
+        public void setVisible(bool visible)
+        {
+            isVisible = visible;
+        }
+
         // OnLanguageChanged method
         private void OnLanguageChanged()
         {
@@ -126,7 +143,7 @@
         // UpdateBiome method
         private void Update()
         {
-            if(!_initialized || !uGUI_SceneLoading.IsLoadingScreenFinished || uGUI.main.loading.isLoading)
+            if(!_initialized && (!uGUI_SceneLoading.IsLoadingScreenFinished || uGUI.main.loading.isLoading))
             {
                 return;
             }
@@ -141,6 +158,8 @@
             {
                 _cachedBiomeFriendly = biomeList[curBiome];
             }
+            biomeDisplay.text = _cachedBiomeFriendly;
+            biomeDisplay.gameObject.SetActive(true);
         }
     }
 }

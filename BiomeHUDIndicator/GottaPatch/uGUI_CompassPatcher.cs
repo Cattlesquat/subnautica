@@ -85,6 +85,12 @@ using Fabricator;
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
+                int biomeChip = 0;
+                biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
+                if(biomeChip > 0)
+                {
+
+                }
                 __result = true;
                 return false;
             }

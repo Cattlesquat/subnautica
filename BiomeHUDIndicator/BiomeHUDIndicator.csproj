@@ -72,7 +72,7 @@
     <Compile Include="GottaPatch\uGUI_CompassPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="uGUI_BiomeIndicator.cs" />
+    <Compile Include="GottaPatch\uGUI_BiomeIndicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mod.json">
