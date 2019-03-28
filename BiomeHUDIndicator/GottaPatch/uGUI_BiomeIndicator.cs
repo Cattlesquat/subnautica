@@ -66,6 +66,22 @@
             { "unassigned" , "Unassigned" },
         };
 
+        // Putting Awake here
+        private void Awake()
+        {
+            while (biomeDisplay == null)
+            {
+                biomeDisplay = GameObject.FindObjectOfType<HandReticle>().interactPrimaryText;
+            }
+            biomeDisplay.supportRichText = true;
+            biomeDisplay.color = textColor;
+            biomeDisplay.text = _cachedBiomeFriendly;
+            biomeDisplay.alignment = TextAnchor.UpperCenter;
+            RectTransformExtensions.SetParams(biomeDisplay.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), null);
+            biomeDisplay.gameObject.SetActive(true);
+
+        }
+
         // Start method goes here
         private void Start()
         {
@@ -101,16 +117,7 @@
             {
                 return;
             }
-            while (biomeDisplay == null)
-            {
-                biomeDisplay = GameObject.FindObjectOfType<HandReticle>().interactPrimaryText;
-            }
-            biomeDisplay.supportRichText = true;
-            biomeDisplay.color = textColor;
-            biomeDisplay.text = _cachedBiomeFriendly;
-            biomeDisplay.alignment = TextAnchor.UpperCenter;
-            RectTransformExtensions.SetParams(biomeDisplay.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), null);
-            biomeDisplay.gameObject.SetActive(true);
+            
             this._initialized = true;
         }
 
@@ -153,13 +160,15 @@
             int index = curBiome.IndexOf('_');
             curBiome = curBiome.Substring(0, index);
             curBiome = curBiome.ToLower();
-            UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome);
             // This IF tree should get almost any biome
             if (curBiome != _cachedBiome)
             {
                 _cachedBiomeFriendly = biomeList[curBiome];
+                UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
+                UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
+                UnityEngine.Debug.Log("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
+                biomeDisplay.text = _cachedBiomeFriendly;
             }
-            biomeDisplay.text = _cachedBiomeFriendly;
             biomeDisplay.enabled = true;
         }
     }
