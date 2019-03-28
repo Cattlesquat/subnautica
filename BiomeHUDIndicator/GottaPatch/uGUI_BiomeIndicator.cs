@@ -110,6 +110,7 @@
             biomeDisplay.text = _cachedBiomeFriendly;
             biomeDisplay.alignment = TextAnchor.UpperCenter;
             RectTransformExtensions.SetParams(biomeDisplay.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), null);
+            biomeDisplay.gameObject.SetActive(true);
             this._initialized = true;
         }
 
@@ -159,7 +160,7 @@
                 _cachedBiomeFriendly = biomeList[curBiome];
             }
             biomeDisplay.text = _cachedBiomeFriendly;
-            biomeDisplay.gameObject.SetActive(true);
+            biomeDisplay.enabled = true;
         }
     }
 }
