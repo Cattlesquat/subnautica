@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiomeHUDIndicator", "BiomeH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoObservatoryMusic", "NoObservatoryMusic\NoObservatoryMusic.csproj", "{D6B0552D-C642-44AA-81C6-43FBF235F71E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RotateMoonpool", "RotateMoonpool\RotateMoonpool.csproj", "{0DEA9615-0A78-4AA7-A2A2-017E0A15DE3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitrogenMod", "NitrogenMod\NitrogenMod.csproj", "{C69E9DBA-79B9-4ACE-84B8-43860168842E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{D6B0552D-C642-44AA-81C6-43FBF235F71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6B0552D-C642-44AA-81C6-43FBF235F71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6B0552D-C642-44AA-81C6-43FBF235F71E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DEA9615-0A78-4AA7-A2A2-017E0A15DE3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DEA9615-0A78-4AA7-A2A2-017E0A15DE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DEA9615-0A78-4AA7-A2A2-017E0A15DE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DEA9615-0A78-4AA7-A2A2-017E0A15DE3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

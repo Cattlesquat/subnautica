@@ -19,9 +19,7 @@
         [Header("Biome Indicator")] public Image shadow;
         private bool _initialized;
         private bool _showing;
-        private RectTransform rectTrans;
         private GameObject textPrefab;
-        private bool isVisible = false;
 
         // Rather than a gajillion if/else statements, gonna use a dictionary
         private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
@@ -68,27 +66,27 @@
         // Putting Awake here
         private void Awake()
         {
+            textPrefab = Main.biomeHUD;
             textPrefab.SetActive(true);
-
         }
 
         // Start method goes here
         private void Start()
         {
             this.shadow.material = new Material(this.shadow.material);
-            // biomeDisplay.enabled = true;
+            _cachedBiome = "Unassigned";
         }
 
         // OnDisable method goes here
         private void OnDisable()
         {
-            
+            this.Deinitialize();
         }
 
         // LateUpdate goes here
         private void LateUpdate()
         {
-
+            
         }
 
         // Initialize method
@@ -130,7 +128,11 @@
         // A method to setVisible(), will be implemented after the text is displaying on screen and updating
         public void setVisible(bool visible)
         {
-            isVisible = visible;
+            if(this._showing == visible)
+            {
+                return;
+            }
+            this._showing = visible;
         }
 
         // OnLanguageChanged method
