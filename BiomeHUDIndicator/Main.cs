@@ -21,7 +21,7 @@
                 AssetBundle ab = AssetBundle.LoadFromFile(assetsBundle);
                 biomeHUD = ab.LoadAsset("Canvas") as GameObject;
                 CompassCore.PatchIt();
-                var harmony = HarmonyInstance.Create("com.biomehudindicator.mod");
+                var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 UnityEngine.Debug.Log("[BiomeHUDIndicator] Patching complete.");
             }

@@ -12,7 +12,7 @@
             UnityEngine.Debug.Log("[NoObservatoryMusic] Start patching. Version: 1.0.0.0");
             try
             {
-                var harmony = HarmonyInstance.Create("com.noobservatorymusic.mod");
+                var harmony = HarmonyInstance.Create("seraphimrisen.noobservatorymusic.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 UnityEngine.Debug.Log("[NoObservatoryMusic] Patching complete.");
             }

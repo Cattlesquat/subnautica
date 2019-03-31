@@ -19,7 +19,7 @@ namespace EnzymeChargedBattery
             try
             {
                 EnzymeBatteryCore.PatchIt();
-                var harmony = HarmonyInstance.Create("com.enzymechargedbatteries.mod");
+                var harmony = HarmonyInstance.Create("seraphimrisen.enzymechargedbatteries.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 UnityEngine.Debug.Log("[EnzymeChargedBattery] Patching complete.");
             }
