@@ -6,6 +6,11 @@
     using System.Linq;
     using Harmony;
     using UnityEngine;
+    using SMLHelper.V2.Handlers;
+    using SMLHelper.V2.Options;
+    using SMLHelper.V2.Utility;
+    using System.IO;
+    using System.Text;
 
     public class Main
     {
@@ -16,6 +21,7 @@
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
+                OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
                 UnityEngine.Debug.Log("[NitrogenMod] Patching complete.");
             }
             catch (Exception e)
@@ -24,4 +30,75 @@
             }
         }
     }
+
+    internal class NitrogenOptions : ModOptions
+    {
+        private const string Config = "./QMods/NitrogenMod/Config.txt";
+        private const string toggleName = "nitrogenmodenabler";
+        public static bool enabled = true;
+
+        public NitrogenOptions() : base("Nitrogen Mod Options")
+        {
+            base.ToggleChanged += nitrogenEnabled;
+            ReadSettings();
+        }
+
+        internal void Initialize()
+        {
+            try
+            {
+                ReadSettings();
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.Log("[NitrogenMod] Error loading " + Config + ": " + ex.ToString());
+                SaveSettings();
+            }
+        }
+
+        public override void BuildModOptions()
+        {
+            base.AddToggleOption(toggleName, "Enable Nitrogen", enabled);
+        }
+
+        private void nitrogenEnabled(object sender, ToggleChangedEventArgs args)
+        {
+            if (args.Id != toggleName)
+                return;
+            enabled = args.Value;
+            SaveSettings();
+        }
+
+        private void SaveSettings()
+        {
+            File.WriteAllLines(Config, new[]
+            {
+                "#   This is a value of either true or false. You can edit it here, but use the in-game settings instead. #",
+                "{" + enabled.ToString() + "}",
+            }, Encoding.UTF8);
+            UnityEngine.Debug.Log("[NitrogenMod] File written successfully!");
+        }
+
+        private void ReadSettings()
+        {
+            if (!File.Exists(Config))
+            {
+                UnityEngine.Debug.Log("[NitrogenMod] Config file not found. Creating default value.");
+                SaveSettings();
+            }
+
+            string file = File.ReadAllText(Config, Encoding.UTF8);
+            file = file.ToLower();
+            if (file.Contains("{true}"))
+            {
+                enabled = true;
+                UnityEngine.Debug.Log("[NitrogenMod] Config contained true");
+            }
+            if (file.Contains("{false}"))
+            {
+                enabled = false;
+                UnityEngine.Debug.Log("[NitrogenMod] Config contained false");
+            }
+        }
+    } 
 }
