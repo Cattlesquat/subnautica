@@ -46,6 +46,9 @@
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>

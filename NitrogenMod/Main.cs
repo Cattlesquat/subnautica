@@ -35,11 +35,11 @@
     {
         private const string Config = "./QMods/NitrogenMod/Config.txt";
         private const string toggleName = "nitrogenmodenabler";
-        public static bool enabled = true;
+        public bool enabled = true;
 
         public NitrogenOptions() : base("Nitrogen Mod Options")
         {
-            base.ToggleChanged += nitrogenEnabled;
+            base.ToggleChanged += NitrogenEnabled;
             ReadSettings();
         }
 
@@ -61,19 +61,27 @@
             base.AddToggleOption(toggleName, "Enable Nitrogen", enabled);
         }
 
-        private void nitrogenEnabled(object sender, ToggleChangedEventArgs args)
+        private void NitrogenEnabled(object sender, ToggleChangedEventArgs args)
         {
             if (args.Id != toggleName)
                 return;
             enabled = args.Value;
             SaveSettings();
+            try
+            {
+                DevConsole.SendConsoleCommand("nitrogen");
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.Log("[NitrogenMod] Error executing Nitrogen command:" + ex.ToString());
+            }
         }
 
         private void SaveSettings()
         {
             File.WriteAllLines(Config, new[]
             {
-                "#   This is a value of either true or false. You can edit it here, but use the in-game settings instead. #",
+                "#   This is a value of either true or false. #",
                 "{" + enabled.ToString() + "}",
             }, Encoding.UTF8);
             UnityEngine.Debug.Log("[NitrogenMod] File written successfully!");
@@ -94,7 +102,7 @@
                 enabled = true;
                 UnityEngine.Debug.Log("[NitrogenMod] Config contained true");
             }
-            if (file.Contains("{false}"))
+            else if (file.Contains("{false}"))
             {
                 enabled = false;
                 UnityEngine.Debug.Log("[NitrogenMod] Config contained false");
