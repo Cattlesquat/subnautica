@@ -1,0 +1,2 @@
+﻿#   This is a value of either true or false. #
+{True}

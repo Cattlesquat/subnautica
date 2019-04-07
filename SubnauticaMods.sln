@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RotateMoonpool", "RotateMoo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitrogenMod", "NitrogenMod\NitrogenMod.csproj", "{C69E9DBA-79B9-4ACE-84B8-43860168842E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonAndUtilities", "CommonAndUtilities\CommonAndUtilities.csproj", "{612354C2-C414-439A-BB96-520AF2ED3E5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeCapsuleLogger", "TimeCapsuleLogger\TimeCapsuleLogger.csproj", "{3E5F297F-FA42-44F7-A325-A618B3B6052F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C69E9DBA-79B9-4ACE-84B8-43860168842E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{612354C2-C414-439A-BB96-520AF2ED3E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{612354C2-C414-439A-BB96-520AF2ED3E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{612354C2-C414-439A-BB96-520AF2ED3E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{612354C2-C414-439A-BB96-520AF2ED3E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
