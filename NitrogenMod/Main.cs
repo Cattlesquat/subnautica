@@ -1,14 +1,10 @@
 ﻿namespace NitrogenMod
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
-    using System.Linq;
     using Harmony;
-    using UnityEngine;
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Options;
-    using SMLHelper.V2.Utility;
     using System.IO;
     using System.Text;
 

@@ -1,12 +1,9 @@
 ﻿namespace TimeCapsuleLogger
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
-    using System.Linq;
     using Harmony;
-    using UnityEngine;
-    
+
     // Just for the purpose of logging time capsule code
     public class Main
     {
@@ -17,7 +14,7 @@
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.timecapsulelogger.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("[NitrogenMod] Patching complete.");
+                UnityEngine.Debug.Log("[TimeCapsuleLogger] Patching complete.");
             }
             catch (Exception e)
             {
@@ -33,7 +30,7 @@
         [HarmonyPostfix]
         public static void Postfix()
         {
-            ErrorMessage.AddMessage("TimeCapsule.Spawn() has run!");
+            ErrorMessage.AddMessage("Time Capsule detected!");
         }
     }
 }

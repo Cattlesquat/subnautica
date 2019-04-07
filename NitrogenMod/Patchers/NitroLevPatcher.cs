@@ -49,7 +49,7 @@
                         num = 2f;
                     }
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, __instance.kDissipateScalar * num * Time.deltaTime);
-                    ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
+                    //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
                 /*
                  * Silly me. Bends aren't a think in submarines. If they were, this code would definitely let you undergo compression as you explore.
@@ -89,7 +89,7 @@
                 float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                 float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                 __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * 1.25f);
-                ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
+                //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
             }
             return false;
         }
