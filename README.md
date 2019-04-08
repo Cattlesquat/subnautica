@@ -1,12 +1,14 @@
 # SubnauticaMods
 These are mods that Seraphim has developed or is developing for Subnautica. Two have been released so far.
 
--EnzymeChargedBattery was developed as a clone of PrimeSonic's MidGameBattery to foster understanding of the mod process.
+-EnzymeChargedBattery: Developed as a clone of PrimeSonic's MidGameBattery to foster understanding of the mod process.
 
--NoObservatoryMusic really just nullifies the observatory biome ENTIRELY because of undesired effects
+-NoObservatoryMusic: Nullifies the observatory biome ENTIRELY because of undesired effects. TODO: Add a function so the music plays at least once/session
 
--BiomeHUDIndicator is currently a WIP. When done, it will display the current biome in a way consistent with the rest of the player HUD.
+-BiomeHUDIndicator: TODO: Display current biome in a manner consistent with rest of player HUD
 
--NitrogenMod is planned to reintroduce Nitrogren to the game, and also add HUD indicators for it.
+-NitrogenMod: Drastically alters existing Nitrogen code to be more realistic in relation to real DCS. TODO: Add HUD indicator for compression
 
--RotateMoonpool is an experiment in figuring out how to enable Moonpool rotation on habitats.
+-RotateMoonpool: One day maybe we can rotate a Moonpool
+
+-TimeCapsuleLogger: Sticks a logger into TimeCapsule.Spawn() to notify of spawns
