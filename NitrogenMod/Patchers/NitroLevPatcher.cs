@@ -56,7 +56,7 @@
                     float atmosPressure = __instance.safeNitrogenDepth - 10f;
                     if (atmosPressure < 0f)
                         atmosPressure = 0f;
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, atmosPressure, __instance.kDissipateScalar * num * Time.deltaTime);
+                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, atmosPressure, __instance.kDissipateScalar * 2f * Time.deltaTime);
                     //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
             }
