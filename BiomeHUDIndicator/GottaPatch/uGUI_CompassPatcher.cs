@@ -112,15 +112,13 @@ using Fabricator;
         {
             int compassID = 0;
             int biomeChip = 0;
-            bool chips = false;
             compassID = inv.equipment.GetCount(TechType.Compass);
             biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
             if(compassID > 0 || biomeChip > 0)
             {
-                chips = true;
-                return chips;
+                return true;
             }
-            return chips;
+            return false;
         }
     }
 }
