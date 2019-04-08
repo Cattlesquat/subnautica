@@ -2,7 +2,7 @@
   "Id": "EnzymeChargedBattery",
   "DisplayName": "EnzyneChargedBattery",
   "Author": "SeraphimRisen with special thanks to PrimeSonic",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "Enable": true,
   "AssemblyName": "EnzymeChargedBattery.dll",
   "EntryMethod": "EnzymeChargedBattery.Main.Patch",

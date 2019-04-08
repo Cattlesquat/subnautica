@@ -17,6 +17,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonAndUtilities", "Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeCapsuleLogger", "TimeCapsuleLogger\TimeCapsuleLogger.csproj", "{3E5F297F-FA42-44F7-A325-A618B3B6052F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Releases", "Releases", "{1535E502-29FB-4FAB-A9CC-563E7AA2CD58}"
+	ProjectSection(SolutionItems) = preProject
+		Releases\EnzymeChargedBattery.zip = Releases\EnzymeChargedBattery.zip
+		Releases\NitrogenMod.zip = Releases\NitrogenMod.zip
+		Releases\NoObservatoryMusic.zip = Releases\NoObservatoryMusic.zip
+		Releases\TimeCapsuleLogger.zip = Releases\TimeCapsuleLogger.zip
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
