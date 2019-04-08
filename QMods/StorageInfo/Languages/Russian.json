@@ -1,6 +1,0 @@
-﻿{
-  "ContainerEmpty": "Пусто",
-  "ContainerOneItem": "Заполнено 1 предметом",
-  "ContainerFull": "Полностью заполнено",
-  "ContainerNonempty": "Заполнено {0} предметами"
-}
