@@ -22,27 +22,33 @@
     [HarmonyPatch("Update")]
     internal class NitroDamagePatcher
     {
+        private static float damageScaler = 0f;
+
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
+            if (damageScaler == 0f)
+            {
+                damageScaler = 1f;
+            }
             if (__instance.nitrogenEnabled)
             {
                 float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
-                if (depthOf < __instance.safeNitrogenDepth - 10f && UnityEngine.Random.value < 0.025f)
+                if (depthOf < __instance.safeNitrogenDepth - 10f && UnityEngine.Random.value < 0.0125f)
                 {
                     global::Utils.Assert(depthOf < __instance.safeNitrogenDepth, "see log", null);
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression. Ascend slower.");
-                    component.TakeDamage(1f + (__instance.safeNitrogenDepth - depthOf) / 10f, default(Vector3), DamageType.Normal, null);
+                    component.TakeDamage(1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f, default(Vector3), DamageType.Normal, null);
                 }
-                if (__instance.safeNitrogenDepth > 0f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
+                if (__instance.safeNitrogenDepth > 10f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
                 {
                     float atmosPressure = __instance.safeNitrogenDepth - 10f;
                     if (atmosPressure < 0f)
                         atmosPressure = 0f;
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression");
-                    component.TakeDamage(1f + (__instance.safeNitrogenDepth - atmosPressure) /10f, default(Vector3), DamageType.Normal, null);
+                    component.TakeDamage(1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) /10f, default(Vector3), DamageType.Normal, null);
                 }
                 float num = 1f;
                 if (depthOf < __instance.safeNitrogenDepth && Player.main.motorMode == Player.MotorMode.Dive)
@@ -62,6 +68,11 @@
             }
             return false;
         }
+
+        public static void adjustScaler(float val)
+        {
+            damageScaler = val;
+        }
     }
 
     [HarmonyPatch(typeof(NitrogenLevel))]
@@ -80,7 +91,7 @@
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * 1.10f);
+                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
                 }
                 //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
             }
