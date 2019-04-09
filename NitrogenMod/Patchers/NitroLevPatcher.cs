@@ -23,14 +23,11 @@
     internal class NitroDamagePatcher
     {
         private static float damageScaler = 0f;
+        private static bool lethal = true;
 
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
-            if (damageScaler == 0f)
-            {
-                damageScaler = 1f;
-            }
             if (__instance.nitrogenEnabled)
             {
                 float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
@@ -39,7 +36,11 @@
                     global::Utils.Assert(depthOf < __instance.safeNitrogenDepth, "see log", null);
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression. Ascend slower.");
-                    component.TakeDamage(1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f, default(Vector3), DamageType.Normal, null);
+                    float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f;
+                    if (component.health - damage > 0f)
+                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
+                    if (component.health - damage < 0f && lethal)
+                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
                 }
                 if (__instance.safeNitrogenDepth > 10f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
                 {
@@ -48,7 +49,11 @@
                         atmosPressure = 0f;
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression");
-                    component.TakeDamage(1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) /10f, default(Vector3), DamageType.Normal, null);
+                    float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
+                    if (component.health - damage > 0f)
+                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
+                    if (component.health - damage < 0f && lethal)
+                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
                 }
                 float num = 1f;
                 if (depthOf < __instance.safeNitrogenDepth && Player.main.motorMode == Player.MotorMode.Dive)
@@ -69,9 +74,14 @@
             return false;
         }
 
-        public static void adjustScaler(float val)
+        public static void AdjustScaler(float val)
         {
             damageScaler = val;
+        }
+
+        public static void Lethality (bool isLethal)
+        {
+            lethal = isLethal;
         }
     }
 

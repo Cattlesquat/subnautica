@@ -6,10 +6,9 @@
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Options;
     using System.IO;
-    using System.Text;
-    using System.Xml;
     using System.Xml.Serialization;
     using Patchers;
+    using Common;
 
     public class Main
     {
@@ -22,7 +21,6 @@
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 NitrogenOptions data = new NitrogenOptions();
                 OptionsPanelHandler.RegisterModOptions(data);
-                NitroDamagePatcher.adjustScaler(data.damageScaler);
                 UnityEngine.Debug.Log("[NitrogenMod] Patching complete.");
             }
             catch (Exception e)
@@ -35,15 +33,18 @@
     internal class NitrogenOptions : ModOptions
     {
         private const string Config = "./QMods/NitrogenMod/Config.xml";
-        private const string toggleName = "nitrogenmodenabler";
+        private const string enablerName = "nitrogenmodenabler";
         private const string sliderName = "damagescalerslider";
+        private const string lethalName = "lethalmodeenabler";
         public bool enabled = true;
+        public bool lethal = true;
         public float damageScaler = 1f;
 
         public NitrogenOptions() : base("Nitrogen Mod Options")
         {
             ToggleChanged += NitrogenEnabled;
             SliderChanged += DamageScalerSlider;
+            ToggleChanged += NonLethalOption;
             ReadSettings();
         }
 
@@ -62,13 +63,14 @@
 
         public override void BuildModOptions()
         {
-            AddToggleOption(toggleName, "Enable Nitrogen", enabled);
+            AddToggleOption(enablerName, "Enable Nitrogen", enabled);
             AddSliderOption(sliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
+            AddToggleOption(lethalName, "Lethal Decompression", lethal);
         }
 
         private void NitrogenEnabled(object sender, ToggleChangedEventArgs args)
         {
-            if (args.Id != toggleName)
+            if (args.Id != enablerName)
                 return;
             enabled = args.Value;
             SaveSettings();
@@ -88,24 +90,22 @@
                 return;
             damageScaler = args.Value;
             SaveSettings();
-            
+            NitroDamagePatcher.AdjustScaler(damageScaler);
+        }
+
+        private void NonLethalOption(object sender, ToggleChangedEventArgs args)
+        {
+            if (args.Id != lethalName)
+                return;
+            lethal = args.Value;
+            SaveSettings();
+            NitroDamagePatcher.Lethality(lethal);
         }
 
         private void SaveSettings()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
-            TextWriter writer = new StreamWriter(Config);
-            SaveData saveData = new SaveData(enabled, damageScaler);
-            serializer.Serialize(writer, saveData);
-            writer.Close();
-            /*
-             * File.WriteAllLines(Config, new[]
-             * {
-             *     "#   This is a value of either true or false. #",
-             *     "{" + enabled.ToString() + "}",
-             * }, Encoding.UTF8);
-             * UnityEngine.Debug.Log("[NitrogenMod] File written successfully!");
-             */
+            SaveData saveData = new SaveData(enabled, damageScaler, lethal);
+            ConfigMaker.WriteData(Config, saveData);
         }
 
         private void ReadSettings()
@@ -115,14 +115,12 @@
                 UnityEngine.Debug.Log("[NitrogenMod] Config file not found. Creating default value.");
                 SaveSettings();
             }
-            XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
-            FileStream fs = new FileStream(Config, FileMode.Open);
-            SaveData loadedData;
-            loadedData = (SaveData)serializer.Deserialize(fs);
+            SaveData loadedData = (SaveData) ConfigMaker.ReadData(Config, typeof(SaveData));
             try
             {
                 enabled = Boolean.Parse(loadedData.isEnabled);
                 damageScaler = float.Parse(loadedData.damageScaler);
+                lethal = Boolean.Parse(loadedData.isLethal);
             }
             catch (Exception ex)
             {
@@ -138,17 +136,20 @@
     {
         public string isEnabled;
         public string damageScaler;
+        public string isLethal;
 
         public SaveData()
         {
             isEnabled = "true";
             damageScaler = "1";
+            isLethal = "true";
         }
 
-        public SaveData(bool enabled, float scaler)
+        public SaveData(bool enabled, float scaler, bool lethal)
         {
             isEnabled = enabled.ToString();
             damageScaler = scaler.ToString();
+            isLethal = lethal.ToString();
         }
     }
 }
