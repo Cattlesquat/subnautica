@@ -38,9 +38,9 @@
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression. Ascend slower.");
                     float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f;
                     if (component.health - damage > 0f)
-                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
-                    if (component.health - damage < 0f && lethal)
-                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
+                        component.TakeDamage(damage, default, DamageType.Normal, null);
+                    else if (lethal)
+                        component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
                 if (__instance.safeNitrogenDepth > 10f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
                 {
@@ -51,9 +51,9 @@
                     ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression");
                     float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
                     if (component.health - damage > 0f)
-                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
-                    if (component.health - damage < 0f && lethal)
-                        component.TakeDamage(damage, default(Vector3), DamageType.Normal, null);
+                        component.TakeDamage(damage, default, DamageType.Normal, null);
+                    else if (lethal)
+                        component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
                 float num = 1f;
                 if (depthOf < __instance.safeNitrogenDepth && Player.main.motorMode == Player.MotorMode.Dive)
