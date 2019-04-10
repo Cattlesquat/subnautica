@@ -19,6 +19,17 @@
     }
 
     [HarmonyPatch(typeof(NitrogenLevel))]
+    [HarmonyPatch("OnRespawn")]
+    internal class RespawnPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix (ref NitrogenLevel __instance)
+        {
+            __instance.safeNitrogenDepth = 0f;
+        }
+    }
+
+    [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Update")]
     internal class NitroDamagePatcher
     {
@@ -28,7 +39,7 @@
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
-            if (__instance.nitrogenEnabled)
+            if (__instance.nitrogenEnabled && GameModeUtils.RequiresOxygen() && Time.timeScale > 0f)
             {
                 float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
                 if (depthOf < __instance.safeNitrogenDepth - 10f && UnityEngine.Random.value < 0.0125f)
@@ -95,8 +106,7 @@
             if (__instance.nitrogenEnabled)
             {
                 int reinforcedSuit = 0;
-                Inventory inv = Inventory.main;
-                reinforcedSuit = inv.equipment.GetCount(TechType.ReinforcedDiveSuit);
+                reinforcedSuit = Inventory.main.equipment.GetCount(TechType.ReinforcedDiveSuit);
                 if (reinforcedSuit < 1)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
