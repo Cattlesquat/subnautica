@@ -130,6 +130,10 @@
             NitrogenOptions isEnabled = new NitrogenOptions();
             __instance.nitrogenEnabled = isEnabled.nitroEnabled;
             __instance.safeNitrogenDepth = 0f;
+            NitroDamagePatcher.Lethality(isEnabled.nitroLethal);
+            NitroDamagePatcher.AdjustScaler(isEnabled.damageScaler);
+            NitroBreathPatcher.EnableCrush(isEnabled.crushEnabled);
+            NitroBreathPatcher.AdjustCrush(isEnabled.crushDepth);
         }
     }
 
