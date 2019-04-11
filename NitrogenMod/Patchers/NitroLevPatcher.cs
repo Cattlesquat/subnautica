@@ -98,11 +98,11 @@
                 if (crushEnabled && reinforcedSuit < 1 && Player.main.motorMode == Player.MotorMode.Dive)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
-                    LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-                    ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
                     if (depthOf > crushDepth)
                     {
-                        float damage = UnityEngine.Random.value * depthOf / 100f;
+                        LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
+                        ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
+                        component.TakeDamage(UnityEngine.Random.value * (depthOf / 100f), default, DamageType.Normal, null);
                     }
                 }
             }
