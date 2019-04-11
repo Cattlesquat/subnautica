@@ -33,18 +33,28 @@
     internal class NitrogenOptions : ModOptions
     {
         private const string Config = "./QMods/NitrogenMod/Config.xml";
-        private const string enablerName = "nitrogenmodenabler";
-        private const string sliderName = "damagescalerslider";
+
+        private const string nitroEnablerName = "nitrogenmodenabler";
         private const string lethalName = "lethalmodeenabler";
-        public bool enabled = true;
-        public bool lethal = true;
+        private const string crushEnablerName = "crushmodenabler";
+
+        private const string nitroSliderName = "damagescalerslider";
+        private const string crushSliderName = "crushdepthslider";
+
+        public bool nitroEnabled = true;
+        public bool nitroLethal = true;
+        public bool crushEnabled = false;
+
         public float damageScaler = 1f;
+        public float crushDepth = 500f;
 
         public NitrogenOptions() : base("Nitrogen Mod Options")
         {
             ToggleChanged += NitrogenEnabled;
-            SliderChanged += DamageScalerSlider;
             ToggleChanged += NonLethalOption;
+            SliderChanged += DamageScalerSlider;
+            ToggleChanged += CrushEnabled;
+            SliderChanged += NewCrushDepth;
             ReadSettings();
         }
 
@@ -57,23 +67,25 @@
             catch (Exception ex)
             {
                 UnityEngine.Debug.Log("[NitrogenMod] Error loading " + Config + ": " + ex.ToString());
+                UnityEngine.Debug.Log("[NitrogenMod] Creating default configuration.");
                 SaveSettings();
             }
         }
 
         public override void BuildModOptions()
         {
-            AddToggleOption(enablerName, "Enable Nitrogen", enabled);
-            AddSliderOption(sliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
-            AddToggleOption(lethalName, "Lethal Decompression", lethal);
+            AddToggleOption(nitroEnablerName, "Enable Nitrogen", nitroEnabled);
+            AddToggleOption(lethalName, "Lethal Decompression", nitroLethal);
+            AddSliderOption(nitroSliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
+            AddToggleOption(crushEnablerName, "Enable Crush Depth", crushEnabled);
+            AddSliderOption(crushSliderName, "Player Crush Depth", 250f, 1500f, crushDepth);
         }
 
         private void NitrogenEnabled(object sender, ToggleChangedEventArgs args)
         {
-            if (args.Id != enablerName)
+            if (args.Id != nitroEnablerName)
                 return;
-            enabled = args.Value;
-            SaveSettings();
+            nitroEnabled = args.Value;
             try
             {
                 DevConsole.SendConsoleCommand("nitrogen");
@@ -82,29 +94,48 @@
             {
                 UnityEngine.Debug.Log("[NitrogenMod] Error executing Nitrogen command:" + ex.ToString());
             }
-        }
-
-        private void DamageScalerSlider(object sender, SliderChangedEventArgs args)
-        {
-            if (args.Id != sliderName)
-                return;
-            damageScaler = args.Value;
             SaveSettings();
-            NitroDamagePatcher.AdjustScaler(damageScaler);
         }
 
         private void NonLethalOption(object sender, ToggleChangedEventArgs args)
         {
             if (args.Id != lethalName)
                 return;
-            lethal = args.Value;
+            nitroLethal = args.Value;
+            NitroDamagePatcher.Lethality(nitroLethal);
             SaveSettings();
-            NitroDamagePatcher.Lethality(lethal);
+        }
+
+        private void DamageScalerSlider(object sender, SliderChangedEventArgs args)
+        {
+            if (args.Id != nitroSliderName)
+                return;
+            damageScaler = args.Value;
+            NitroDamagePatcher.AdjustScaler(damageScaler);
+            SaveSettings();
+        }
+
+        private void CrushEnabled(object sender, ToggleChangedEventArgs args)
+        {
+            if (args.Id != crushEnablerName)
+                return;
+            crushEnabled = args.Value;
+            NitroBreathPatcher.EnableCrush(crushEnabled);
+            SaveSettings();
+        }
+
+        private void NewCrushDepth(object sender, SliderChangedEventArgs args)
+        {
+            if (args.Id != crushSliderName)
+                return;
+            crushDepth = args.Value;
+            NitroBreathPatcher.AdjustCrush(crushDepth);
+            SaveSettings();
         }
 
         private void SaveSettings()
         {
-            SaveData saveData = new SaveData(enabled, damageScaler, lethal);
+            SaveData saveData = new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth);
             ConfigMaker.WriteData(Config, saveData);
         }
 
@@ -118,15 +149,20 @@
             SaveData loadedData = (SaveData) ConfigMaker.ReadData(Config, typeof(SaveData));
             try
             {
-                enabled = Boolean.Parse(loadedData.isEnabled);
+                nitroEnabled = Boolean.Parse(loadedData.nitrogenEnabled);
+                nitroLethal = Boolean.Parse(loadedData.isLethal);
                 damageScaler = float.Parse(loadedData.damageScaler);
-                lethal = Boolean.Parse(loadedData.isLethal);
+                crushEnabled = Boolean.Parse(loadedData.crushEnabled);
+                crushDepth = float.Parse(loadedData.crushDepth);
             }
             catch (Exception ex)
             {
                 UnityEngine.Debug.Log("[NitrogenMod] Error reading file. Setting defaults. Exception: " + ex.ToString());
-                enabled = true;
+                nitroEnabled = true;
+                nitroLethal = true;
                 damageScaler = 1f;
+                crushEnabled = false;
+                crushDepth = 500f;
                 SaveSettings();
             }
         }
@@ -134,22 +170,29 @@
 
     public class SaveData
     {
-        public string isEnabled;
-        public string damageScaler;
+        public string nitrogenEnabled;
         public string isLethal;
+        public string crushEnabled;
 
+        public string damageScaler;
+        public string crushDepth;
+        
         public SaveData()
         {
-            isEnabled = "true";
+            nitrogenEnabled = "true";
             damageScaler = "1";
             isLethal = "true";
+            crushEnabled = "false";
+            crushDepth = "500";
         }
 
-        public SaveData(bool enabled, float scaler, bool lethal)
+        public SaveData(bool enabled, bool lethal, float scaler, bool crush, float depthDamage)
         {
-            isEnabled = enabled.ToString();
-            damageScaler = scaler.ToString();
+            nitrogenEnabled = enabled.ToString();
             isLethal = lethal.ToString();
+            damageScaler = scaler.ToString();
+            crushEnabled = crush.ToString();
+            crushDepth = depthDamage.ToString();
         }
     }
 }

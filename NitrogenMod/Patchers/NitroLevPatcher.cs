@@ -7,35 +7,13 @@
     using UnityEngine.SceneManagement;
 
     [HarmonyPatch(typeof(NitrogenLevel))]
-    [HarmonyPatch("Start")]
-    internal class NitroLevPatcher
-    {
-        [HarmonyPostfix]
-        public static void Postfix (ref NitrogenLevel __instance)
-        {
-            NitrogenOptions isEnabled = new NitrogenOptions();
-            __instance.nitrogenEnabled = isEnabled.enabled;
-        }
-    }
-
-    [HarmonyPatch(typeof(NitrogenLevel))]
-    [HarmonyPatch("OnRespawn")]
-    internal class RespawnPatcher
-    {
-        [HarmonyPostfix]
-        public static void Postfix (ref NitrogenLevel __instance)
-        {
-            __instance.safeNitrogenDepth = 0f;
-        }
-    }
-
-    [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Update")]
     internal class NitroDamagePatcher
     {
-        private static float damageScaler = 0f;
         private static bool lethal = true;
 
+        private static float damageScaler = 0f;
+        
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
@@ -85,14 +63,14 @@
             return false;
         }
 
+        public static void Lethality(bool isLethal)
+        {
+            lethal = isLethal;
+        }
+
         public static void AdjustScaler(float val)
         {
             damageScaler = val;
-        }
-
-        public static void Lethality (bool isLethal)
-        {
-            lethal = isLethal;
         }
     }
 
@@ -100,22 +78,69 @@
     [HarmonyPatch("OnTookBreath")]
     internal class NitroBreathPatcher
     {
+        private static bool crushEnabled = false;
+
+        private static float crushDepth = 500f;
+        
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance, Player player)
         {
-            if (__instance.nitrogenEnabled)
+            int reinforcedSuit = Inventory.main.equipment.GetCount(TechType.ReinforcedDiveSuit);
+            if (GameModeUtils.RequiresOxygen())
             {
-                int reinforcedSuit = 0;
-                reinforcedSuit = Inventory.main.equipment.GetCount(TechType.ReinforcedDiveSuit);
-                if (reinforcedSuit < 1)
+                if (__instance.nitrogenEnabled && reinforcedSuit < 1)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
+                    //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
-                //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
+                if (crushEnabled && reinforcedSuit < 1 && Player.main.motorMode == Player.MotorMode.Dive)
+                {
+                    float depthOf = Ocean.main.GetDepthOf(player.gameObject);
+                    LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
+                    ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
+                    if (depthOf > crushDepth)
+                    {
+                        float damage = UnityEngine.Random.value * depthOf / 100f;
+                    }
+                }
             }
             return false;
+        }
+
+        public static void EnableCrush (bool isEnabled)
+        {
+            crushEnabled = isEnabled;
+        }
+
+        public static void AdjustCrush (float newDepth)
+        {
+            crushDepth = newDepth;
+        }
+    }
+
+    [HarmonyPatch(typeof(NitrogenLevel))]
+    [HarmonyPatch("Start")]
+    internal class NitroLevPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref NitrogenLevel __instance)
+        {
+            NitrogenOptions isEnabled = new NitrogenOptions();
+            __instance.nitrogenEnabled = isEnabled.nitroEnabled;
+            __instance.safeNitrogenDepth = 0f;
+        }
+    }
+
+    [HarmonyPatch(typeof(NitrogenLevel))]
+    [HarmonyPatch("OnRespawn")]
+    internal class RespawnPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref NitrogenLevel __instance)
+        {
+            __instance.safeNitrogenDepth = 0f;
         }
     }
 }
