@@ -1,8 +1,10 @@
 ﻿namespace TimeCapsuleLogger
 {
     using System;
+    using Common;
     using System.Reflection;
     using Harmony;
+    using UnityEngine;
 
     // Just for the purpose of logging time capsule code
     public class Main
@@ -34,3 +36,8 @@
         }
     }
 }
+
+
+
+
+
