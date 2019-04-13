@@ -4,6 +4,7 @@
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Utility;
     using UnityEngine;
+    using Common;
 
     internal abstract class EnzymeBatteryCore : Craftable
     {
@@ -17,21 +18,19 @@
         public static TechType BattID { get; protected set; }
         public static TechType PowCelID { get; protected set; }
 
-        internal static void PatchIt()
+        internal static void PatchBatteries()
         {
-            // As of this time, only one other mod uses the BatteryPower tab, so we'll check to see if it exists
             if (!TechTypeHandler.ModdedTechTypeExists("DeepPowerCell"))
             {
-                // The node doesn't exist, so we make it
                 var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Fabricator, BatCraftTab, "Batteries and Power Cells", tabIcon, ResCraftTab, ElecCraftTab);
-                UnityEngine.Debug.Log("[EnzymeChargedBattery] Creating the crafting tab, as it does not already exist.");
-                // Removing the batteries from the old tab
+                SeraLogger.Generic("[EnzymeChargedBattery] MidGameBatteries not installed, creating new crafting tab");
+
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.Battery.ToString());
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.PrecursorIonBattery.ToString());
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.PowerCell.ToString());
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.PrecursorIonPowerCell.ToString());
-                // We're going to add the old batteries, then ions, then new ones
+
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.Battery, CraftPath);
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PowerCell, CraftPath);
                 CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PrecursorIonBattery, CraftPath);
@@ -40,7 +39,7 @@
             else
             {
                 // Skip creating the tab
-                UnityEngine.Debug.Log("[EnzymeChargedBattery] The tab appears to already exist. Adding new batteries to existing tab.");
+                SeraLogger.Generic("[EnzymeChargedBattery] MidGameBatteries installed, adding to crafting tab");
             }
             var enzBatt = new EnzymeBattery(1000f);
             enzBatt.Patch();

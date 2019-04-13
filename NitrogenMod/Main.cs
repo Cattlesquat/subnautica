@@ -132,7 +132,7 @@
         {
             if (!File.Exists(Config))
             {
-                Logger.ConfigNotFound("[NitrogenMod]");
+                SeraLogger.ConfigNotFound("[NitrogenMod]");
                 SaveSettings();
             }
             try
@@ -146,7 +146,7 @@
             }
             catch (Exception ex)
             {
-                Logger.ConfigReadError("[NitrogenMod]", ex);
+                SeraLogger.ConfigReadError("[NitrogenMod]", ex);
                 nitroEnabled = true;
                 nitroLethal = true;
                 damageScaler = 1f;

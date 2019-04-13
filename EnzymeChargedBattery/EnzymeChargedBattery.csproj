@@ -36,9 +36,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>E:\dibbl\Documents\My Games\Subnautica\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -64,8 +63,8 @@
     <Compile Include="Fabricator\EnzymeBattery.cs" />
     <Compile Include="Fabricator\EnzymeBatteryCore.cs" />
     <Compile Include="Fabricator\EnzymePowerCell.cs" />
-    <Compile Include="GottaPatch\ChargerPatch.cs" />
-    <Compile Include="GottaPatch\EnergyMixinPatch.cs" />
+    <Compile Include="Patchers\ChargerPatch.cs" />
+    <Compile Include="Patchers\EnergyMixinPatch.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,6 +78,7 @@
     <Content Include="Assets\EnzymePowerCell.png" />
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Microsoft.Common.targets.

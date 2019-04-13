@@ -38,5 +38,10 @@
         {
             UnityEngine.Debug.Log("File I/O Error: " + file + " Exception: " + ex.ToString());
         }
+
+        public static void Generic(string message)
+        {
+            UnityEngine.Debug.Log(message);
+        }
     }
 }

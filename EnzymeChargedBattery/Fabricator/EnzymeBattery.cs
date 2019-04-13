@@ -5,7 +5,6 @@
 
     internal class EnzymeBattery : EnzymeBatteryCore
     {
-        // This provides 2x the power of a Precursor Battery
         internal static float BattCap { get; private set; } = 1000f;
 
         public EnzymeBattery(float cap = 1000f)
@@ -14,7 +13,7 @@
             OnFinishedPatching += SetStaticTechType;
         }
 
-        protected override TechType BaseType { get; } = TechType.PrecursorIonBattery; // Base it on the precursor ion battery
+        protected override TechType BaseType { get; } = TechType.PrecursorIonBattery;
         protected override float PowerCapacity => BattCap;
         protected override EquipmentType ChargerType { get; } = EquipmentType.BatteryCharger;
 
@@ -25,10 +24,10 @@
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>(4)
                 {
-                    new Ingredient(TechType.PrecursorIonBattery, 1), // We're supercharging a battery
-                    new Ingredient(TechType.HatchingEnzymes, 2), // It's post-endgame, so need this
-                    new Ingredient(TechType.Lead, 1), // Gotta have radiation shielding
-                    new Ingredient (TechType.UraniniteCrystal, 2), // The magic of sci-fi game radiation
+                    new Ingredient(TechType.PrecursorIonBattery, 1),
+                    new Ingredient(TechType.HatchingEnzymes, 2),
+                    new Ingredient(TechType.Lead, 1),
+                    new Ingredient (TechType.UraniniteCrystal, 2),
                 }
             };
         }

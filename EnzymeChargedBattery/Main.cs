@@ -10,22 +10,24 @@ namespace EnzymeChargedBattery
     using System.Reflection;
     using Harmony;
     using EnzymeChargedBattery.Fabricator;
+    using Common;
 
     public static class Main
     {
         public static void Patch()
         {
-            UnityEngine.Debug.Log("[EnzymeChargedBattery] Start patching. Version: 1.0.1");
+            string modName = "[EnzymeChargedBattery]";
+            SeraLogger.PatchStart(modName, "1.0.2");
             try
             {
-                EnzymeBatteryCore.PatchIt();
+                EnzymeBatteryCore.PatchBatteries();
                 var harmony = HarmonyInstance.Create("seraphimrisen.enzymechargedbatteries.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("[EnzymeChargedBattery] Patching complete.");
+                SeraLogger.PatchComplete(modName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                UnityEngine.Debug.Log($"[EnzymeChargedBattery] ERROR: {e.ToString()}");
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
     }
