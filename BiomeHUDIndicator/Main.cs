@@ -5,9 +5,12 @@
     using Harmony;
     using BiomeHUDIndicator.Fabricator;
     using UnityEngine;
+    using Common;
 
     public static class Main
     {
+        public const string modName = "[BiomeHUDIndicator]";
+
         public static readonly string modFolder = "./QMods/BiomeHUDIndicator/";
         public static readonly string assetsFolder = modFolder + "Assets/";
         public static readonly string assetsBundle = assetsFolder + "biomehudchip";
@@ -15,7 +18,7 @@
         // Just to be clear, this is the entry method
         public static void Patch()
         {
-            UnityEngine.Debug.Log("[BiomeHUDIndicator] Start patching. Version: 1.0.0.0");
+            SeraLogger.PatchStart(modName, "1.0.0");
             try
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetsBundle);
@@ -23,11 +26,11 @@
                 CompassCore.PatchIt();
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("[BiomeHUDIndicator] Patching complete.");
+                SeraLogger.PatchComplete(modName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                UnityEngine.Debug.Log($"[BiomeHUDIndicator] ERROR: {e.ToString()}");
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
     }

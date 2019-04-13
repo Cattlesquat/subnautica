@@ -8,24 +8,22 @@
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Utility;
     using UnityEngine;
+    using Common;
 
-// We're not going to modify the base compass so much as create a successor or upgrade to it. We're also making a compass core in case we add more upgrades or different ones.
     internal abstract class CompassCore : Craftable
     {
-        // Set up all the names and paths and stuff
         private const string craftTab = "HUDChips";
         private const string Assets = @"BiomeHUDIndicator/Assets";
         private static readonly string[] craftPath = new[] { craftTab };
 
-        // Setting up class-level stuff
         public static TechType BiomeChipID { get; protected set; }
 
         internal static void PatchIt()
         {
-            // Nothing else at this time upgrades HUD chips so we'll just go ahead and make the tab. May update at later date
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "HUD Chip Upgrades", tabIcon);
-            UnityEngine.Debug.Log("[BiomeHUDIndicator] Crafting tab HUD Chip Upgrades created.");
+
+            SeraLogger.Message(Main.modName, "Creating new crafting tab");
             var BiomeChip = new BiomeHUDIndicator();
             BiomeChip.Patch();
         }

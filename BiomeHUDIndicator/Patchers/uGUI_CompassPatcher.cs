@@ -67,7 +67,6 @@
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                __result = true;
                 int biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
                 if (biomeChip > 0)
                 {
@@ -78,11 +77,13 @@
                     if (curBiome != _cachedBiome)
                     {
                         _cachedBiomeFriendly = biomeList[curBiome];
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
+                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
+                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
+                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
                     }
                 }
+                __result = true;
+                ErrorMessage.AddMessage(Main.modName + " __result: " + __result.ToString());
                 return false;
             }
             uGUI_CameraDrone main3 = uGUI_CameraDrone.main;
