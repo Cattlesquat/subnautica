@@ -9,7 +9,7 @@ namespace EnzymeChargedBattery
     using System;
     using System.Reflection;
     using Harmony;
-    using EnzymeChargedBattery.Fabricator;
+    using Items;
     using Common;
 
     public static class Main

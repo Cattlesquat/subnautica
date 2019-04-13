@@ -9,7 +9,7 @@
     using Harmony;
     using SMLHelper.V2.Handlers;
     using UnityEngine;
-    using Fabricator;
+    using Items;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -71,19 +71,17 @@
                 if (biomeChip > 0 && main.GetBiomeString() != null)
                 {
                     string curBiome = main.GetBiomeString();
-                    int index = curBiome.IndexOf('_');
-                    if (index > 0)
-                    {
-                        curBiome = curBiome.Substring(0, index);
-                    }
-                    curBiome = curBiome.ToLower();
                     if (curBiome != _cachedBiome)
                     {
-                        ErrorMessage.AddMessage(Main.modName + " Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
                         _cachedBiome = curBiome;
-                        ErrorMessage.AddMessage(Main.modName + " Value of _cachedBiome is currently: " + _cachedBiome);
-                        _cachedBiomeFriendly = biomeList[curBiome];
-                        ErrorMessage.AddMessage(Main.modName + " " + _cachedBiomeFriendly);
+                        foreach (var biome in biomeList)
+                        {
+                            if (curBiome.ToLower().Contains(biomeList.Keys))
+                            {
+                                _cachedBiomeFriendly = biome.Value;
+                                ErrorMessage.AddMessage(_cachedBiomeFriendly);
+                            }
+                        }
                     }
                 }
                 __result = true;
@@ -108,25 +106,26 @@
 
         private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
         {
-            { "safeshallows", "Safe Shallows" },
-            { "kelp", "Kelp Forest" },
-            { "grassyplateaus", "Grassy Plateaus" },
+            { "safe", "Safe Shallows" },
+            { "kelpforest", "Kelp Forest" },
+            { "grassy", "Grassy Plateaus" },
             { "mushroomforest", "Mushroom Forest" },
             { "jellyshroomcaves", "Jellyshroom Caves" },
-            { "sparsereef", "Sparse Reef" },
-            { "floatingisland" , "Floating Island" },
-            { "crashzone" , "Crash Zone" },
+            { "sparse", "Sparse Reef" },
             { "underwaterislands" , "Underwater Islands" },
-            { "seatreaderpath" , "Sea Treader's Path" },
+            { "bloodkelp" , "Blood Kelp Forest" },
+            { "dunes" , "Sand Dunes" },
+            { "crashzone" , "Crash Zone" },
             { "grandreef" , "Grand Reef" },
             { "deepgrandreef" , "Deep Grand Reef" },
             { "mountains" , "Mountains" },
-            { "dunes" , "Dunes" },
             { "lostriver" , "Lost River" },
-            { "cragfield" , "Crag Field" },
-            { "ilzcorridor" , "Inactive Lava Zone Corridor" },
-            { "kooshzone" , "Bulb Zone" },
-            { "bloodkelp" , "Blood Kelp Zone" },
+            { "ilz" , "Inactive Lava Zone" },
+            { "lava" , "Lava Lakes" },
+            { "floatingisland" , "Floating Island" },
+            { "koosh" , "Bulb Zone" },
+            { "seatreader" , "Sea Treader's Path" },
+            { "crag" , "Crag Field" },
 
             { "shipspecial" , "Aurora" },
             { "shipinterior", "Aurora" },

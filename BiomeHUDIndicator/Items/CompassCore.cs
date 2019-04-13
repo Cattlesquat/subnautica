@@ -1,4 +1,4 @@
-﻿namespace BiomeHUDIndicator.Fabricator
+﻿namespace BiomeHUDIndicator.Items
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@
 
         public static TechType BiomeChipID { get; protected set; }
 
-        internal static void PatchIt()
+        internal static void PatchCompasses()
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "HUD Chip Upgrades", tabIcon);
@@ -28,17 +28,14 @@
             BiomeChip.Patch();
         }
 
-        protected abstract TechType BaseType { get; } // Gonna use base type Compass
-        protected abstract EquipmentType Chip { get; } // Should ALWAYS be Chip, I think
+        protected abstract TechType BaseType { get; }
+        protected abstract EquipmentType Chip { get; }
 
-        // Let's get us some hot constructor action
         protected CompassCore(string classID, string friendlyName, string description) : base(classID, friendlyName, description)
         {
-            // Invoke when done
             OnFinishedPatching += SetEquipmentType;
         }
 
-        // This will be built at the workbench, and also set where in the PDA/etc it shows up.
         public override CraftTree.Type FabricatorType { get; } = CraftTree.Type.Workbench;
         public override TechGroup GroupForPDA { get; } = TechGroup.Workbench;
         public override TechCategory CategoryForPDA { get; } = TechCategory.Workbench;

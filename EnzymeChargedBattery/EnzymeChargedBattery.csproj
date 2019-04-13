@@ -60,9 +60,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fabricator\EnzymeBattery.cs" />
-    <Compile Include="Fabricator\EnzymeBatteryCore.cs" />
-    <Compile Include="Fabricator\EnzymePowerCell.cs" />
+    <Compile Include="Items\EnzymeBattery.cs" />
+    <Compile Include="Items\EnzymeBatteryCore.cs" />
+    <Compile Include="Items\EnzymePowerCell.cs" />
     <Compile Include="Patchers\ChargerPatch.cs" />
     <Compile Include="Patchers\EnergyMixinPatch.cs" />
     <Compile Include="Main.cs" />

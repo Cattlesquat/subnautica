@@ -1,4 +1,4 @@
-﻿namespace BiomeHUDIndicator.Fabricator
+﻿namespace BiomeHUDIndicator.Items
 {
     using System;
     using System.Collections.Generic;

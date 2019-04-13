@@ -1,4 +1,4 @@
-﻿namespace EnzymeChargedBattery.Fabricator
+﻿namespace EnzymeChargedBattery.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;

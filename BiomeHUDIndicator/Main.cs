@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using Harmony;
-    using BiomeHUDIndicator.Fabricator;
+    using Items;
     using UnityEngine;
     using Common;
 
@@ -23,7 +23,7 @@
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetsBundle);
                 biomeHUD = ab.LoadAsset("Canvas") as GameObject;
-                CompassCore.PatchIt();
+                CompassCore.PatchCompasses();
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 SeraLogger.PatchComplete(modName);

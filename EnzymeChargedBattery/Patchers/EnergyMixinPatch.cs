@@ -1,7 +1,7 @@
 ﻿namespace EnzymeChargedBattery.Patchers
 {
     using System.Collections.Generic;
-    using Fabricator;
+    using Items;
     using Harmony;
 
     [HarmonyPatch(typeof(EnergyMixin))]

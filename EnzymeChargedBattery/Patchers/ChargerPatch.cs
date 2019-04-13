@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Reflection;
     using Harmony;
-    using Fabricator;
+    using Items;
 
     [HarmonyPatch(typeof(BatteryCharger))]
     [HarmonyPatch("Start")]
