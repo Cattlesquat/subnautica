@@ -111,7 +111,7 @@
             if (args.Id != crushEnablerName)
                 return;
             crushEnabled = args.Value;
-            NitroBreathPatcher.EnableCrush(crushEnabled);
+            BreathPatcher.EnableCrush(crushEnabled);
             SaveSettings();
         }
 
@@ -120,7 +120,7 @@
             if (args.Id != crushSliderName)
                 return;
             crushDepth = args.Value;
-            NitroBreathPatcher.AdjustCrush(crushDepth);
+            BreathPatcher.AdjustCrush(crushDepth);
             SaveSettings();
         }
 

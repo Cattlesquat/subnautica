@@ -74,7 +74,7 @@
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("OnTookBreath")]
-    internal class NitroBreathPatcher
+    internal class BreathPatcher
     {
         private static bool crushEnabled = false;
 
@@ -95,11 +95,11 @@
                 if (crushEnabled && reinforcedSuit < 1 && Player.main.motorMode == Player.MotorMode.Dive)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
-                    if (depthOf > crushDepth)
+                    if (depthOf > crushDepth && UnityEngine.Random.value < 0.5f)
                     {
                         LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                         ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
-                        component.TakeDamage(UnityEngine.Random.value * (depthOf / 100f), default, DamageType.Normal, null);
+                        component.TakeDamage(UnityEngine.Random.value * (depthOf - crushDepth) / 50f, default, DamageType.Normal, null);
                     }
                 }
             }
@@ -119,7 +119,7 @@
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Start")]
-    internal class NitroLevPatcher
+    internal class NitroStartPatcher
     {
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
@@ -129,8 +129,8 @@
             __instance.safeNitrogenDepth = 0f;
             NitroDamagePatcher.Lethality(isEnabled.nitroLethal);
             NitroDamagePatcher.AdjustScaler(isEnabled.damageScaler);
-            NitroBreathPatcher.EnableCrush(isEnabled.crushEnabled);
-            NitroBreathPatcher.AdjustCrush(isEnabled.crushDepth);
+            BreathPatcher.EnableCrush(isEnabled.crushEnabled);
+            BreathPatcher.AdjustCrush(isEnabled.crushDepth);
         }
     }
 

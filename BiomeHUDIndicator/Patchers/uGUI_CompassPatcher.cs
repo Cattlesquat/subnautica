@@ -68,19 +68,22 @@
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
                 int biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
-                if (biomeChip > 0)
+                if (biomeChip > 0 && main.GetBiomeString() != null)
                 {
                     string curBiome = main.GetBiomeString();
                     int index = curBiome.IndexOf('_');
-                    curBiome = curBiome.Substring(0, index);
+                    if (index > 0)
+                    {
+                        curBiome = curBiome.Substring(0, index);
+                    }
                     curBiome = curBiome.ToLower();
                     if (curBiome != _cachedBiome)
                     {
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
-                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
+                        ErrorMessage.AddMessage(Main.modName + " Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
                         _cachedBiome = curBiome;
+                        ErrorMessage.AddMessage(Main.modName + " Value of _cachedBiome is currently: " + _cachedBiome);
                         _cachedBiomeFriendly = biomeList[curBiome];
+                        ErrorMessage.AddMessage(Main.modName + " " + _cachedBiomeFriendly);
                     }
                 }
                 __result = true;
@@ -111,11 +114,7 @@
             { "mushroomforest", "Mushroom Forest" },
             { "jellyshroomcaves", "Jellyshroom Caves" },
             { "sparsereef", "Sparse Reef" },
-            { "floatingislands" , "Floating Island" },
-            { "shipspecial" , "Aurora" },
-            { "shipinterior", "Aurora" },
-            { "crashhome" , "Aurora" },
-            { "aurora" , "Aurora" },
+            { "floatingisland" , "Floating Island" },
             { "crashzone" , "Crash Zone" },
             { "underwaterislands" , "Underwater Islands" },
             { "seatreaderpath" , "Sea Treader's Path" },
@@ -124,15 +123,21 @@
             { "mountains" , "Mountains" },
             { "dunes" , "Dunes" },
             { "lostriver" , "Lost River" },
+            { "cragfield" , "Crag Field" },
+            { "ilzcorridor" , "Inactive Lava Zone Corridor" },
+            { "kooshzone" , "Bulb Zone" },
+            { "bloodkelp" , "Blood Kelp Zone" },
+
+            { "shipspecial" , "Aurora" },
+            { "shipinterior", "Aurora" },
+            { "crashhome" , "Aurora" },
+            { "aurora" , "Aurora" },
             { "lostriverjunction" , "Lost River Junction" },
             { "lostrivercorridor" , "Lost River Corridor" },
             { "skeletoncave" , "Skeleton Cave" },
             { "treecove" , "Tree Cove" },
             { "ghosttree" , "Ghost Tree" },
-            { "cragfield" , "Crag Field" },
             { "bonesfield" , "Bone Field" },
-            { "kooshzone" , "Bulb Zone" },
-            { "bloodkelp" , "Blood Kelp Zone" },
             { "inactivelavazone" , "Inactive Lava Zone" },
             { "activelavazone" , "Active Lava Zone" },
             { "mesas" , "Mesas" },
