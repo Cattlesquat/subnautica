@@ -24,7 +24,7 @@
             {
                 var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Fabricator, BatCraftTab, "Batteries and Power Cells", tabIcon, ResCraftTab, ElecCraftTab);
-                SeraLogger.Generic("[EnzymeChargedBattery] MidGameBatteries not installed, creating new crafting tab");
+                SeraLogger.Generic(Main.modName + " MidGameBatteries not installed, creating new crafting tab");
 
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.Battery.ToString());
                 CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, ResCraftTab, ElecCraftTab, TechType.PrecursorIonBattery.ToString());
@@ -39,7 +39,7 @@
             else
             {
                 // Skip creating the tab
-                SeraLogger.Generic("[EnzymeChargedBattery] MidGameBatteries installed, adding to crafting tab");
+                SeraLogger.Generic(Main.modName + " MidGameBatteries installed, adding to crafting tab");
             }
             var enzBatt = new EnzymeBattery(1000f);
             enzBatt.Patch();
@@ -80,7 +80,6 @@
 
         private void SetEquipmentType()
         {
-            // Make sure its added to the chargers
             CraftDataHandler.SetEquipmentType(this.TechType, this.ChargerType);
         }
     }

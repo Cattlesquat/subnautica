@@ -14,9 +14,10 @@ namespace EnzymeChargedBattery
 
     public static class Main
     {
+        public const string modName = "[EnzymeChargedBattery]";
+
         public static void Patch()
         {
-            string modName = "[EnzymeChargedBattery]";
             SeraLogger.PatchStart(modName, "1.0.2");
             try
             {

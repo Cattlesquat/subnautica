@@ -11,9 +11,10 @@
 
     public static class Main
     {
+        public const string modName = "[NoObservatoryMusic]";
+
         public static void Patch()
         {
-            string modName = "[NoObservatoryMusic]";
             SeraLogger.PatchStart(modName, "1.0.1");
             try
             {
@@ -31,7 +32,6 @@
 
     internal class ObservatoryOptions : ModOptions
     {
-        private const string modName = "[NoObservatoryMusic]";
         private const string Config = "./QMods/NoObservatoryMusic/Config.xml";
 
         private const string nomEnablerName = "noobservatorymusicenabler";
@@ -77,17 +77,17 @@
         {
             if (!File.Exists(Config))
             {
-                SeraLogger.ConfigNotFound(modName);
+                SeraLogger.ConfigNotFound(Main.modName);
                 SaveSettings();
             }
             try
             {
                 biomeDisabled = (bool) ConfigMaker.ReadData(Config, typeof(bool));
-                SeraLogger.ConfigReadSuccess(modName);
+                SeraLogger.ConfigReadSuccess(Main.modName);
             }
             catch (Exception ex)
             {
-                SeraLogger.ConfigReadError(modName, ex);
+                SeraLogger.ConfigReadError(Main.modName, ex);
                 biomeDisabled = true;
                 SaveSettings();
             }

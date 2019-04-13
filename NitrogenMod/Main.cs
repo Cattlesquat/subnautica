@@ -6,25 +6,26 @@
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Options;
     using System.IO;
-    using System.Xml.Serialization;
     using Patchers;
     using Common;
 
     public class Main
     {
+        public const string modName = "[NitrogenMod]";
+
         public static void Patch()
         {
-            UnityEngine.Debug.Log("[NitrogenMod] Start patching. Version: 1.0.0.0");
+            SeraLogger.PatchStart(modName, "1.0.0");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
-                UnityEngine.Debug.Log("[NitrogenMod] Patching complete.");
+                SeraLogger.PatchComplete(modName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                UnityEngine.Debug.Log($"[NitrogenMod] ERROR: {e.ToString()}");
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
     }
