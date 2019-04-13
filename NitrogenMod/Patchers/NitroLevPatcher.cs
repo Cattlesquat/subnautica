@@ -49,7 +49,6 @@
                 {
                     num = Mathf.Clamp(2f - __instance.GetComponent<Rigidbody>().velocity.magnitude, 0f, 2f) * 1f;
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, __instance.kDissipateScalar * num * Time.deltaTime);
-                    //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
                 else if (Player.main.motorMode != Player.MotorMode.Dive && __instance.safeNitrogenDepth > 0f)
                 {
@@ -57,7 +56,6 @@
                     if (atmosPressure < 0f)
                         atmosPressure = 0f;
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, atmosPressure, __instance.kDissipateScalar * 2f * Time.deltaTime);
-                    //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
             }
             return false;
@@ -93,7 +91,6 @@
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
-                    //ErrorMessage.AddMessage("safeNitrogenDepth: " + __instance.safeNitrogenDepth.ToString());
                 }
                 if (crushEnabled && reinforcedSuit < 1 && Player.main.motorMode == Player.MotorMode.Dive)
                 {

@@ -83,7 +83,7 @@
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.Log("[NitrogenMod] Error executing Nitrogen command:" + ex.ToString());
+                SeraLogger.GenericError(Main.modName, ex);
             }
             SaveSettings();
         }

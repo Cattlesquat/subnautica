@@ -18,7 +18,7 @@
         }
 
         /*
-         * ConfigMaker related errors
+         * File I/O related errors
          */
         public static void ConfigNotFound(string modName)
         {
