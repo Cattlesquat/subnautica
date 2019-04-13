@@ -2,7 +2,7 @@
   "Id": "TimeCapsuleLogger",
   "DisplayName": "Time Capsule Logger",
   "Author": "SeraphimRisen",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Enable": true,
   "AssemblyName": "TimeCapsuleLogger.dll",
   "EntryMethod": "TimeCapsuleLogger.Main.Patch",

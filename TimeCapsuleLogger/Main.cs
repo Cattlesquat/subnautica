@@ -4,7 +4,6 @@
     using Common;
     using System.Reflection;
     using Harmony;
-    using UnityEngine;
 
     // Just for the purpose of logging time capsule code
     public class Main
@@ -12,17 +11,16 @@
         public static void Patch()
         {
             string modName = "[TimeCapsuleLogger]";
-            SeraLogger.PatchStart(modName, "1.0.0");
-            UnityEngine.Debug.Log("[TimeCapsuleLogger] Start patching. Version: 1.0.0.0");
+            SeraLogger.PatchStart(modName, "1.0.1");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.timecapsulelogger.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                UnityEngine.Debug.Log("[TimeCapsuleLogger] Patching complete.");
+                SeraLogger.PatchComplete(modName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                UnityEngine.Debug.Log($"[TimeCapsuleLogger] ERROR: {e.ToString()}");
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
     }
