@@ -76,14 +76,14 @@
                     curBiome = curBiome.ToLower();
                     if (curBiome != _cachedBiome)
                     {
+                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
+                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
+                        ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
+                        _cachedBiome = curBiome;
                         _cachedBiomeFriendly = biomeList[curBiome];
-                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiome is currently: " + _cachedBiome);
-                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of curBiome is currently: " + curBiome); // Remove after verifying it updates
-                        //ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
                     }
                 }
                 __result = true;
-                ErrorMessage.AddMessage(Main.modName + " __result: " + __result.ToString());
                 return false;
             }
             uGUI_CameraDrone main3 = uGUI_CameraDrone.main;
@@ -123,6 +123,7 @@
             { "deepgrandreef" , "Deep Grand Reef" },
             { "mountains" , "Mountains" },
             { "dunes" , "Dunes" },
+            { "lostriver" , "Lost River" },
             { "lostriverjunction" , "Lost River Junction" },
             { "lostrivercorridor" , "Lost River Corridor" },
             { "skeletoncave" , "Skeleton Cave" },
