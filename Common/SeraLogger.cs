@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Logger
+    public class SeraLogger
     {
         public static void ConfigNotFound(string modName)
         {

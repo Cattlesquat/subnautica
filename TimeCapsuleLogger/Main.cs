@@ -11,6 +11,8 @@
     {
         public static void Patch()
         {
+            string modName = "[TimeCapsuleLogger]";
+            SeraLogger.PatchStart(modName, "1.0.0");
             UnityEngine.Debug.Log("[TimeCapsuleLogger] Start patching. Version: 1.0.0.0");
             try
             {

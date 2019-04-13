@@ -20,7 +20,7 @@
             }
             catch (Exception ex)
             {
-                Logger.SeralizerFailed(file, ex);
+                SeraLogger.SeralizerFailed(file, ex);
             }
         }
 
@@ -34,7 +34,7 @@
             }
             catch (Exception ex)
             {
-                Logger.SeralizerFailed(file, ex);
+                SeraLogger.SeralizerFailed(file, ex);
                 return null;
             }
         }

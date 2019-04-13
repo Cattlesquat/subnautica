@@ -14,17 +14,17 @@
         public static void Patch()
         {
             string modName = "[NoObservatoryMusic]";
-            Logger.PatchStart(modName, "1.0.1");
+            SeraLogger.PatchStart(modName, "1.0.1");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.noobservatorymusic.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 OptionsPanelHandler.RegisterModOptions(new ObservatoryOptions());
-                Logger.PatchComplete(modName);
+                SeraLogger.PatchComplete(modName);
             }
             catch (Exception ex)
             {
-                Logger.PatchFailed(modName, ex);
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
     }
@@ -77,17 +77,17 @@
         {
             if (!File.Exists(Config))
             {
-                Logger.ConfigNotFound(modName);
+                SeraLogger.ConfigNotFound(modName);
                 SaveSettings();
             }
             try
             {
                 biomeDisabled = (bool) ConfigMaker.ReadData(Config, typeof(bool));
-                Logger.ConfigReadSuccess(modName);
+                SeraLogger.ConfigReadSuccess(modName);
             }
             catch (Exception ex)
             {
-                Logger.ConfigReadError(modName, ex);
+                SeraLogger.ConfigReadError(modName, ex);
                 biomeDisabled = true;
                 SaveSettings();
             }
