@@ -15,47 +15,6 @@
     [HarmonyPatch("IsCompassEnabled")]
     internal class DepthCompass_IsCompassEnabledPatcher
     {
-        private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
-        {
-            { "safeshallows", "Safe Shallows" },
-            { "kelp", "Kelp Forest" },
-            { "grassyplateaus", "Grassy Plateaus" },
-            { "mushroomforest", "Mushroom Forest" },
-            { "jellyshroomcaves", "Jellyshroom Caves" },
-            { "sparsereef", "Sparse Reef" },
-            { "floatingislands" , "Floating Island" },
-            { "shipspecial" , "Aurora" },
-            { "shipinterior", "Aurora" },
-            { "crashhome" , "Aurora" },
-            { "aurora" , "Aurora" },
-            { "crashzone" , "Crash Zone" },
-            { "underwaterislands" , "Underwater Islands" },
-            { "seatreaderpath" , "Sea Treader's Path" },
-            { "grandreef" , "Grand Reef" },
-            { "deepgrandreef" , "Deep Grand Reef" },
-            { "mountains" , "Mountains" },
-            { "dunes" , "Dunes" },
-            { "lostriverjunction" , "Lost River Junction" },
-            { "lostrivercorridor" , "Lost River Corridor" },
-            { "skeletoncave" , "Skeleton Cave" },
-            { "treecove" , "Tree Cove" },
-            { "ghosttree" , "Ghost Tree" },
-            { "cragfield" , "Crag Field" },
-            { "bonesfield" , "Bone Field" },
-            { "kooshzone" , "Bulb Zone" },
-            { "bloodkelp" , "Blood Kelp Zone" },
-            { "inactivelavazone" , "Inactive Lava Zone" },
-            { "activelavazone" , "Active Lava Zone" },
-            { "mesas" , "Mesas" },
-            { "prisonaquarium" , "Primary Containment Facility" },
-            { "observatory" , "Observatory" },
-            { "generatorroom" , "Generator Room" },
-            { "crashedship" , "Aurora" },
-            { "precursorgun" , "Precursor Facility" },
-            { "prison" , "Primary Containment Facility" },
-            { "unassigned" , "Unassigned" },
-        };
-
         private static string _cachedBiome = "unassigned";
         private static string _cachedBiomeFriendly = "Unassigned";
 
@@ -108,8 +67,8 @@
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                int biomeChip = 0;
-                biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
+                __result = true;
+                int biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
                 if (biomeChip > 0)
                 {
                     string curBiome = main.GetBiomeString();
@@ -124,7 +83,6 @@
                         ErrorMessage.AddMessage("[BiomeHUDIndicator] Value of _cachedBiomeFriendly is currently: " + _cachedBiomeFriendly); // Remove after verifying it updates
                     }
                 }
-                __result = true;
                 return false;
             }
             uGUI_CameraDrone main3 = uGUI_CameraDrone.main;
@@ -135,15 +93,54 @@
         // This checks and returns whether or not the compass and/or biome chip are present.
         private static bool TechTypeCheck(Inventory inv)
         {
-            int compassID = 0;
-            int biomeChip = 0;
-            compassID = inv.equipment.GetCount(TechType.Compass);
-            biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
+            int compassID = inv.equipment.GetCount(TechType.Compass);
+            int biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
             if(compassID > 0 || biomeChip > 0)
             {
                 return true;
             }
             return false;
         }
+
+        private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
+        {
+            { "safeshallows", "Safe Shallows" },
+            { "kelp", "Kelp Forest" },
+            { "grassyplateaus", "Grassy Plateaus" },
+            { "mushroomforest", "Mushroom Forest" },
+            { "jellyshroomcaves", "Jellyshroom Caves" },
+            { "sparsereef", "Sparse Reef" },
+            { "floatingislands" , "Floating Island" },
+            { "shipspecial" , "Aurora" },
+            { "shipinterior", "Aurora" },
+            { "crashhome" , "Aurora" },
+            { "aurora" , "Aurora" },
+            { "crashzone" , "Crash Zone" },
+            { "underwaterislands" , "Underwater Islands" },
+            { "seatreaderpath" , "Sea Treader's Path" },
+            { "grandreef" , "Grand Reef" },
+            { "deepgrandreef" , "Deep Grand Reef" },
+            { "mountains" , "Mountains" },
+            { "dunes" , "Dunes" },
+            { "lostriverjunction" , "Lost River Junction" },
+            { "lostrivercorridor" , "Lost River Corridor" },
+            { "skeletoncave" , "Skeleton Cave" },
+            { "treecove" , "Tree Cove" },
+            { "ghosttree" , "Ghost Tree" },
+            { "cragfield" , "Crag Field" },
+            { "bonesfield" , "Bone Field" },
+            { "kooshzone" , "Bulb Zone" },
+            { "bloodkelp" , "Blood Kelp Zone" },
+            { "inactivelavazone" , "Inactive Lava Zone" },
+            { "activelavazone" , "Active Lava Zone" },
+            { "mesas" , "Mesas" },
+            { "prisonaquarium" , "Primary Containment Facility" },
+            { "observatory" , "Observatory" },
+            { "generatorroom" , "Generator Room" },
+            { "crashedship" , "Aurora" },
+            { "precursorgun" , "Precursor Facility" },
+            { "prison" , "Primary Containment Facility" },
+            { "unassigned" , "Unassigned" },
+        };
     }
 }

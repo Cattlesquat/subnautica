@@ -1,4 +1,4 @@
-﻿namespace NoObservatoryMusic
+﻿namespace NoObservatoryMusic.Patchers
 {
     using Harmony;
 
@@ -7,10 +7,12 @@
     [HarmonyPatch("IsPlayerInObservatory")]
     internal class InObservatoryPatcher
     {
+        public static bool disabled = true;
+
         [HarmonyPrefix] // We're attempting to cancel the entire method
         public static bool Prefix()
         {
-            return false;
+            return !disabled;
         }
     }
 
@@ -18,10 +20,12 @@
     [HarmonyPatch("OnTriggerEnter")]
     internal class OnEnterPatcher
     {
+        public static bool disabled = true;
+
         [HarmonyPrefix] // We're attempting to cancel the entire method
         public static bool Prefix()
         {
-            return false;
+            return !disabled;
         }
     }
 
@@ -29,10 +33,12 @@
     [HarmonyPatch("OnTriggerExit")]
     internal class OnExitPatcher
     {
+        public static bool disabled = true;
+
         [HarmonyPrefix] // We're attempting to cancel the entire method
         public static bool Prefix()
         {
-            return false;
+            return !disabled;
         }
     }
 

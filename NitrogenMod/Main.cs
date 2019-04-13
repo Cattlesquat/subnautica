@@ -19,8 +19,7 @@
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                NitrogenOptions data = new NitrogenOptions();
-                OptionsPanelHandler.RegisterModOptions(data);
+                OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
                 UnityEngine.Debug.Log("[NitrogenMod] Patching complete.");
             }
             catch (Exception e)
@@ -60,16 +59,7 @@
 
         internal void Initialize()
         {
-            try
-            {
-                ReadSettings();
-            }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.Log("[NitrogenMod] Error loading " + Config + ": " + ex.ToString());
-                UnityEngine.Debug.Log("[NitrogenMod] Creating default configuration.");
-                SaveSettings();
-            }
+            ReadSettings();
         }
 
         public override void BuildModOptions()
@@ -135,20 +125,19 @@
 
         private void SaveSettings()
         {
-            SaveData saveData = new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth);
-            ConfigMaker.WriteData(Config, saveData);
+            ConfigMaker.WriteData(Config, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth));
         }
 
         private void ReadSettings()
         {
             if (!File.Exists(Config))
             {
-                UnityEngine.Debug.Log("[NitrogenMod] Config file not found. Creating default value.");
+                Logger.ConfigNotFound("[NitrogenMod]");
                 SaveSettings();
             }
-            SaveData loadedData = (SaveData) ConfigMaker.ReadData(Config, typeof(SaveData));
             try
             {
+                SaveData loadedData = (SaveData)ConfigMaker.ReadData(Config, typeof(SaveData));
                 nitroEnabled = Boolean.Parse(loadedData.nitrogenEnabled);
                 nitroLethal = Boolean.Parse(loadedData.isLethal);
                 damageScaler = float.Parse(loadedData.damageScaler);
@@ -157,7 +146,7 @@
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.Log("[NitrogenMod] Error reading file. Setting defaults. Exception: " + ex.ToString());
+                Logger.ConfigReadError("[NitrogenMod]", ex);
                 nitroEnabled = true;
                 nitroLethal = true;
                 damageScaler = 1f;
