@@ -76,7 +76,7 @@
                         _cachedBiome = curBiome;
                         foreach (var biome in biomeList)
                         {
-                            if (curBiome.ToLower().Contains(biomeList.Keys))
+                            if (curBiome.ToLower().Contains(biome.Key))
                             {
                                 _cachedBiomeFriendly = biome.Value;
                                 ErrorMessage.AddMessage(_cachedBiomeFriendly);
