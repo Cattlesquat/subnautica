@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeCapsuleLogger", "TimeCa
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "Common\Common.shproj", "{1E24D9BB-68A8-4A6F-A11B-3BF28C80AE0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SNHabitatPlanner", "SNHabitatPlanner\SNHabitatPlanner.csproj", "{CA577C96-94C5-47E6-B91F-B345E9EEB415}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{1e24d9bb-68a8-4a6f-a11b-3bf28c80ae0f}*SharedItemsImports = 13
@@ -55,6 +57,10 @@ Global
 		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E5F297F-FA42-44F7-A325-A618B3B6052F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA577C96-94C5-47E6-B91F-B345E9EEB415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA577C96-94C5-47E6-B91F-B345E9EEB415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA577C96-94C5-47E6-B91F-B345E9EEB415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA577C96-94C5-47E6-B91F-B345E9EEB415}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -121,7 +121,7 @@
             { "mountains" , "Mountains" },
             { "lostriver" , "Lost River" },
             { "ilz" , "Inactive Lava Zone" },
-            { "lava" , "Lava Lakes" },
+            { "lava" , "Lava Lake" },
             { "floatingisland" , "Floating Island" },
             { "koosh" , "Bulb Zone" },
             { "seatreader" , "Sea Treader's Path" },
