@@ -72,10 +72,40 @@
         private int solarPanels = 0;
 
         private int thermalPlants = 0;
+        private void TPlantsMinus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (thermalPlants > 0)
+                thermalPlants--;
+        }
+        private void TPlantsPlus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (thermalPlants < 100)
+                thermalPlants++;
+        }
 
         private int fabricators = 0;
+        private void FabricatorsMinus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (fabricators > 0)
+                fabricators--;
+        }
+        private void FabricatorsPlus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (fabricators < 100)
+                fabricators++;
+        }
 
         private int powerTransmitters = 0;
+        private void PTransmittersMinus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (powerTransmitters > 0)
+                powerTransmitters--;
+        }
+        private void PTransmittersPlus_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (powerTransmitters < 100)
+                powerTransmitters++;
+        }
 
         private int radios = 0;
         private void RadiosMinus_MouseUp(object sender, MouseButtonEventArgs e)

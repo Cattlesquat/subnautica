@@ -17,6 +17,7 @@
     {
         private static string _cachedBiome = "unassigned";
         private static string _cachedBiomeFriendly = "Unassigned";
+        private static float updateTimer = 0f;
 
         [HarmonyPrefix]
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
@@ -68,18 +69,22 @@
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
                 int biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
-                if (biomeChip > 0 && main.GetBiomeString() != null)
+                if (Time.time > updateTimer + 3f || updateTimer == 0f)
                 {
-                    string curBiome = main.GetBiomeString();
-                    if (curBiome != _cachedBiome)
+                    updateTimer = Time.time;
+                    string curBiome = main.GetBiomeString().ToLower();
+                    if (biomeChip > 0 && curBiome != null)
                     {
-                        _cachedBiome = curBiome;
-                        foreach (var biome in biomeList)
+                        if (curBiome != _cachedBiome)
                         {
-                            if (curBiome.ToLower().Contains(biome.Key))
+                            _cachedBiome = curBiome;
+                            foreach (var biome in biomeList)
                             {
-                                _cachedBiomeFriendly = biome.Value;
-                                ErrorMessage.AddMessage(_cachedBiomeFriendly);
+                                if (curBiome.Contains(biome.Key))
+                                {
+                                    _cachedBiomeFriendly = biome.Value;
+                                    ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
+                                }
                             }
                         }
                     }
@@ -104,7 +109,7 @@
             return false;
         }
 
-        private static Dictionary<string, string> biomeList = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> biomeList = new Dictionary<string, string>()
         {
             { "safe", "Safe Shallows" },
             { "kelpforest", "Kelp Forest" },
@@ -117,7 +122,6 @@
             { "dunes" , "Sand Dunes" },
             { "crashzone" , "Crash Zone" },
             { "grandreef" , "Grand Reef" },
-            { "deepgrandreef" , "Deep Grand Reef" },
             { "mountains" , "Mountains" },
             { "lostriver" , "Lost River" },
             { "ilz" , "Inactive Lava Zone" },
@@ -126,27 +130,19 @@
             { "koosh" , "Bulb Zone" },
             { "seatreader" , "Sea Treader's Path" },
             { "crag" , "Crag Field" },
-
+            { "unassigned" , "Unassigned" },
+            { "void" , "Ecological Dead Zone" },
+            // Special-case biomes, may remove
+            { "precursor" , "Precursor Facility" },
+            { "prison" , "Primary Containment Facility" },
             { "shipspecial" , "Aurora" },
             { "shipinterior", "Aurora" },
             { "crashhome" , "Aurora" },
             { "aurora" , "Aurora" },
-            { "lostriverjunction" , "Lost River Junction" },
-            { "lostrivercorridor" , "Lost River Corridor" },
-            { "skeletoncave" , "Skeleton Cave" },
-            { "treecove" , "Tree Cove" },
-            { "ghosttree" , "Ghost Tree" },
-            { "bonesfield" , "Bone Field" },
-            { "inactivelavazone" , "Inactive Lava Zone" },
-            { "activelavazone" , "Active Lava Zone" },
             { "mesas" , "Mesas" },
-            { "prisonaquarium" , "Primary Containment Facility" },
             { "observatory" , "Observatory" },
             { "generatorroom" , "Generator Room" },
             { "crashedship" , "Aurora" },
-            { "precursorgun" , "Precursor Facility" },
-            { "prison" , "Primary Containment Facility" },
-            { "unassigned" , "Unassigned" },
         };
     }
 }
