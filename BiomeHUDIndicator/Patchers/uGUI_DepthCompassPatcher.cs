@@ -10,6 +10,7 @@
     using SMLHelper.V2.Handlers;
     using UnityEngine;
     using Items;
+    using Common;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -17,7 +18,10 @@
     {
         private static string _cachedBiome = "unassigned";
         private static string _cachedBiomeFriendly = "Unassigned";
+
         private static float updateTimer = 0f;
+
+        private static bool addedComponent = false;
 
         [HarmonyPrefix]
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
@@ -68,26 +72,10 @@
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                int biomeChip = main2.equipment.GetCount(CompassCore.BiomeChipID);
-                if (Time.time > updateTimer + 3f || updateTimer == 0f)
+                if (Time.time >= updateTimer + 5f || updateTimer == 0f)
                 {
+                    BiomeCheck();
                     updateTimer = Time.time;
-                    string curBiome = main.GetBiomeString().ToLower();
-                    if (biomeChip > 0 && curBiome != null)
-                    {
-                        if (curBiome != _cachedBiome)
-                        {
-                            _cachedBiome = curBiome;
-                            foreach (var biome in biomeList)
-                            {
-                                if (curBiome.Contains(biome.Key))
-                                {
-                                    _cachedBiomeFriendly = biome.Value;
-                                    ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
-                                }
-                            }
-                        }
-                    }
                 }
                 __result = true;
                 return false;
@@ -97,7 +85,6 @@
             return false;
         }
 
-        // This checks and returns whether or not the compass and/or biome chip are present.
         private static bool TechTypeCheck(Inventory inv)
         {
             int compassID = inv.equipment.GetCount(TechType.Compass);
@@ -109,6 +96,45 @@
             return false;
         }
 
+        private static void BiomeCheck()
+        {
+            if (!addedComponent)
+            {
+                Player.main.gameObject.AddComponent<BiomeDisplay>();
+                addedComponent = true;
+            }
+            string curBiome = Player.main.GetBiomeString().ToLower();
+            int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);
+            if (biomeChip > 0 && curBiome != null)
+            {
+                int index = curBiome.IndexOf('_');
+                if (index > 0)
+                {
+                    curBiome = curBiome.Substring(0, index);
+                }
+                if (curBiome != _cachedBiome)
+                {
+                    _cachedBiome = curBiome;
+                    foreach (var biome in biomeList)
+                    {
+                        if (curBiome.Contains(biome.Key))
+                        {
+                            _cachedBiomeFriendly = biome.Value;
+                            ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
+                            try
+                            {
+                                BiomeDisplay.DisplayBiome(_cachedBiomeFriendly);
+                            }
+                            catch (Exception ex)
+                            {
+                                SeraLogger.GenericError(Main.modName, ex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private static readonly Dictionary<string, string> biomeList = new Dictionary<string, string>()
         {
             { "safe", "Safe Shallows" },
@@ -118,7 +144,7 @@
             { "jellyshroomcaves", "Jellyshroom Caves" },
             { "sparse", "Sparse Reef" },
             { "underwaterislands" , "Underwater Islands" },
-            { "bloodkelp" , "Blood Kelp Forest" },
+            { "bloodkelp" , "Blood Kelp Zone" },
             { "dunes" , "Sand Dunes" },
             { "crashzone" , "Crash Zone" },
             { "grandreef" , "Grand Reef" },

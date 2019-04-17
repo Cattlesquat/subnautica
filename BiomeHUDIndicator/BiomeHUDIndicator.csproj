@@ -41,8 +41,16 @@
       <HintPath>E:\dibbl\Documents\My Games\Subnautica\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="iTween">
+      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\iTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SMLHelper">
@@ -67,7 +75,8 @@
   <ItemGroup>
     <Compile Include="Items\BiomeHUDIndicator.cs" />
     <Compile Include="Items\CompassCore.cs" />
-    <Compile Include="Patchers\uGUI_CompassPatcher.cs" />
+    <Compile Include="Patchers\BiomeDisplay.cs" />
+    <Compile Include="Patchers\uGUI_DepthCompassPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
