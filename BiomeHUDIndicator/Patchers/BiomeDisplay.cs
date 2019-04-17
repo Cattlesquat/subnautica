@@ -11,7 +11,9 @@
 
     class BiomeDisplay : MonoBehaviour
     {
-        private static BiomeDisplay main;
+        public static GameObject biomeHUD { private set; get; }
+
+        private static BiomeDisplay main;#
 
         [AssertNotNull] public Text biomeMessage;
         [AssertNotNull] public RectTransform biomeCanvas;
@@ -34,9 +36,10 @@
 
         private void Awake()
         {
-            Utils.Assert(BiomeDisplay.main == null, "see log", null);
-            BiomeDisplay.main = this;
-            SeraLogger.Message(Main.modName, "BiomeDisplay.Awake() called.");
+            //Utils.Assert(BiomeDisplay.main == null, "see log", null);
+            biomeDisplay = Main.biomeHUD;
+            //BiomeDisplay.main = this;
+            //SeraLogger.Message(Main.modName, "BiomeDisplay.Awake() called.");
         }
 
         private void Update()
@@ -54,9 +57,16 @@
 
         public static void DisplayBiome(string message)
         {
-            if (BiomeDisplay.main != null)
+            try
             {
-                BiomeDisplay.main._AddMessage(message);
+                if (BiomeDisplay.main != null)
+                {
+                    BiomeDisplay.main._AddMessage(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
             }
         }
 
@@ -65,15 +75,20 @@
         {
             if (string.IsNullOrEmpty(messageText))
             {
+                SeraLogger.Message(Main.modName, "messageText is null");
                 return;
             }
             BiomeDisplay._BiomeMessage existingMessage = this.GetExistingMessage(messageText);
+            //SeraLogger.Message(Main.modName, "Sucessfully got existing message.");
             if (existingMessage == null)
             {
+                SeraLogger.Message(Main.modName, "messageText: " + messageText);
                 Rect rect = this.biomeCanvas.rect;
                 Text entry = this.GetEntry();
+                SeraLogger.Message(Main.modName, "entry successfully created");
                 GameObject gameObject = entry.gameObject;
                 gameObject.SetActive(true);
+                SeraLogger.Message(Main.modName, "gameObject is now active");
                 RectTransform rectTransform = entry.rectTransform;
                 entry.text = messageText;
                 rectTransform.localPosition = new Vector3(rect.x + this.offset.x, -rect.y + this.GetTargetHeight(-1), 1f);

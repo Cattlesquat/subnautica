@@ -1,11 +1,7 @@
 ﻿namespace BiomeHUDIndicator.Items
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using SMLHelper.V2.Crafting;
-    using UnityEngine;
 
     class BiomeHUDIndicator : CompassCore
     {

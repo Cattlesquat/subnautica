@@ -1,16 +1,9 @@
 ﻿namespace BiomeHUDIndicator.Patchers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using System.Linq;
-    using System.Text;
     using Harmony;
-    using SMLHelper.V2.Handlers;
     using UnityEngine;
     using Items;
-    using Common;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -98,11 +91,11 @@
 
         private static void BiomeCheck()
         {
-            if (!addedComponent)
-            {
-                Player.main.gameObject.AddComponent<BiomeDisplay>();
-                addedComponent = true;
-            }
+            //if (!addedComponent)
+            //{
+            //    uGUI.main.gameObject.AddComponent<BiomeDisplay>();
+            //    addedComponent = true;
+            //}
             string curBiome = Player.main.GetBiomeString().ToLower();
             int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);
             if (biomeChip > 0 && curBiome != null)
@@ -121,14 +114,7 @@
                         {
                             _cachedBiomeFriendly = biome.Value;
                             ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
-                            try
-                            {
-                                BiomeDisplay.DisplayBiome(_cachedBiomeFriendly);
-                            }
-                            catch (Exception ex)
-                            {
-                                SeraLogger.GenericError(Main.modName, ex);
-                            }
+                            //BiomeDisplay.AddMessage(_cachedBiomeFriendly);
                         }
                     }
                 }
