@@ -13,16 +13,16 @@
     {
         private static BiomeDisplay main;
 
-        public Text biomeMessage;
-        public RectTransform biomeCanvas;
+        [AssertNotNull] public Text biomeMessage;
+        [AssertNotNull] public RectTransform biomeCanvas;
         public Vector2 offset = new Vector2(140f, 140f);
         private float ySpacing = 10f;
         private float fadeTime = 1f;
         private float fadeDelay = 5f;
 
-        [AssertNotNull] private List<BiomeDisplay._BiomeMessage> messages = new List<BiomeDisplay._BiomeMessage>();
+        private List<BiomeDisplay._BiomeMessage> messages = new List<BiomeDisplay._BiomeMessage>();
         private const int poolChunkSize = 4;
-        [AssertNotNull] private List<Text> pool = new List<Text>();
+        private List<Text> pool = new List<Text>();
 
         private class _BiomeMessage
         {
