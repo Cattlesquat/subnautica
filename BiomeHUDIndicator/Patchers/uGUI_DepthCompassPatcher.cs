@@ -65,7 +65,7 @@
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                if (Time.time >= updateTimer + 5f || updateTimer == 0f)
+                if (Time.time >= updateTimer + 7.5f || updateTimer == 0f)
                 {
                     BiomeCheck();
                     updateTimer = Time.time;
@@ -91,11 +91,11 @@
 
         private static void BiomeCheck()
         {
-            //if (!addedComponent)
-            //{
-            //    uGUI.main.gameObject.AddComponent<BiomeDisplay>();
-            //    addedComponent = true;
-            //}
+            if (!addedComponent)
+            {
+                uGUI.main.gameObject.AddComponent<BiomeDisplay>();
+                addedComponent = true;
+            }
             string curBiome = Player.main.GetBiomeString().ToLower();
             int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);
             if (biomeChip > 0 && curBiome != null)
@@ -114,7 +114,7 @@
                         {
                             _cachedBiomeFriendly = biome.Value;
                             ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
-                            //BiomeDisplay.AddMessage(_cachedBiomeFriendly);
+                            BiomeDisplay.DisplayBiome(_cachedBiomeFriendly);
                         }
                     }
                 }
