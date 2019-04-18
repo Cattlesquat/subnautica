@@ -25,25 +25,21 @@
             {
                 SeraLogger.Message(modName, "AssetBundle path: " + assetBundle);
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
-                try
+                if (ab == null)
+                    SeraLogger.Message(modName, "(biomeCanvas) ab is NULL");
+                biomeHUD = ab.LoadAsset("biomeCanvas") as GameObject;
+                if (biomeHUD == null)
+                    SeraLogger.Message(modName, "(biomeCanvas) biomeHUD is NULL");
+                else
                 {
-                    biomeHUD = ab.LoadAsset("biomeCanvas") as GameObject;
-                    SeraLogger.Message(modName, "(biomeCanvas) BiomeHUD.GetComponent<Text>().text: " + biomeHUD.GetComponent<Text>().text);
-                }
-                catch (Exception ex)
-                {
-                    SeraLogger.GenericError(modName, ex);
-                    try
+                    biomeHUD = ab.LoadAsset("Canvas") as GameObject;
+                    if (biomeHUD == null)
                     {
-                        biomeHUD = ab.LoadAsset("Canvas") as GameObject;
-                        SeraLogger.Message(modName, "(Canvas) BiomeHUD.GetComponent<Text>().text: " + biomeHUD.GetComponent<Text>().text);
-                    }
-                    catch (Exception exc)
-                    {
-                        SeraLogger.GenericError(modName, exc);
+                        SeraLogger.Message(modName, "(Canvas) BiomeHUD is NULL");
                     }
                 }
-                
+                if (biomeHUD.GetComponent<Text>().text == null)
+                    SeraLogger.Message(modName, "biomeHUD.Text.text is NULL");
                 CompassCore.PatchCompasses();
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());

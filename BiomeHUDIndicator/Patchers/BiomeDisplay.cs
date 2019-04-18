@@ -18,45 +18,28 @@
 
         private void Awake()
         {
-            BiomeHUDObject = Main.biomeHUD;
+            GameObject BiomeHUDObject = Instantiate(Main.biomeHUD);
             SeraLogger.Message(Main.modName, "Awake()");
-            try
-            {
-                SeraLogger.Message(Main.modName, "BiomeHUDObject.GetComponent<Text>().text: " + BiomeHUDObject.GetComponent<Text>().text);
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
         }
 
         private void Update()
         {
-            if (Time.time >= t + 5f && BiomeHUDObject.activeSelf == true)
+            if (BiomeHUDObject != null)
             {
-                try
+                if (Time.time >= t + 5f && BiomeHUDObject.activeSelf == true)
                 {
                     BiomeHUDObject.SetActive(false);
                 }
-                catch (Exception ex)
-                {
-                    SeraLogger.GenericError(Main.modName, ex);
-                }
             }
-            
         }
 
         public static void DisplayBiome(string message)
         {
-            try
+            if (BiomeHUDObject != null)
             {
                 BiomeHUDObject.GetComponent<Text>().text = message;
                 t = Time.time;
                 BiomeHUDObject.SetActive(true);
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
             }
         }
     }
