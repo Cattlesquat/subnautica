@@ -4,6 +4,7 @@
     using Harmony;
     using UnityEngine;
     using Items;
+    using Common;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -95,6 +96,7 @@
             {
                 uGUI.main.gameObject.AddComponent<BiomeDisplay>();
                 addedComponent = true;
+                SeraLogger.Message(Main.modName, "Added BiomeDisplay component");
             }
             string curBiome = Player.main.GetBiomeString().ToLower();
             int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);

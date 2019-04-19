@@ -11,36 +11,69 @@
 
     class BiomeDisplay : MonoBehaviour
     {
-        public static GameObject BiomeHUDObject { private set; get; }
+        public GameObject BiomeHUDObject { private get; set; }
         private static float t = 0f;
+        private static BiomeDisplay main;
 
         
-
         private void Awake()
         {
-            GameObject BiomeHUDObject = Instantiate(Main.biomeHUD);
-            SeraLogger.Message(Main.modName, "Awake()");
+            SeraLogger.Message(Main.modName, "BiomeDisplay.Awake()");
+            GameObject BiomeHUDObject = Instantiate(Main.BiomeHUD);
+            SeraLogger.Message(Main.modName, "BiomeHUDObject instantiated");
+            BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
+            SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
+            t = Time.time;
+            BiomeDisplay.main = this;
         }
 
         private void Update()
         {
-            if (BiomeHUDObject != null)
+            SeraLogger.Message(Main.modName, "Time.time: " + Time.time.ToString());
+            SeraLogger.Message(Main.modName, "t: " + t.ToString());
+            try
             {
-                if (Time.time >= t + 5f && BiomeHUDObject.activeSelf == true)
-                {
-                    BiomeHUDObject.SetActive(false);
-                }
+                SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
             }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
+            }
+            if (Time.time >= t + 5f && BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled == true)
+            {
+                SeraLogger.Message(Main.modName, "Entered Time check in Update");
+                BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
+                SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
+            }
+        }
+
+        private void ChangeText(string message)
+        {
+            try
+            {
+                BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = message;
+            }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
+            }
+            try
+            {
+                BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = true;
+            }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
+            }
+            
+            t = Time.time;
+            
+            SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
         }
 
         public static void DisplayBiome(string message)
         {
-            if (BiomeHUDObject != null)
-            {
-                BiomeHUDObject.GetComponent<Text>().text = message;
-                t = Time.time;
-                BiomeHUDObject.SetActive(true);
-            }
+            BiomeDisplay.main.ChangeText(message);
         }
     }
 }

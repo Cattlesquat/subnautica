@@ -7,4 +7,5 @@
   "AssemblyName": "BiomeHUDIndicator.dll",
   "EntryMethod": "BiomeHUDIndicator.Main.Patch",
   "Dependencies": ["SMLHelper"],
+  "Game": "Subnautica",
 }

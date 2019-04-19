@@ -6,4 +6,5 @@
   "Enable": true,
   "AssemblyName": "NoObservatoryMusic.dll",
   "EntryMethod": "NoObservatoryMusic.Main.Patch",
+  "Game": "Subnautica",
 }

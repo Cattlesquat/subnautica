@@ -6,4 +6,5 @@
   "Enable": true,
   "AssemblyName": "NitrogenMod.dll",
   "EntryMethod": "NitrogenMod.Main.Patch",
+  "Game": "Subnautica",
 }
