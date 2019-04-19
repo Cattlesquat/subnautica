@@ -6,4 +6,5 @@
   "Enable": true,
   "AssemblyName": "TimeCapsuleLogger.dll",
   "EntryMethod": "TimeCapsuleLogger.Main.Patch",
+  "Game": "Subnautica",
 }

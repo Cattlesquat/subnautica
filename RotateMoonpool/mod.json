@@ -6,4 +6,5 @@
   "Enable": true,
   "AssemblyName": "RotateMoonpool.dll",
   "EntryMethod": "RotateMoonpool.Entry.Entry",
+  "Game": "Subnautica",
 }

@@ -10,61 +10,79 @@
 
     public class Main
     {
-        
-    }
+        public static string modName = "[BZSeamoth]";
 
-
-    /*private void OnConsoleCommand_spawn(NotificationCenter.Notification n)
-    {
-        if (n != null && n.data != null && n.data.Count > 0)
+        public static void Patch()
         {
-            string text = (string)n.data[0];
-            TechType techType;
-            if (UWE.Utils.TryParseEnum<TechType>(text, out techType))
+            SeraLogger.PatchStart(modName, "1.0.0");
+            try
             {
-                if (techType == TechType.Seamoth && n.data.Count <= 2)
-                {
-                    techType = TechType.SeaTruck;
-                }
-                if (CraftData.IsAllowed(techType))
-                {
-                    GameObject prefabForTechType = CraftData.GetPrefabForTechType(techType, true);
-                    if (prefabForTechType != null)
-                    {
-                        int num = 1;
-                        int num2;
-                        if (n.data.Count > 1 && int.TryParse((string)n.data[1], out num2))
-                        {
-                            num = num2;
-                        }
-                        float maxDist = 12f;
-                        if (n.data.Count > 2)
-                        {
-                            maxDist = float.Parse((string)n.data[2]);
-                        }
-                        Debug.LogFormat("Spawning {0} {1}", new object[]
-                        {
-                            num,
-                            techType
-                        });
-                        for (int i = 0; i < num; i++)
-                        {
-                            GameObject gameObject = global::Utils.CreatePrefab(prefabForTechType, maxDist, i > 0);
-                            LargeWorldEntity.Register(gameObject);
-                            CrafterLogic.NotifyCraftEnd(gameObject, techType);
-                            gameObject.SendMessage("StartConstruction", SendMessageOptions.DontRequireReceiver);
-                        }
-                    }
-                    else
-                    {
-                        ErrorMessage.AddDebug("Could not find prefab for TechType = " + techType);
-                    }
-                }
+                var harmony = HarmonyInstance.Create("seraphimrisen.bzseamoth.mod");
+                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                SeraLogger.PatchComplete(modName);
             }
-            else
+            catch (Exception ex)
             {
-                ErrorMessage.AddDebug("Could not parse " + text + " as TechType");
+                SeraLogger.PatchFailed(modName, ex);
             }
         }
+    }
+
+    [HarmonyPatch(typeof(SpawnConsoleCommand))]
+    [HarmonyPatch("OnConsoleCommand_spawn")]
+    internal class BZSeamothSpawnPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref SpawnConsoleCommand __instance, NotificationCenter.Notification n)
+        {
+            if (n != null && n.data != null && n.data.Count > 0)
+            {
+                string text = (string)n.data[0];
+                TechType techType;
+                if (UWE.Utils.TryParseEnum<TechType>(text, out techType))
+                {
+                    if (techType == TechType.Seamoth && n.data.Count <= 2)
+                    {
+                        GameObject prefabForTechType = CraftData.GetPrefabForTechType(techType, true);
+                        if (prefabForTechType != null)
+                        {
+                            int num = 1;
+                            int num2;
+                            if (n.data.Count > 1 && int.TryParse((string)n.data[1], out num2))
+                            {
+                                num = num2;
+                            }
+                            float maxDist = 12f;
+                            if (n.data.Count > 2)
+                            {
+                                maxDist = float.Parse((string)n.data[2]);
+                            }
+                            Debug.LogFormat("Spawning {0} {1}", new object[]
+                            {
+                            num,
+                            techType
+                            });
+                            for (int i = 0; i < num; i++)
+                            {
+                                GameObject gameObject = global::Utils.CreatePrefab(prefabForTechType, maxDist, i > 0);
+                                LargeWorldEntity.Register(gameObject);
+                                CrafterLogic.NotifyCraftEnd(gameObject, techType);
+                                gameObject.SendMessage("StartConstruction", SendMessageOptions.DontRequireReceiver);
+                            }
+                        }
+                        return false;
+                    }
+                }
+                else
+                {
+                    ErrorMessage.AddDebug("Could not parse " + text + " as TechType");
+                }
+            }
+            return true;
+        }
+    }
+    /*private void OnConsoleCommand_spawn(NotificationCenter.Notification n)
+    {
+        
     }*/
 }

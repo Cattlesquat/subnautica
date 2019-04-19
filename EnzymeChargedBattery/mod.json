@@ -7,5 +7,6 @@
   "AssemblyName": "EnzymeChargedBattery.dll",
   "EntryMethod": "EnzymeChargedBattery.Main.Patch",
   "Dependencies": ["SMLHelper"],
-  "LoadAfter": ["MidGameBatteries"]
+  "LoadAfter": ["MidGameBatteries"],
+  "Game": "Subnautica",
 }
