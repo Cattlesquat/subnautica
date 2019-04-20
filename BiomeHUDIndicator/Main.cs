@@ -25,10 +25,6 @@
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 BiomeHUD = ab.LoadAsset("biomeCanvas") as GameObject;
-                if (BiomeHUD == null)
-                    SeraLogger.Message(modName, "(biomeCanvas) biomeHUD is NULL");
-                if (BiomeHUD.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text == null)
-                    SeraLogger.Message(modName, "biomeHUD.Text.text is NULL");
                 CompassCore.PatchCompasses();
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());

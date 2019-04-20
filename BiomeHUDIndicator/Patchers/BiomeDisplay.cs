@@ -19,39 +19,14 @@
         private void Awake()
         {
             BiomeDisplay.main = this;
-            GameObject BiomeHUDObject = Main.BiomeHUD;
+            BiomeHUDObject = Instantiate(Main.BiomeHUD);
             BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
             t = Time.time;
+            SeraLogger.Message(Main.modName, "BiomeDisplay.Awake() has run. BiomeDisplay is awake and running!");
         }
 
         private void Update()
         {
-            try
-            {
-                GameObject errorCheck = BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject;
-                try
-                {
-                    SeraLogger.Message(Main.modName, "gameObject wasn't null");
-                    SeraLogger.Message(Main.modName, errorCheck.GetComponent<Text>().text);
-                }
-                catch (Exception ex)
-                {
-                    SeraLogger.GenericError(Main.modName, ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
-
-            try
-            {
-                SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
             if (Time.time >= t + 5f && BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled == true)
             {
                 SeraLogger.Message(Main.modName, "Entered Time check in Update");
@@ -62,43 +37,11 @@
 
         private void ChangeText(string message)
         {
-            try
-            {
-                GameObject errorCheck = BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject;
-                try
-                {
-                    SeraLogger.Message(Main.modName, "gameObject wasn't null");
-                    SeraLogger.Message(Main.modName, errorCheck.GetComponent<Text>().text);
-                }
-                catch (Exception ex)
-                {
-                    SeraLogger.GenericError(Main.modName, ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
-
-            try
-            {
-                BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = message;
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
-            try
-            {
-                BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = true;
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.GenericError(Main.modName, ex);
-            }
-            
+            SeraLogger.Message(Main.modName, "message: " + message);
+            BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = message;
+            BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = true;
             t = Time.time;
-            
+            SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.text: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text);
             SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
         }
 

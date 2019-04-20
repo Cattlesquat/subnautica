@@ -166,7 +166,6 @@
         public static void Postfix()
         {
             uGUI.main.gameObject.AddComponent<BiomeDisplay>();
-            SeraLogger.Message(Main.modName, "Added BiomeDisplay component");
         }
     }
 }
