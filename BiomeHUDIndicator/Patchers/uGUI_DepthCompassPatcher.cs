@@ -15,8 +15,6 @@
 
         private static float updateTimer = 0f;
 
-        private static bool addedComponent = false;
-
         [HarmonyPrefix]
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
         {
@@ -83,7 +81,7 @@
         {
             int compassID = inv.equipment.GetCount(TechType.Compass);
             int biomeChip = inv.equipment.GetCount(CompassCore.BiomeChipID);
-            if(compassID > 0 || biomeChip > 0)
+            if (compassID > 0 || biomeChip > 0)
             {
                 return true;
             }
@@ -92,12 +90,12 @@
 
         private static void BiomeCheck()
         {
-            if (!addedComponent)
+            /*if (!addedComponent)
             {
                 uGUI.main.gameObject.AddComponent<BiomeDisplay>();
                 addedComponent = true;
                 SeraLogger.Message(Main.modName, "Added BiomeDisplay component");
-            }
+            }*/
             string curBiome = Player.main.GetBiomeString().ToLower();
             int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);
             if (biomeChip > 0 && curBiome != null)
@@ -158,5 +156,17 @@
             { "generatorroom" , "Generator Room" },
             { "crashedship" , "Aurora" },
         };
+    }
+
+    [HarmonyPatch(typeof(uGUI))]
+    [HarmonyPatch("Awake")]
+    internal class UGUIPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            uGUI.main.gameObject.AddComponent<BiomeDisplay>();
+            SeraLogger.Message(Main.modName, "Added BiomeDisplay component");
+        }
     }
 }

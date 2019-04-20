@@ -18,19 +18,32 @@
         
         private void Awake()
         {
-            SeraLogger.Message(Main.modName, "BiomeDisplay.Awake()");
-            GameObject BiomeHUDObject = Instantiate(Main.BiomeHUD);
-            SeraLogger.Message(Main.modName, "BiomeHUDObject instantiated");
-            BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
-            SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
-            t = Time.time;
             BiomeDisplay.main = this;
+            GameObject BiomeHUDObject = Main.BiomeHUD;
+            BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
+            t = Time.time;
         }
 
         private void Update()
         {
-            SeraLogger.Message(Main.modName, "Time.time: " + Time.time.ToString());
-            SeraLogger.Message(Main.modName, "t: " + t.ToString());
+            try
+            {
+                GameObject errorCheck = BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject;
+                try
+                {
+                    SeraLogger.Message(Main.modName, "gameObject wasn't null");
+                    SeraLogger.Message(Main.modName, errorCheck.GetComponent<Text>().text);
+                }
+                catch (Exception ex)
+                {
+                    SeraLogger.GenericError(Main.modName, ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
+            }
+
             try
             {
                 SeraLogger.Message(Main.modName, "BiomeHUDObject.BiomeHUDChip.Text.enabled: " + BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled.ToString());
@@ -49,6 +62,24 @@
 
         private void ChangeText(string message)
         {
+            try
+            {
+                GameObject errorCheck = BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject;
+                try
+                {
+                    SeraLogger.Message(Main.modName, "gameObject wasn't null");
+                    SeraLogger.Message(Main.modName, errorCheck.GetComponent<Text>().text);
+                }
+                catch (Exception ex)
+                {
+                    SeraLogger.GenericError(Main.modName, ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                SeraLogger.GenericError(Main.modName, ex);
+            }
+
             try
             {
                 BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = message;
