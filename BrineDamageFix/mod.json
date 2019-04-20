@@ -1,0 +1,10 @@
+{
+   "Id": "BrineDamageFix",
+  "DisplayName": "Brine Damage Fix",
+  "Author": "SeraphimRisen",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "BrineDamageFix.dll",
+  "EntryMethod": "BrineDamageFix.Main.Patch",
+  "Game": "Subnautica",
+}
