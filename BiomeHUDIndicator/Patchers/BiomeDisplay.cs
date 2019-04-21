@@ -51,7 +51,7 @@
         private void Start()
         {
             _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
-            _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = false;
+            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = false;
             SeraLogger.Message(Main.modName, "BiomeDisplay.Awake() has run. BiomeDisplay is awake and running!");
             Hooks.Update += EnsureInstantiation;
             
@@ -64,18 +64,24 @@
             if (cachedFlag != flag)
             {
                 cachedFlag = flag;
-                _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = cachedFlag;
-                /*try
+                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                Color colorAlpha;
+                if (cachedFlag)
+                    colorAlpha = new Color(255, 255, 255, 1);
+                else
+                    colorAlpha = new Color(255, 255, 255, 0);
+                try
                 {
-                    _BiomeHUDObject.transform.Find("BiomeBackground").gameObject.SetActive(cachedFlag);
+                    _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = colorAlpha;
+                    SeraLogger.Message(Main.modName, "Update() try has run.");
                 }
                 catch (Exception ex)
                 {
                     SeraLogger.GenericError(Main.modName, ex);
-                }*/
+                }
             }
-            if (cachedFlag)
-                BiomeUpdate();
+            BiomeUpdate();
 
             /*// Position the reference points
             cornerTarget.localPosition = new Vector2(-Screen.width / 2 + cornerDistFromEdge.x, Screen.height / 2 - cornerDistFromEdge.y);
@@ -154,14 +160,15 @@
                 
                 _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
                 _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = cachedFlag;
-                /*try
+                try
                 {
-                    _BiomeHUDObject.transform.Find("BiomeBackground").gameObject.SetActive(cachedFlag);
+                    _BiomeHUDObject.transform.Find("BiomeBackground").gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
+                    SeraLogger.Message(Main.modName, "EnsureInstantiation() try has run.");
                 }
                 catch (Exception ex)
                 {
                     SeraLogger.GenericError(Main.modName, ex);
-                }*/
+                }
                 InvokeRepeating("SceneCheck", 5f, 15f);
                 instantiated = true;
                 Hooks.Update -= EnsureInstantiation;
@@ -181,11 +188,14 @@
                 if (curBiome != _cachedBiome)
                 {
                     _cachedBiome = curBiome;
-                    foreach (var biome in biomeList)
+                    if (cachedFlag)
                     {
-                        if (curBiome.Contains(biome.Key))
+                        foreach (var biome in biomeList)
                         {
-                            _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = biome.Value;
+                            if (curBiome.Contains(biome.Key))
+                            {
+                                _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = biome.Value;
+                            }
                         }
                     }
                 }
