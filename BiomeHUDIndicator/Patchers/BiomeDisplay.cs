@@ -75,7 +75,7 @@
                 }*/
             }
             if (cachedFlag)
-                BiomeCheck();
+                BiomeUpdate();
 
             /*// Position the reference points
             cornerTarget.localPosition = new Vector2(-Screen.width / 2 + cornerDistFromEdge.x, Screen.height / 2 - cornerDistFromEdge.y);
@@ -168,7 +168,7 @@
             }
         }
 
-        private void BiomeCheck()
+        private void BiomeUpdate()
         {
             string curBiome = Player.main.GetBiomeString().ToLower();
             if (curBiome != null)
