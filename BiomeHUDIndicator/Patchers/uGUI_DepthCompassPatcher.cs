@@ -10,11 +10,6 @@
     [HarmonyPatch("IsCompassEnabled")]
     internal class DepthCompass_IsCompassEnabledPatcher
     {
-        private static string _cachedBiome = "unassigned";
-        private static string _cachedBiomeFriendly = "Unassigned";
-
-        private static float updateTimer = 0f;
-
         [HarmonyPrefix]
         public static bool Prefix(ref uGUI_DepthCompass __instance, ref bool __result)
         {
@@ -64,11 +59,6 @@
             Inventory main2 = Inventory.main;
             if (main2 != null && main2.equipment != null && TechTypeCheck(main2))
             {
-                if (Time.time >= updateTimer + 7.5f || updateTimer == 0f)
-                {
-                    BiomeCheck();
-                    updateTimer = Time.time;
-                }
                 __result = true;
                 return false;
             }
@@ -87,85 +77,16 @@
             }
             return false;
         }
-
-        private static void BiomeCheck()
-        {
-            /*if (!addedComponent)
-            {
-                uGUI.main.gameObject.AddComponent<BiomeDisplay>();
-                addedComponent = true;
-                SeraLogger.Message(Main.modName, "Added BiomeDisplay component");
-            }*/
-            string curBiome = Player.main.GetBiomeString().ToLower();
-            int biomeChip = Inventory.main.equipment.GetCount(CompassCore.BiomeChipID);
-            if (biomeChip > 0 && curBiome != null)
-            {
-                int index = curBiome.IndexOf('_');
-                if (index > 0)
-                {
-                    curBiome = curBiome.Substring(0, index);
-                }
-                if (curBiome != _cachedBiome)
-                {
-                    _cachedBiome = curBiome;
-                    foreach (var biome in biomeList)
-                    {
-                        if (curBiome.Contains(biome.Key))
-                        {
-                            _cachedBiomeFriendly = biome.Value;
-                            ErrorMessage.AddMessage("ENTERING: " + _cachedBiomeFriendly);
-                            BiomeDisplay.DisplayBiome(_cachedBiomeFriendly);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static readonly Dictionary<string, string> biomeList = new Dictionary<string, string>()
-        {
-            { "safe", "Safe Shallows" },
-            { "kelpforest", "Kelp Forest" },
-            { "grassy", "Grassy Plateaus" },
-            { "mushroomforest", "Mushroom Forest" },
-            { "jellyshroomcaves", "Jellyshroom Caves" },
-            { "sparse", "Sparse Reef" },
-            { "underwaterislands" , "Underwater Islands" },
-            { "bloodkelp" , "Blood Kelp Zone" },
-            { "dunes" , "Sand Dunes" },
-            { "crashzone" , "Crash Zone" },
-            { "grandreef" , "Grand Reef" },
-            { "mountains" , "Mountains" },
-            { "lostriver" , "Lost River" },
-            { "ilz" , "Inactive Lava Zone" },
-            { "lava" , "Lava Lake" },
-            { "floatingisland" , "Floating Island" },
-            { "koosh" , "Bulb Zone" },
-            { "seatreader" , "Sea Treader's Path" },
-            { "crag" , "Crag Field" },
-            { "unassigned" , "Unassigned" },
-            { "void" , "Ecological Dead Zone" },
-            // Special-case biomes, may remove
-            { "precursor" , "Precursor Facility" },
-            { "prison" , "Primary Containment Facility" },
-            { "shipspecial" , "Aurora" },
-            { "shipinterior", "Aurora" },
-            { "crashhome" , "Aurora" },
-            { "aurora" , "Aurora" },
-            { "mesas" , "Mesas" },
-            { "observatory" , "Observatory" },
-            { "generatorroom" , "Generator Room" },
-            { "crashedship" , "Aurora" },
-        };
     }
 
-    [HarmonyPatch(typeof(uGUI))]
-    [HarmonyPatch("Awake")]
+    [HarmonyPatch(typeof(uGUI_DepthCompass))]
+    [HarmonyPatch("Start")]
     internal class UGUIPatcher
     {
         [HarmonyPostfix]
-        public static void Postfix()
+        public static void Postfix(ref uGUI_DepthCompass __instance)
         {
-            uGUI.main.gameObject.AddComponent<BiomeDisplay>();
+            __instance.gameObject.AddComponent<BiomeDisplay>();
         }
     }
 }

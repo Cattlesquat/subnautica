@@ -53,6 +53,10 @@
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\iTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="QModInstaller">
+      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\QModInstaller.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SMLHelper">
       <HintPath>D:\Epic Games\Subnautica\QMods\Modding Helper\SMLHelper.dll</HintPath>
       <Private>False</Private>
