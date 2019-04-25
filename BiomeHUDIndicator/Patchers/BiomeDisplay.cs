@@ -14,7 +14,7 @@
 
     class BiomeDisplay : MonoBehaviour
     {
-        /*[Tooltip("The transform to use to scale/position the main text to the corner. Will be auto-positioned based on screen size")]
+        [Tooltip("The transform to use to scale/position the main text to the corner. Will be auto-positioned based on screen size")]
         public Transform cornerTarget;
         [Tooltip("The transform to use to scale/position the main text to the center. Will also be auto-positioned")]
         public Transform centerTarget;
@@ -29,19 +29,19 @@
         [Tooltip("The distance of the corner text from the edge")]
         public Vector2 cornerDistFromEdge;
         [Tooltip("The distance of the centre text from the top")]
-        public float centerDistFromTop;
+        public float centerDistFromTop = 150f;
         [Tooltip("The distance from the 'now entering' text from the top")]
-        public float nowEnteringDistFromTop;
+        public float nowEnteringDistFromTop = 125f;
         [Tooltip("The time in seconds the main text should spend in the middle of the screen")]
-        public float timeOnScreen = 5f;*/
+        public float timeOnScreen = 5f;
 
         public GameObject BiomeHUDObject { private get; set; }
         public GameObject _BiomeHUDObject { private get; set; }
 
         private string _cachedBiome = "Unassigned";
 
-        private bool instantiated = false;
         private bool cachedFlag = false;
+        private bool _started = false;
 
         private void Awake()
         {
@@ -52,38 +52,51 @@
         {
             _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
             _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = false;
-            SeraLogger.Message(Main.modName, "BiomeDisplay.Awake() has run. BiomeDisplay is awake and running!");
+            SeraLogger.Message(Main.modName, "BiomeDisplay.Start() has run. BiomeDisplay is awake and running!");
             Hooks.Update += EnsureInstantiation;
-            
-            /*currentTarget = cornerTarget;*/
+            cornerDistFromEdge = new Vector2(25f, 25f);
+
+            currentTarget = cornerTarget;
         }
 
         private void Update()
         {
-            bool flag = this.IsVisible();
-            if (cachedFlag != flag)
+            if (_started)
             {
-                cachedFlag = flag;
-                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
-                Color colorAlpha;
-                if (cachedFlag)
-                    colorAlpha = new Color(255, 255, 255, 1);
-                else
-                    colorAlpha = new Color(255, 255, 255, 0);
-                try
+                bool flag = this.IsVisible();
+                if (cachedFlag != flag)
                 {
-                    _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
-                    _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = colorAlpha;
-                    SeraLogger.Message(Main.modName, "Update() try has run.");
+                    cachedFlag = flag;
+                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                    /*SeraLogger.Message(Main.modName, "Update() is still running after setting Text visibility");
+                    Color colorAlpha;
+                    if (cachedFlag)
+                        colorAlpha = new Color(255, 255, 255, 1);
+                    else
+                        colorAlpha = new Color(255, 255, 255, 0);
+                    SeraLogger.Message(Main.modName, "Update() is still running after setting colors");
+                    try
+                    {
+                        SeraLogger.Message(Main.modName, "Update() try has been entered");
+                        _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
+                        _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = colorAlpha;
+                        SeraLogger.Message(Main.modName, "Update() try has run.");
+                        SeraLogger.Message(Main.modName, "SpriteRendered.enabled is: " + _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        SeraLogger.GenericError(Main.modName, ex);
+                    }*/
                 }
-                catch (Exception ex)
-                {
-                    SeraLogger.GenericError(Main.modName, ex);
-                }
+                BiomeUpdate();
+                NowEntering();
             }
-            BiomeUpdate();
+        }
 
-            /*// Position the reference points
+        private void NowEntering()
+        {
+            // Position the reference points
             cornerTarget.localPosition = new Vector2(-Screen.width / 2 + cornerDistFromEdge.x, Screen.height / 2 - cornerDistFromEdge.y);
             centerTarget.localPosition = new Vector2(0, Screen.height / 2 - centerDistFromTop);
             nowEntering.transform.localPosition = new Vector2(0, Screen.height / 2 - nowEnteringDistFromTop);
@@ -102,14 +115,12 @@
             // Animate the color of the now entering text
             Color textColor = Color.white;
             textColor.a = distanceNormalized;
-            nowEntering.color = textColor;*/
+            nowEntering.color = textColor;
         }
 
         private bool IsVisible()
         {
             if (this == null)
-                return false;
-            if (!instantiated)
                 return false;
             if (!uGUI_SceneLoading.IsLoadingScreenFinished)
                 return false;
@@ -143,10 +154,15 @@
         {
             if (!uGUI_SceneLoading.IsLoadingScreenFinished || SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
             {
+                SeraLogger.Message(Main.modName, "SceneManager.GetActiveScene(): " + SceneManager.GetActiveScene());
+                SeraLogger.Message(Main.modName, "IsLoadingScreenFinished: " + uGUI_SceneLoading.IsLoadingScreenFinished.ToString());
                 Hooks.Update += EnsureInstantiation;
-                instantiated = false;
-                if (instantiated)
+                _started = false;
+                if (_started)
+                {
+                    _started = false;
                     this.CancelInvoke("SceneCheck");
+                }
             }
         }
 
@@ -157,9 +173,12 @@
         {
             if (uGUI_SceneLoading.IsLoadingScreenFinished && !SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
             {
-                
+                SeraLogger.Message(Main.modName, "SceneManager.GetActiveScene(): " + SceneManager.GetActiveScene());
+                SeraLogger.Message(Main.modName, "IsLoadingScreenFinished: " + uGUI_SceneLoading.IsLoadingScreenFinished.ToString());
                 _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
-                _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().enabled = cachedFlag;
+                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                /*SeraLogger.Message(Main.modName, "EnsureInstantiation() is still running after setting Text");
                 try
                 {
                     _BiomeHUDObject.transform.Find("BiomeBackground").gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
@@ -168,9 +187,9 @@
                 catch (Exception ex)
                 {
                     SeraLogger.GenericError(Main.modName, ex);
-                }
+                }*/
                 InvokeRepeating("SceneCheck", 5f, 15f);
-                instantiated = true;
+                _started = true;
                 Hooks.Update -= EnsureInstantiation;
             }
         }
@@ -194,7 +213,10 @@
                         {
                             if (curBiome.Contains(biome.Key))
                             {
-                                _BiomeHUDObject.transform.Find("BiomeHUDChip").gameObject.GetComponent<Text>().text = biome.Value;
+                                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = biome.Value;
+                                currentTarget = centerTarget;
+                                timeEnteredBiome = Time.time;
                             }
                         }
                     }
