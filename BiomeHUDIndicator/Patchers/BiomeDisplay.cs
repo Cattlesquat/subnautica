@@ -51,7 +51,7 @@
         private void Start()
         {
             _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
-            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = false;
+            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
             SeraLogger.Message(Main.modName, "BiomeDisplay.Start() has run. BiomeDisplay is awake and running!");
             Hooks.Update += EnsureInstantiation;
             cornerDistFromEdge = new Vector2(25f, 25f);
@@ -67,30 +67,11 @@
                 if (cachedFlag != flag)
                 {
                     cachedFlag = flag;
-                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
-                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
-                    /*SeraLogger.Message(Main.modName, "Update() is still running after setting Text visibility");
-                    Color colorAlpha;
-                    if (cachedFlag)
-                        colorAlpha = new Color(255, 255, 255, 1);
-                    else
-                        colorAlpha = new Color(255, 255, 255, 0);
-                    SeraLogger.Message(Main.modName, "Update() is still running after setting colors");
-                    try
-                    {
-                        SeraLogger.Message(Main.modName, "Update() try has been entered");
-                        _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
-                        _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = colorAlpha;
-                        SeraLogger.Message(Main.modName, "Update() try has run.");
-                        SeraLogger.Message(Main.modName, "SpriteRendered.enabled is: " + _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().enabled.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        SeraLogger.GenericError(Main.modName, ex);
-                    }*/
+                    //_BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
                 }
                 BiomeUpdate();
-                NowEntering();
+                //NowEntering();
             }
         }
 
@@ -173,21 +154,25 @@
         {
             if (uGUI_SceneLoading.IsLoadingScreenFinished && !SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
             {
-                SeraLogger.Message(Main.modName, "SceneManager.GetActiveScene(): " + SceneManager.GetActiveScene());
-                SeraLogger.Message(Main.modName, "IsLoadingScreenFinished: " + uGUI_SceneLoading.IsLoadingScreenFinished.ToString());
-                _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
-                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
-                _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Text>().enabled = cachedFlag;
-                /*SeraLogger.Message(Main.modName, "EnsureInstantiation() is still running after setting Text");
                 try
                 {
-                    _BiomeHUDObject.transform.Find("BiomeBackground").gameObject.GetComponent<SpriteRenderer>().enabled = cachedFlag;
-                    SeraLogger.Message(Main.modName, "EnsureInstantiation() try has run.");
+                    _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
                 }
                 catch (Exception ex)
                 {
+                    SeraLogger.Message(Main.modName, "Instantiating failed.");
                     SeraLogger.GenericError(Main.modName, ex);
-                }*/
+                }
+                try
+                {
+                    _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                }
+                catch (Exception ex)
+                {
+                    SeraLogger.Message(Main.modName, "Setting Text.enabled failed.");
+                    SeraLogger.GenericError(Main.modName, ex);
+                }
+                //_BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
                 InvokeRepeating("SceneCheck", 5f, 15f);
                 _started = true;
                 Hooks.Update -= EnsureInstantiation;
@@ -213,8 +198,7 @@
                         {
                             if (curBiome.Contains(biome.Key))
                             {
-                                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
-                                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = biome.Value;
+                                _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().text = biome.Value.FriendlyName;
                                 currentTarget = centerTarget;
                                 timeEnteredBiome = Time.time;
                             }
@@ -224,40 +208,51 @@
             }
         }
 
-        private readonly Dictionary<string, string> biomeList = new Dictionary<string, string>()
+        private readonly Dictionary<string, BiomeIndex> biomeList = new Dictionary<string, BiomeIndex>()
         {
-            { "safe",                    "Safe Shallows" },
-            { "kelpforest",                "Kelp Forest" },
-            { "grassy",                "Grassy Plateaus" },
-            { "mushroomforest",        "Mushroom Forest" },
-            { "jellyshroomcaves",    "Jellyshroom Caves" },
-            { "sparse",                    "Sparse Reef" },
-            { "underwaterislands" , "Underwater Islands" },
-            { "bloodkelp" ,            "Blood Kelp Zone" },
-            { "dunes" ,                     "Sand Dunes" },
-            { "crashzone" ,                 "Crash Zone" },
-            { "grandreef" ,                 "Grand Reef" },
-            { "mountains" ,                  "Mountains" },
-            { "lostriver" ,                 "Lost River" },
-            { "ilz" ,               "Inactive Lava Zone" },
-            { "lava" ,                       "Lava Lake" },
-            { "floatingisland" ,       "Floating Island" },
-            { "koosh" ,                      "Bulb Zone" },
-            { "seatreader" ,        "Sea Treader's Path" },
-            { "crag" ,                      "Crag Field" },
-            { "unassigned" ,                "Unassigned" },
-            { "void" ,            "Ecological Dead Zone" },
+            { "safe", new BiomeIndex("Safe Shallows", 4) },
+            { "kelpforest", new BiomeIndex("Kelp Forest", 5) },
+            { "grassy", new BiomeIndex("Grassy Plateaus", 6) },
+            { "mushroomforest", new BiomeIndex("Mushroom Forest", 7) },
+            { "jellyshroomcaves", new BiomeIndex("Jellyshroom Caves", 8) },
+            { "sparse", new BiomeIndex("Sparse Reef", 9) }, // Image Needed
+            { "underwaterislands" , new BiomeIndex("Underwater Islands", 10) },
+            { "bloodkelp" , new BiomeIndex("Blood Kelp Zone", 11) },
+            { "dunes" , new BiomeIndex("Sand Dunes", 12) },
+            { "crashzone" , new BiomeIndex("Crash Zone", 13) },
+            { "grandreef" , new BiomeIndex("Grand Reef", 14) },
+            { "mountains" , new BiomeIndex("Mountains", 15) },
+            { "lostriver" , new BiomeIndex("Lost River", 16) },
+            { "ilz" , new BiomeIndex("Inactive Lava Zone", 17) },
+            { "lava" , new BiomeIndex("Lava Lake", 18) },
+            { "floatingisland" , new BiomeIndex("Floating Island", 19) },
+            { "koosh" , new BiomeIndex("Bulb Zone", 20) },
+            { "seatreader" , new BiomeIndex("Sea Treader's Path", 21) },
+            { "crag" , new BiomeIndex("Crag Field", 22) },
+            { "void" , new BiomeIndex("Ecological Dead Zone", 23) },
             // Special-case biomes, may remove
-            { "precursor" ,         "Precursor Facility" },
-            { "prison" ,  "Primary Containment Facility" },
-            { "shipspecial" ,                   "Aurora" },
-            { "shipinterior",                   "Aurora" },
-            { "crashhome" ,                     "Aurora" },
-            { "aurora" ,                        "Aurora" },
-            { "mesas" ,                           "Mesa" },
-            { "observatory" ,              "Observatory" },
-            { "generatorroom" ,         "Generator Room" },
-            { "crashedship" ,                   "Aurora" },
+            { "precursor" , new BiomeIndex("Precursor Facility", 24) },
+            { "prison" , new BiomeIndex("Primary Containment Facility", 25) },
+            { "shipspecial" , new BiomeIndex("Aurora", 26) },
+            { "shipinterior", new BiomeIndex("Aurora", 26) },
+            { "crashhome" , new BiomeIndex("Aurora", 26) },
+            { "aurora" , new BiomeIndex("Aurora", 26) },
+            { "crashedship" , new BiomeIndex("Aurora", 26) },
+            { "mesas" , new BiomeIndex("Mesa", 27) }, // Image Needed
+            { "observatory" , new BiomeIndex("Observatory", 28) }, // Image Needed
+            { "unassigned" , new BiomeIndex("Unassigned", 29) },
         };
+
+        public struct BiomeIndex
+        {
+            public string FriendlyName { get; }
+            public int Index { get; }
+
+            public BiomeIndex(string name, int i)
+            {
+                FriendlyName = name;
+                Index = i;
+            }
+        }
     }
 }
