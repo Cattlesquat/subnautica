@@ -42,6 +42,7 @@
 
         private bool cachedFlag = false;
         private bool _started = false;
+        private int _cachedIndex = 26;
 
         private void Awake()
         {
@@ -51,7 +52,15 @@
         private void Start()
         {
             _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
-            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Text>().enabled = cachedFlag;
+            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+            _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Text>().enabled = cachedFlag;
+            _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
+            int i = 3;
+            while (i <= 26)
+            {
+                _BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                i++;
+            }
             SeraLogger.Message(Main.modName, "BiomeDisplay.Start() has run. BiomeDisplay is awake and running!");
             Hooks.Update += EnsureInstantiation;
             cornerDistFromEdge = new Vector2(25f, 25f);
@@ -67,8 +76,10 @@
                 if (cachedFlag != flag)
                 {
                     cachedFlag = flag;
-                    //_BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
                     _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                    SeraLogger.Message(Main.modName, " _cachedIndex = " + _cachedIndex.ToString());
+                    _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = cachedFlag;
                 }
                 BiomeUpdate();
                 //NowEntering();
@@ -128,15 +139,11 @@
             return main3 != null && main3.GetCamera() != null;
         }
 
-        /// <summary>
-        /// This method exists to make sure the player isn't in a menu or loading. Otherwise might have issues with losing the GameObject reference between game saves
-        /// </summary>
         private void SceneCheck()
         {
-            if (!uGUI_SceneLoading.IsLoadingScreenFinished || SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
+            if (SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
             {
-                SeraLogger.Message(Main.modName, "SceneManager.GetActiveScene(): " + SceneManager.GetActiveScene());
-                SeraLogger.Message(Main.modName, "IsLoadingScreenFinished: " + uGUI_SceneLoading.IsLoadingScreenFinished.ToString());
+                Destroy(_BiomeHUDObject);
                 Hooks.Update += EnsureInstantiation;
                 _started = false;
                 if (_started)
@@ -147,9 +154,6 @@
             }
         }
 
-        /// <summary>
-        /// This method ensures that after the game is loaded, the object is instantiated. Placing it in Awake/Start was failing
-        /// </summary>
         private void EnsureInstantiation()
         {
             if (uGUI_SceneLoading.IsLoadingScreenFinished && !SceneManager.GetActiveScene().name.ToLower().Contains("menu"))
@@ -157,23 +161,22 @@
                 try
                 {
                     _BiomeHUDObject = Instantiate<GameObject>(BiomeHUDObject);
+                    _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                    _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
+                    int i = 3;
+                    while (i <= 26)
+                    {
+                        _BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                        i++;
+                    }
                 }
                 catch (Exception ex)
                 {
                     SeraLogger.Message(Main.modName, "Instantiating failed.");
                     SeraLogger.GenericError(Main.modName, ex);
                 }
-                try
-                {
-                    _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = cachedFlag;
-                }
-                catch (Exception ex)
-                {
-                    SeraLogger.Message(Main.modName, "Setting Text.enabled failed.");
-                    SeraLogger.GenericError(Main.modName, ex);
-                }
-                //_BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = cachedFlag;
-                InvokeRepeating("SceneCheck", 5f, 15f);
+                InvokeRepeating("SceneCheck", 5f, 5f);
                 _started = true;
                 Hooks.Update -= EnsureInstantiation;
             }
@@ -189,19 +192,20 @@
                 {
                     curBiome = curBiome.Substring(0, index);
                 }
-                if (curBiome != _cachedBiome)
+                if (curBiome != _cachedBiome && curBiome != "observatory")
                 {
                     _cachedBiome = curBiome;
-                    if (cachedFlag)
+                    foreach (var biome in biomeList)
                     {
-                        foreach (var biome in biomeList)
+                        if (curBiome.Contains(biome.Key))
                         {
-                            if (curBiome.Contains(biome.Key))
-                            {
-                                _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().text = biome.Value.FriendlyName;
-                                currentTarget = centerTarget;
-                                timeEnteredBiome = Time.time;
-                            }
+                            _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().text = biome.Value.FriendlyName;
+                            _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = false;
+                            _cachedIndex = biome.Value.Index;
+                            if(cachedFlag)
+                                _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = cachedFlag;
+                            // currentTarget = centerTarget;
+                            // timeEnteredBiome = Time.time;
                         }
                     }
                 }
@@ -210,37 +214,35 @@
 
         private readonly Dictionary<string, BiomeIndex> biomeList = new Dictionary<string, BiomeIndex>()
         {
-            { "safe", new BiomeIndex("Safe Shallows", 4) },
-            { "kelpforest", new BiomeIndex("Kelp Forest", 5) },
-            { "grassy", new BiomeIndex("Grassy Plateaus", 6) },
-            { "mushroomforest", new BiomeIndex("Mushroom Forest", 7) },
-            { "jellyshroomcaves", new BiomeIndex("Jellyshroom Caves", 8) },
-            { "sparse", new BiomeIndex("Sparse Reef", 9) }, // Image Needed
-            { "underwaterislands" , new BiomeIndex("Underwater Islands", 10) },
-            { "bloodkelp" , new BiomeIndex("Blood Kelp Zone", 11) },
-            { "dunes" , new BiomeIndex("Sand Dunes", 12) },
-            { "crashzone" , new BiomeIndex("Crash Zone", 13) },
-            { "grandreef" , new BiomeIndex("Grand Reef", 14) },
-            { "mountains" , new BiomeIndex("Mountains", 15) },
-            { "lostriver" , new BiomeIndex("Lost River", 16) },
-            { "ilz" , new BiomeIndex("Inactive Lava Zone", 17) },
-            { "lava" , new BiomeIndex("Lava Lake", 18) },
-            { "floatingisland" , new BiomeIndex("Floating Island", 19) },
-            { "koosh" , new BiomeIndex("Bulb Zone", 20) },
-            { "seatreader" , new BiomeIndex("Sea Treader's Path", 21) },
-            { "crag" , new BiomeIndex("Crag Field", 22) },
-            { "void" , new BiomeIndex("Ecological Dead Zone", 23) },
+            { "safe", new BiomeIndex("Safe Shallows", 3) },
+            { "kelpforest", new BiomeIndex("Kelp Forest", 4) },
+            { "grassy", new BiomeIndex("Grassy Plateaus", 5) },
+            { "mushroomforest", new BiomeIndex("Mushroom Forest", 6) },
+            { "jellyshroomcaves", new BiomeIndex("Jellyshroom Caves", 7) },
+            { "sparse", new BiomeIndex("Sparse Reef", 8) },
+            { "underwaterislands" , new BiomeIndex("Underwater Islands", 9) },
+            { "bloodkelp" , new BiomeIndex("Blood Kelp Zone", 10) },
+            { "dunes" , new BiomeIndex("Sand Dunes", 11) },
+            { "crashzone" , new BiomeIndex("Crash Zone", 12) },
+            { "grandreef" , new BiomeIndex("Grand Reef", 13) },
+            { "mountains" , new BiomeIndex("Mountains", 14) },
+            { "lostriver" , new BiomeIndex("Lost River", 15) },
+            { "ilz" , new BiomeIndex("Inactive Lava Zone", 16) },
+            { "lava" , new BiomeIndex("Lava Lake", 17) },
+            { "floatingisland" , new BiomeIndex("Floating Island", 18) },
+            { "koosh" , new BiomeIndex("Bulb Zone", 19) },
+            { "seatreader" , new BiomeIndex("Sea Treader's Path", 20) },
+            { "crag" , new BiomeIndex("Crag Field", 21) },
+            { "void" , new BiomeIndex("Ecological Dead Zone", 22) },
             // Special-case biomes, may remove
-            { "precursor" , new BiomeIndex("Precursor Facility", 24) },
-            { "prison" , new BiomeIndex("Primary Containment Facility", 25) },
-            { "shipspecial" , new BiomeIndex("Aurora", 26) },
-            { "shipinterior", new BiomeIndex("Aurora", 26) },
-            { "crashhome" , new BiomeIndex("Aurora", 26) },
-            { "aurora" , new BiomeIndex("Aurora", 26) },
-            { "crashedship" , new BiomeIndex("Aurora", 26) },
-            { "mesas" , new BiomeIndex("Mesa", 27) }, // Image Needed
-            { "observatory" , new BiomeIndex("Observatory", 28) }, // Image Needed
-            { "unassigned" , new BiomeIndex("Unassigned", 29) },
+            { "precursor" , new BiomeIndex("Precursor Facility", 23) },
+            { "prison" , new BiomeIndex("Primary Containment Facility", 24) },
+            { "shipspecial" , new BiomeIndex("Aurora", 25) },
+            { "shipinterior", new BiomeIndex("Aurora", 25) },
+            { "crashhome" , new BiomeIndex("Aurora", 25) },
+            { "aurora" , new BiomeIndex("Aurora", 25) },
+            { "crashedship" , new BiomeIndex("Aurora", 25) },
+            { "unassigned" , new BiomeIndex("Unassigned", 26) }, // Add to AB
         };
 
         public struct BiomeIndex
