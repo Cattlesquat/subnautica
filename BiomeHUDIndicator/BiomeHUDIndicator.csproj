@@ -79,7 +79,7 @@
   <ItemGroup>
     <Compile Include="Items\BiomeHUDIndicator.cs" />
     <Compile Include="Items\CompassCore.cs" />
-    <Compile Include="Patchers\BiomeDisplay.cs" />
+    <Compile Include="Items\BiomeDisplay.cs" />
     <Compile Include="Patchers\uGUI_DepthCompassPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

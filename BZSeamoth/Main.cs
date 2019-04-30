@@ -1,9 +1,7 @@
 ﻿namespace BZSeamoth
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
-    using System.Linq;
     using Harmony;
     using UnityEngine;
     using Common;
@@ -14,7 +12,7 @@
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.0");
+            SeraLogger.PatchStart(modName, "1.1.0");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.bzseamoth.mod");
@@ -72,10 +70,11 @@
                         }
                         return false;
                     }
+                    return true;
                 }
                 else
                 {
-                    ErrorMessage.AddDebug("Could not parse " + text + " as TechType");
+                    return true;
                 }
             }
             return true;

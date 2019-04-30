@@ -1,4 +1,4 @@
-﻿namespace BiomeHUDIndicator.Patchers
+﻿namespace BiomeHUDIndicator.Items
 {
     using System;
     using System.Collections.Generic;
@@ -11,28 +11,13 @@
     using Items;
     using QModManager;
     using UnityEngine.SceneManagement;
+    using SMLHelper.V2.Assets;
+    using SMLHelper.V2.Handlers;
+    using SMLHelper.V2.Utility;
+    using SMLHelper.V2.Crafting;
 
     class BiomeDisplay : MonoBehaviour
     {
-        [Tooltip("The transform to use to scale/position the main text to the corner. Will be auto-positioned based on screen size")]
-        public Transform cornerTarget;
-        [Tooltip("The transform to use to scale/position the main text to the center. Will also be auto-positioned")]
-        public Transform centerTarget;
-        [Tooltip("The 'now entering' Text to display when a biome is entered")]
-        public Text nowEntering;
-        // The current target we are animating to
-        Transform currentTarget;
-        // The Text component to assign to
-        Text UIText;
-        // The time we last entered the biome
-        float timeEnteredBiome = 0f;
-        [Tooltip("The distance of the corner text from the edge")]
-        public Vector2 cornerDistFromEdge;
-        [Tooltip("The distance of the centre text from the top")]
-        public float centerDistFromTop = 150f;
-        [Tooltip("The distance from the 'now entering' text from the top")]
-        public float nowEnteringDistFromTop = 125f;
-        [Tooltip("The time in seconds the main text should spend in the middle of the screen")]
         public float timeOnScreen = 5f;
 
         public GameObject BiomeHUDObject { private get; set; }
@@ -47,6 +32,8 @@
         private void Awake()
         {
             BiomeHUDObject = Main.BiomeHUD;
+            // DontDestroyOnLoad(BiomeHUDObject);
+            // DontDestroyOnLoad(_BiomeHUDObject);
         }
 
         private void Start()
@@ -61,11 +48,9 @@
                 _BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().enabled = cachedFlag;
                 i++;
             }
+            DontDestroyOnLoad(_BiomeHUDObject);
             SeraLogger.Message(Main.modName, "BiomeDisplay.Start() has run. BiomeDisplay is awake and running!");
             Hooks.Update += EnsureInstantiation;
-            cornerDistFromEdge = new Vector2(25f, 25f);
-
-            currentTarget = cornerTarget;
         }
 
         private void Update()
@@ -82,32 +67,7 @@
                     _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = cachedFlag;
                 }
                 BiomeUpdate();
-                //NowEntering();
             }
-        }
-
-        private void NowEntering()
-        {
-            // Position the reference points
-            cornerTarget.localPosition = new Vector2(-Screen.width / 2 + cornerDistFromEdge.x, Screen.height / 2 - cornerDistFromEdge.y);
-            centerTarget.localPosition = new Vector2(0, Screen.height / 2 - centerDistFromTop);
-            nowEntering.transform.localPosition = new Vector2(0, Screen.height / 2 - nowEnteringDistFromTop);
-            // Check if the main text has spent enough time on screen
-            if (timeEnteredBiome + timeOnScreen <= Time.time)
-            {
-                currentTarget = cornerTarget;
-            }
-            // Total distance between start/finish
-            float totaldist = Vector3.Distance(cornerTarget.position, centerTarget.position);
-            // Normalized distance from current point to the corner position (for scale animation)
-            float distanceNormalized = Vector3.Distance(transform.position, cornerTarget.position) / totaldist;
-            // Animate the position/scale to the desired point on screen
-            transform.position = Vector3.MoveTowards(transform.position, currentTarget.position, totaldist / 5f);
-            transform.localScale = Vector3.Lerp(cornerTarget.localScale, centerTarget.localScale, distanceNormalized);
-            // Animate the color of the now entering text
-            Color textColor = Color.white;
-            textColor.a = distanceNormalized;
-            nowEntering.color = textColor;
         }
 
         private bool IsVisible()
