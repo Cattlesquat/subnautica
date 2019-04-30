@@ -1,10 +1,7 @@
 ﻿namespace BiomeHUDIndicator.Patchers
 {
-    using System.Collections.Generic;
     using Harmony;
-    using UnityEngine;
     using Items;
-    using Common;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
@@ -87,14 +84,6 @@
         public static void Postfix(ref uGUI_DepthCompass __instance)
         {
             __instance.gameObject.AddComponent<BiomeDisplay>();
-            Transform currentTransform = __instance.transform;
-            Transform getParent = currentTransform.parent;
-            while (getParent != null)
-            {
-                SeraLogger.Message(Main.modName, "CurrentTransform: " + currentTransform.name + " Parent: " + getParent.name);
-                currentTransform = getParent;
-                getParent = currentTransform.parent;
-            }
         }
     }
 }

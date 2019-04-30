@@ -20,7 +20,7 @@
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.5.0");
+            SeraLogger.PatchStart(modName, "1.5.2");
             try
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
