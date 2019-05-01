@@ -32,7 +32,7 @@
 
     internal class NitrogenOptions : ModOptions
     {
-        private const string Config = "./QMods/NitrogenMod/Config.xml";
+        private const string configFile = "./QMods/NitrogenMod/Config.xml";
 
         private const string nitroEnablerName = "nitrogenmodenabler";
         private const string lethalName = "lethalmodeenabler";
@@ -126,28 +126,28 @@
 
         private void SaveSettings()
         {
-            ConfigMaker.WriteData(Config, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth));
+            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth));
         }
 
         private void ReadSettings()
         {
-            if (!File.Exists(Config))
+            if (!File.Exists(configFile))
             {
-                SeraLogger.ConfigNotFound("[NitrogenMod]");
+                SeraLogger.ConfigNotFound(Main.modName);
                 SaveSettings();
             }
             try
             {
-                SaveData loadedData = (SaveData)ConfigMaker.ReadData(Config, typeof(SaveData));
-                nitroEnabled = Boolean.Parse(loadedData.nitrogenEnabled);
-                nitroLethal = Boolean.Parse(loadedData.isLethal);
-                damageScaler = float.Parse(loadedData.damageScaler);
-                crushEnabled = Boolean.Parse(loadedData.crushEnabled);
-                crushDepth = float.Parse(loadedData.crushDepth);
+                SaveData loadedData = (SaveData)ConfigMaker.ReadData(configFile, typeof(SaveData));
+                nitroEnabled = Boolean.Parse(loadedData.NitrogenEnabled);
+                nitroLethal = Boolean.Parse(loadedData.IsLethal);
+                damageScaler = float.Parse(loadedData.DamageScaler);
+                crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
+                crushDepth = float.Parse(loadedData.CrushDepth);
             }
             catch (Exception ex)
             {
-                SeraLogger.ConfigReadError("[NitrogenMod]", ex);
+                SeraLogger.ConfigReadError(Main.modName, ex);
                 nitroEnabled = true;
                 nitroLethal = true;
                 damageScaler = 1f;
@@ -158,31 +158,22 @@
         }
     }
 
-    public class SaveData
+    public struct SaveData
     {
-        public string nitrogenEnabled;
-        public string isLethal;
-        public string crushEnabled;
+        public string NitrogenEnabled { get; set; }
+        public string IsLethal { get; set; }
+        public string CrushEnabled { get; set; }
 
-        public string damageScaler;
-        public string crushDepth;
-        
-        public SaveData()
-        {
-            nitrogenEnabled = "true";
-            damageScaler = "1";
-            isLethal = "true";
-            crushEnabled = "false";
-            crushDepth = "500";
-        }
+        public string DamageScaler { get; set; }
+        public string CrushDepth { get; set; }
 
         public SaveData(bool enabled, bool lethal, float scaler, bool crush, float depthDamage)
         {
-            nitrogenEnabled = enabled.ToString();
-            isLethal = lethal.ToString();
-            damageScaler = scaler.ToString();
-            crushEnabled = crush.ToString();
-            crushDepth = depthDamage.ToString();
+            NitrogenEnabled = enabled.ToString();
+            IsLethal = lethal.ToString();
+            DamageScaler = scaler.ToString();
+            CrushEnabled = crush.ToString();
+            CrushDepth = depthDamage.ToString();
         }
     }
 }

@@ -124,13 +124,13 @@
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            NitrogenOptions isEnabled = new NitrogenOptions();
-            __instance.nitrogenEnabled = isEnabled.nitroEnabled;
+            NitrogenOptions options = new NitrogenOptions();
+            __instance.nitrogenEnabled = options.nitroEnabled;
             __instance.safeNitrogenDepth = 0f;
-            NitroDamagePatcher.Lethality(isEnabled.nitroLethal);
-            NitroDamagePatcher.AdjustScaler(isEnabled.damageScaler);
-            BreathPatcher.EnableCrush(isEnabled.crushEnabled);
-            BreathPatcher.AdjustCrush(isEnabled.crushDepth);
+            NitroDamagePatcher.Lethality(options.nitroLethal);
+            NitroDamagePatcher.AdjustScaler(options.damageScaler);
+            BreathPatcher.EnableCrush(options.crushEnabled);
+            BreathPatcher.AdjustCrush(options.crushDepth);
         }
     }
 
