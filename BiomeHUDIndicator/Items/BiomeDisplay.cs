@@ -12,7 +12,16 @@
         private const float timeOnScreen = 5f;
 
         public GameObject _BiomeHUDObject { private get; set; }
-        public Transform hudTransform;
+        public Transform hudTransform; // Let's cache the HUD transform
+
+        // We won't cache EVERY element in _BiomeHUDObject due to the number of image layers
+        private Transform canvasTransform;
+        private Text biomeText;
+        private Text nowEntering;
+        private Image backgroundThumbnails;
+        private Image backgroundNoThumbnails;
+        private Animator biomeTextAnimator;
+        private Animator nowEnteringAnimator;
 
         private string _cachedBiome = "Unassigned";
 
@@ -28,21 +37,40 @@
             BiomeDisplayOptions options = new BiomeDisplayOptions();
             imageAlpha = options.alphaValue;
             _cachedImageFlag = options.imageEnabled;
+
             _BiomeHUDObject = Instantiate<GameObject>(Main.BiomeHUD);
-            hudTransform = GameObject.Find("ScreenCanvas").transform.Find("HUD");
-            _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = false;
-            _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Image>().enabled = false;
-            _BiomeHUDObject.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
-            _BiomeHUDObject.transform.GetChild(3).gameObject.GetComponent<Text>().enabled = false;
+
+            //BiomeTextAnimator = _BiomeHUDObject.transform.("")
+
+            // Cache objects we will call frequently
+            canvasTransform = _BiomeHUDObject.transform;
+            nowEntering = canvasTransform.GetChild(2).GetComponent<Text>();
+            biomeText = canvasTransform.GetChild(3).GetComponent<Text>();
+            backgroundThumbnails = canvasTransform.GetChild(0).gameObject.GetComponent<Image>();
+            backgroundNoThumbnails = canvasTransform.GetChild(1).gameObject.GetComponent<Image>();
+            biomeTextAnimator = biomeText.GetComponent<Animator>();
+            nowEnteringAnimator = biomeText.GetComponent<Animator>();
+            if (biomeTextAnimator == null)
+                SeraLogger.Message(Main.modName, "biomeTextAnimator is null.");
+            if (nowEnteringAnimator == null)
+                SeraLogger.Message(Main.modName, "nowEnteringAnimator is null.");
+
+            backgroundThumbnails.enabled = false;
+            backgroundNoThumbnails.enabled = false;
+            nowEntering.enabled = false;
+            biomeText.enabled = false;
             int i = 4;
             while (i <= 27)
             {
-                _BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().enabled = false;
-                _BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().color = new Color32(255, 255, 255, imageAlpha);
+                canvasTransform.GetChild(i).gameObject.GetComponent<Image>().enabled = false;
+                canvasTransform.GetChild(i).gameObject.GetComponent<Image>().color = new Color32(255, 255, 255, imageAlpha);
                 i++;
             }
-            _BiomeHUDObject.transform.SetParent(hudTransform, false);
-            _BiomeHUDObject.transform.SetSiblingIndex(0);
+
+            hudTransform = GameObject.Find("ScreenCanvas").transform.Find("HUD");
+            canvasTransform.SetParent(hudTransform, false);
+            canvasTransform.SetSiblingIndex(0);
+
             BiomeDisplay.main = this;
             SeraLogger.Message(Main.modName, "BiomeDisplay.Start() has run. BiomeDisplay is awake and running!");
         }
@@ -60,15 +88,15 @@
                 if (_cachedFlag != flag)
                 {
                     _cachedFlag = flag;
-                    _BiomeHUDObject.transform.GetChild(3).gameObject.GetComponent<Text>().enabled = _cachedFlag;
+                    biomeText.enabled = _cachedFlag;
                     if (_cachedImageFlag)
                     {
-                        _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = _cachedFlag;
-                        _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                        canvasTransform.GetChild(0).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                        canvasTransform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
                     }
                     else
                     {
-                        _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                        canvasTransform.GetChild(1).gameObject.GetComponent<Image>().enabled = _cachedFlag;
                     }
                 }
                 BiomeUpdate();
@@ -106,9 +134,9 @@
         
         private void BiomeUpdate()
         {
-            string curBiome = null;
-            if (Player.main != null)
-                curBiome = Player.main.GetBiomeString().ToLower();
+            if (Player.main == null)
+                return;
+            string curBiome = Player.main.GetBiomeString().ToLower();
             if (curBiome != null)
             {
                 int index = curBiome.IndexOf('_');
@@ -123,12 +151,12 @@
                     {
                         if (curBiome.Contains(biome.Key))
                         {
-                            _BiomeHUDObject.transform.GetChild(3).gameObject.GetComponent<Text>().text = biome.Value.FriendlyName;
+                            biomeText.text = biome.Value.FriendlyName;
                             if (_cachedImageFlag)
                             {
-                                _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = false;
+                                canvasTransform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = false;
                                 _cachedIndex = biome.Value.Index;
-                                _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                                canvasTransform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
                             }
                         }
                     }
@@ -140,15 +168,15 @@
         {
             if (_cachedImageFlag)
             {
-                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = _cachedFlag;
-                _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Image>().enabled = false;
-                _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                canvasTransform.GetChild(0).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                canvasTransform.GetChild(1).gameObject.GetComponent<Image>().enabled = false;
+                canvasTransform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = _cachedFlag;
             }
             else
             {
-                _BiomeHUDObject.transform.GetChild(0).gameObject.GetComponent<Image>().enabled = false;
-                _BiomeHUDObject.transform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = false;
-                _BiomeHUDObject.transform.GetChild(1).gameObject.GetComponent<Image>().enabled = _cachedFlag;
+                canvasTransform.GetChild(0).gameObject.GetComponent<Image>().enabled = false;
+                canvasTransform.GetChild(_cachedIndex).gameObject.GetComponent<Image>().enabled = false;
+                canvasTransform.GetChild(1).gameObject.GetComponent<Image>().enabled = _cachedFlag;
             }
         }
 
@@ -169,7 +197,7 @@
                 int i = 4;
                 while (i <= 27)
                 {
-                    BiomeDisplay.main._BiomeHUDObject.transform.GetChild(i).gameObject.GetComponent<Image>().color = new Color32(255, 255, 255, BiomeDisplay.main.imageAlpha);
+                    BiomeDisplay.main.canvasTransform.GetChild(i).gameObject.GetComponent<Image>().color = new Color32(255, 255, 255, BiomeDisplay.main.imageAlpha);
                     i++;
                 }
             }
