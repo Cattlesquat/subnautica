@@ -136,24 +136,27 @@
                 SeraLogger.ConfigNotFound(Main.modName);
                 SaveSettings();
             }
-            try
+            else
             {
-                SaveData loadedData = (SaveData)ConfigMaker.ReadData(configFile, typeof(SaveData));
-                nitroEnabled = Boolean.Parse(loadedData.NitrogenEnabled);
-                nitroLethal = Boolean.Parse(loadedData.IsLethal);
-                damageScaler = float.Parse(loadedData.DamageScaler);
-                crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
-                crushDepth = float.Parse(loadedData.CrushDepth);
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.ConfigReadError(Main.modName, ex);
-                nitroEnabled = true;
-                nitroLethal = true;
-                damageScaler = 1f;
-                crushEnabled = false;
-                crushDepth = 500f;
-                SaveSettings();
+                try
+                {
+                    SaveData loadedData = (SaveData)ConfigMaker.ReadData(configFile, typeof(SaveData));
+                    nitroEnabled = Boolean.Parse(loadedData.NitrogenEnabled);
+                    nitroLethal = Boolean.Parse(loadedData.IsLethal);
+                    damageScaler = float.Parse(loadedData.DamageScaler);
+                    crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
+                    crushDepth = float.Parse(loadedData.CrushDepth);
+                }
+                catch (Exception ex)
+                {
+                    SeraLogger.ConfigReadError(Main.modName, ex);
+                    nitroEnabled = true;
+                    nitroLethal = true;
+                    damageScaler = 1f;
+                    crushEnabled = false;
+                    crushDepth = 500f;
+                    SaveSettings();
+                }
             }
         }
     }

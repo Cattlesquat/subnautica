@@ -2,7 +2,7 @@
    "Id": "BiomeHUDIndicator",
   "DisplayName": "Biome HUD Indicator",
   "Author": "SeraphimRisen",
-  "Version": "1.5.2",
+  "Version": "2.0.0",
   "Enable": true,
   "AssemblyName": "BiomeHUDIndicator.dll",
   "EntryMethod": "BiomeHUDIndicator.Main.Patch",
