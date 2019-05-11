@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NitrogenMod.Items
+namespace NitrogenMod.Patchers
 {
-    class ReinforcedSuits_Core
+    class DiveSuitPatchers
     {
     }
 }

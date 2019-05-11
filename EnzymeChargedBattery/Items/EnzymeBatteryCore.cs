@@ -14,7 +14,6 @@
         private const string Assets = @"EnzymeChargedBattery/Assets";
         private static readonly string[] CraftPath = new[] { ResCraftTab, ElecCraftTab, BatCraftTab };
 
-        // Setting up stuff that's used at the class level
         public static TechType BattID { get; protected set; }
         public static TechType PowCelID { get; protected set; }
 
@@ -38,7 +37,6 @@
             }
             else
             {
-                // Skip creating the tab
                 SeraLogger.Message(Main.modName, "MidGameBatteries installed, adding to crafting tab");
             }
             var enzBatt = new EnzymeBattery(1000f);
@@ -47,15 +45,13 @@
             enzPowerCell.Patch();
         }
 
-        protected abstract TechType BaseType { get; } // Let's borrow the precursor batteries
+        protected abstract TechType BaseType { get; }
         protected abstract float PowerCapacity { get; }
-        protected abstract EquipmentType ChargerType { get; } // Should ALWAYS be BatteryCharger or PowerCellCharger.
+        protected abstract EquipmentType ChargerType { get; }
 
-        // Stuff that exists at instances
         protected EnzymeBatteryCore(string classID, string friendlyName, string description)
             : base(classID, friendlyName, description)
         {
-            // Once all Fabricator classes are done, invoke
             OnFinishedPatching += SetEquipmentType;
         }
 
@@ -64,7 +60,7 @@
         public override TechCategory CategoryForPDA { get; } = TechCategory.Electronics;
         public override string AssetsFolder { get; } = Assets;
         public override string[] StepsToFabricatorTab { get; } = CraftPath;
-        public override TechType RequiredForUnlock { get; } = TechType.HatchingEnzymes; // These will unlock once you've got hatching enzymes
+        public override TechType RequiredForUnlock { get; } = TechType.HatchingEnzymes;
 
         public override GameObject GetGameObject()
         {

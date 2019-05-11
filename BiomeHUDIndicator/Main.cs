@@ -5,7 +5,7 @@
     using Harmony;
     using Items;
     using UnityEngine;
-    using UnityEngine.UI;
+    using BHIBehaviours;
     using Common;
     using SMLHelper.V2.Handlers;
     using SMLHelper.V2.Options;

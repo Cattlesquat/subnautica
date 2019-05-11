@@ -1,4 +1,4 @@
-﻿namespace BiomeHUDIndicator.Items
+﻿namespace NitrogenMod.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;
@@ -6,29 +6,35 @@
     using UnityEngine;
     using Common;
 
-    internal abstract class CompassCore : Craftable
+    internal abstract class ReinforcedSuitsCore : Craftable
     {
-        private const string craftTab = "HUDChips";
-        private const string Assets = @"BiomeHUDIndicator/Assets";
+        private const string craftTab = "ReinforcedSuits";
+        private const string Assets = @"NitrogenMod/Assets";
         private static readonly string[] craftPath = new[] { craftTab };
 
-        public static TechType BiomeChipID { get; protected set; }
+        public static TechType ReinforcedSuit2ID { get; protected set; }
+        public static TechType ReinforcedSuit3ID { get; protected set; }
+        public static TechType ReinforcedStillSuit { get; protected set; }
 
-        internal static void PatchCompasses()
+        internal static void PatchSuits()
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
-            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "HUD Chip Upgrades", tabIcon);
+            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Dive Suit Upgrades", tabIcon);
             SeraLogger.Message(Main.modName, "Creating new crafting tab");
 
-            var BiomeChip = new BiomeHUDIndicator();
+            var DiveSuitMk2 = new ReinforcedSuitMark2();
+            var DiveSuitMk3 = new ReinforcedSuitMark3();
+            //var StillSuitMk2 = new ReinforcedStillSuit();
 
-            BiomeChip.Patch();
+            DiveSuitMk2.Patch();
+            DiveSuitMk3.Patch();
+            //StillSuitMk2.Patch()'
         }
 
         protected abstract TechType BaseType { get; }
-        protected abstract EquipmentType Chip { get; }
+        protected abstract EquipmentType DiveSuit { get; }
 
-        protected CompassCore(string classID, string friendlyName, string description) : base(classID, friendlyName, description)
+        protected ReinforcedSuitsCore(string classID, string friendlyName, string description) : base(classID, friendlyName, description)
         {
             OnFinishedPatching += SetEquipmentType;
         }
@@ -38,7 +44,7 @@
         public override TechCategory CategoryForPDA { get; } = TechCategory.Workbench;
         public override string AssetsFolder { get; } = Assets;
         public override string[] StepsToFabricatorTab { get; } = craftPath;
-        public override TechType RequiredForUnlock { get; } = TechType.Compass;
+        public override TechType RequiredForUnlock { get; } = TechType.ReinforcedDiveSuit;
 
         public override GameObject GetGameObject()
         {
@@ -50,7 +56,7 @@
 
         private void SetEquipmentType()
         {
-            CraftDataHandler.SetEquipmentType(this.TechType, this.Chip);
+            CraftDataHandler.SetEquipmentType(this.TechType, this.DiveSuit);
         }
     }
 }
