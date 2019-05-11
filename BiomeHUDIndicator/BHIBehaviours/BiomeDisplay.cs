@@ -1,9 +1,10 @@
-﻿namespace BiomeHUDIndicator.Items
+﻿namespace BiomeHUDIndicator.BHIBehaviours
 {
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.UI;
     using Common;
+    using Items;
 
     class BiomeDisplay : MonoBehaviour
     {

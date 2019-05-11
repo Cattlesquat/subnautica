@@ -2,6 +2,7 @@
 {
     using Harmony;
     using Items;
+    using BHIBehaviours;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("IsCompassEnabled")]
