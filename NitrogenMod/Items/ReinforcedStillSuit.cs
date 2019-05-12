@@ -28,6 +28,6 @@
             };
         }
 
-        private void SetStaticTechType() => ReinforcedSuit3ID = this.TechType;
+        private void SetStaticTechType() => ReinforcedStillSuit = this.TechType;
     }
 }

@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Items\O2TanksCore.cs" />
     <Compile Include="Items\ReinforcedStillSuit.cs" />
     <Compile Include="Items\ReinforcedSuitMark2.cs" />
     <Compile Include="Items\ReinforcedSuitMark3.cs" />

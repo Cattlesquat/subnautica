@@ -29,6 +29,10 @@
             DiveSuitMk2.Patch();
             DiveSuitMk3.Patch();
             StillSuitMk2.Patch();
+
+            CraftDataHandler.SetItemSize(ReinforcedSuit2ID, new Vector2int(2, 2));
+            CraftDataHandler.SetItemSize(ReinforcedSuit3ID, new Vector2int(2, 2));
+            CraftDataHandler.SetItemSize(ReinforcedStillSuit, new Vector2int(2, 2));
         }
 
         protected abstract TechType BaseType { get; }

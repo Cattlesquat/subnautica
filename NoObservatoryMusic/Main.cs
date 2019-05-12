@@ -80,16 +80,18 @@
                 SeraLogger.ConfigNotFound(Main.modName);
                 SaveSettings();
             }
-            try
+            else
             {
-                biomeDisabled = (bool) ConfigMaker.ReadData(Config, typeof(bool));
-                SeraLogger.ConfigReadSuccess(Main.modName);
-            }
-            catch (Exception ex)
-            {
-                SeraLogger.ConfigReadError(Main.modName, ex);
-                biomeDisabled = true;
-                SaveSettings();
+                try
+                {
+                    biomeDisabled = (bool)ConfigMaker.ReadData(Config, typeof(bool));
+                }
+                catch (Exception ex)
+                {
+                    SeraLogger.ConfigReadError(Main.modName, ex);
+                    biomeDisabled = true;
+                    SaveSettings();
+                }
             }
         }
     }
