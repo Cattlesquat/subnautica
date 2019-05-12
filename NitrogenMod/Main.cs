@@ -8,6 +8,7 @@
     using System.IO;
     using Patchers;
     using Common;
+    using Items;
 
     public class Main
     {
@@ -19,6 +20,7 @@
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
+                ReinforcedSuitsCore.PatchSuits();
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
                 SeraLogger.PatchComplete(modName);
@@ -46,15 +48,13 @@
         public bool crushEnabled = false;
 
         public float damageScaler = 1f;
-        public float crushDepth = 500f;
-
+        
         public NitrogenOptions() : base("Nitrogen Mod Options")
         {
             ToggleChanged += NitrogenEnabled;
             ToggleChanged += NonLethalOption;
             SliderChanged += DamageScalerSlider;
             ToggleChanged += CrushEnabled;
-            SliderChanged += NewCrushDepth;
             ReadSettings();
         }
 
@@ -69,7 +69,6 @@
             AddToggleOption(lethalName, "Lethal Decompression", nitroLethal);
             AddSliderOption(nitroSliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
             AddToggleOption(crushEnablerName, "Enable Crush Depth", crushEnabled);
-            AddSliderOption(crushSliderName, "Player Crush Depth", 250f, 1500f, crushDepth);
         }
 
         private void NitrogenEnabled(object sender, ToggleChangedEventArgs args)
@@ -115,18 +114,9 @@
             SaveSettings();
         }
 
-        private void NewCrushDepth(object sender, SliderChangedEventArgs args)
-        {
-            if (args.Id != crushSliderName)
-                return;
-            crushDepth = args.Value;
-            BreathPatcher.AdjustCrush(crushDepth);
-            SaveSettings();
-        }
-
         private void SaveSettings()
         {
-            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, crushDepth));
+            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled));
         }
 
         private void ReadSettings()
@@ -140,12 +130,11 @@
             {
                 try
                 {
-                    SaveData loadedData = (SaveData)ConfigMaker.ReadData(configFile, typeof(SaveData));
+                    SaveData loadedData = (SaveData) ConfigMaker.ReadData(configFile, typeof(SaveData));
                     nitroEnabled = Boolean.Parse(loadedData.NitrogenEnabled);
                     nitroLethal = Boolean.Parse(loadedData.IsLethal);
                     damageScaler = float.Parse(loadedData.DamageScaler);
                     crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
-                    crushDepth = float.Parse(loadedData.CrushDepth);
                 }
                 catch (Exception ex)
                 {
@@ -154,7 +143,6 @@
                     nitroLethal = true;
                     damageScaler = 1f;
                     crushEnabled = false;
-                    crushDepth = 500f;
                     SaveSettings();
                 }
             }
@@ -168,15 +156,13 @@
         public string CrushEnabled { get; set; }
 
         public string DamageScaler { get; set; }
-        public string CrushDepth { get; set; }
 
-        public SaveData(bool enabled, bool lethal, float scaler, bool crush, float depthDamage)
+        public SaveData(bool enabled, bool lethal, float scaler, bool crush)
         {
             NitrogenEnabled = enabled.ToString();
             IsLethal = lethal.ToString();
             DamageScaler = scaler.ToString();
             CrushEnabled = crush.ToString();
-            CrushDepth = depthDamage.ToString();
         }
     }
 }

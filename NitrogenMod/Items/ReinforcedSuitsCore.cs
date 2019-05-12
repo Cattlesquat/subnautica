@@ -24,11 +24,11 @@
 
             var DiveSuitMk2 = new ReinforcedSuitMark2();
             var DiveSuitMk3 = new ReinforcedSuitMark3();
-            //var StillSuitMk2 = new ReinforcedStillSuit();
+            var StillSuitMk2 = new ReinforcedStillSuit();
 
             DiveSuitMk2.Patch();
             DiveSuitMk3.Patch();
-            //StillSuitMk2.Patch()'
+            StillSuitMk2.Patch();
         }
 
         protected abstract TechType BaseType { get; }

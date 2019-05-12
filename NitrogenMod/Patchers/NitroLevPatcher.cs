@@ -2,6 +2,7 @@
 {
     using Harmony;
     using UnityEngine;
+    using Items;
     using UWE;
     using UnityEngine.UI;
     using UnityEngine.SceneManagement;
@@ -78,42 +79,55 @@
     {
         private static bool crushEnabled = false;
 
-        private static float crushDepth = 500f;
-        
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance, Player player)
         {
-            int reinforcedSuit = Inventory.main.equipment.GetCount(TechType.ReinforcedDiveSuit);
+            Inventory main = Inventory.main;
+            int reinforcedSuit1 = main.equipment.GetCount(TechType.ReinforcedDiveSuit);
+            int reinforcedSuit2 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit2ID);
+            int reinforcedSuit3 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit3ID);
+            int reinforcedStill = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedStillSuit);
+            int reinforcedSuits = reinforcedSuit1 + reinforcedSuit2 + reinforcedSuit3 + reinforcedStill;
+
             if (GameModeUtils.RequiresOxygen())
             {
-                if (__instance.nitrogenEnabled && reinforcedSuit < 1)
+                if (__instance.nitrogenEnabled && reinforcedSuits < 1)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
                 }
-                if (crushEnabled && reinforcedSuit < 1 && Player.main.motorMode == Player.MotorMode.Dive)
+                if (crushEnabled && Player.main.motorMode == Player.MotorMode.Dive)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
-                    if (depthOf > crushDepth && UnityEngine.Random.value < 0.5f)
+                    if (UnityEngine.Random.value < 0.5f)
                     {
-                        LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-                        ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
-                        component.TakeDamage(UnityEngine.Random.value * (depthOf - crushDepth) / 50f, default, DamageType.Normal, null);
+                        if (depthOf > 500f && reinforcedSuits < 1)
+                        {
+                            DamagePlayer(depthOf);
+                        }
+                        else if (depthOf > 1000f && reinforcedSuit2 < 1 && reinforcedSuit3 < 1 && reinforcedStill < 1)
+                        {
+                            DamagePlayer(depthOf);
+                        }
+                        else if (depthOf > 1300f && reinforcedSuit3 < 1)
+                            DamagePlayer(depthOf);
                     }
                 }
             }
             return false;
         }
 
+        private static void DamagePlayer(float depthOf)
+        {
+            LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
+            ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
+            component.TakeDamage(UnityEngine.Random.value * (depthOf - 500f) / 50f, default, DamageType.Normal, null);
+        }
+
         public static void EnableCrush (bool isEnabled)
         {
             crushEnabled = isEnabled;
-        }
-
-        public static void AdjustCrush (float newDepth)
-        {
-            crushDepth = newDepth;
         }
     }
 
@@ -130,7 +144,6 @@
             NitroDamagePatcher.Lethality(options.nitroLethal);
             NitroDamagePatcher.AdjustScaler(options.damageScaler);
             BreathPatcher.EnableCrush(options.crushEnabled);
-            BreathPatcher.AdjustCrush(options.crushDepth);
         }
     }
 

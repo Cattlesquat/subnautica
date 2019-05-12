@@ -122,7 +122,7 @@
             {
                 try
                 {
-                    SaveData loadedData = (SaveData)ConfigMaker.ReadData(configFile, typeof(SaveData));
+                    SaveData loadedData = (SaveData) ConfigMaker.ReadData(configFile, typeof(SaveData));
                     animationEnabled = Boolean.Parse(loadedData.AnimationsEnabled);
                     imageEnabled = Boolean.Parse(loadedData.ImagesEnabled);
                     alphaValue = byte.Parse(loadedData.ImageAlpha);
