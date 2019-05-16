@@ -6,7 +6,7 @@
     class ReinforcedSuitMark3 : ReinforcedSuitsCore
     {
         public ReinforcedSuitMark3()
-            : base(classID: "reinforcedsuit3", friendlyName: "Reinforced Dive Suit Mark 3", description: "An upgraded dive suit capable of protecting the user past 1300m.")
+            : base(classID: "reinforcedsuit3", friendlyName: "Reinforced Dive Suit Mark 3", description: "An upgraded dive suit capable of protecting the user past 1300m and provides protection up to 90C.")
         {
             OnFinishedPatching += SetStaticTechType;
         }

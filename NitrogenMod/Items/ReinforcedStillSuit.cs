@@ -6,7 +6,7 @@
     class ReinforcedStillSuit : ReinforcedSuitsCore
     {
         public ReinforcedStillSuit()
-            : base(classID: "reinforcedstillsuit", friendlyName: "Reinforced Still Suit", description: "An upgraded still suit capable of protecting the user between 500 and 1300m.")
+            : base(classID: "reinforcedstillsuit", friendlyName: "Reinforced Still Suit", description: "An upgraded still suit capable of protecting the user from 500m-1300m and temperatures up to 70C.")
         {
             OnFinishedPatching += SetStaticTechType;
         }

@@ -18,9 +18,9 @@
 
         internal static void PatchSuits()
         {
-            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TabIcon.png");
+            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/SuitTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Dive Suit Upgrades", tabIcon);
-            SeraLogger.Message(Main.modName, "Creating new crafting tab");
+            SeraLogger.Message(Main.modName, "Creating new dive suit crafting tab");
 
             var DiveSuitMk2 = new ReinforcedSuitMark2();
             var DiveSuitMk3 = new ReinforcedSuitMark3();
