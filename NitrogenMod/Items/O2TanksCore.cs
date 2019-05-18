@@ -22,13 +22,16 @@
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Specialty O2 Tanks", tabIcon);
             SeraLogger.Message(Main.modName, "Creating new O2 tank crafting tab");
 
-            //var photoTank = new PhotosynthesisTank();
+            var smallPhotoTank = new PhotosynthesisSmallTank();
+            var photoTank = new PhotosynthesisTank();
             var chemoTank = new ChemosynthesisTank();
 
-            //photoTank.Patch();
+            smallPhotoTank.Patch();
+            photoTank.Patch();
             chemoTank.Patch();
 
-            //CraftDataHandler.SetItemSize(PhotosynthesisTankID, new Vector2int(2, 3));
+            CraftDataHandler.SetItemSize(PhotosynthesisSmallID, new Vector2int(2, 3));
+            CraftDataHandler.SetItemSize(PhotosynthesisTankID, new Vector2int(2, 3));
             CraftDataHandler.SetItemSize(ChemosynthesisTankID, new Vector2int(2, 3));
         }
 

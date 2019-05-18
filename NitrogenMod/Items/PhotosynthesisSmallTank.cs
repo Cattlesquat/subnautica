@@ -5,13 +5,13 @@
 
     class PhotosynthesisSmallTank : O2TanksCore
     {
-        public PhotosynthesisTank()
+        public PhotosynthesisSmallTank()
             : base(classID: "photosynthesissmalltank", friendlyName: "Small Photosynthesis Tank", description: "An O2 tank that houses microorganisms that produce oxygen in sunlight.")
         {
             OnFinishedPatching += SetStaticTechType;
         }
 
-        protected override TechType BaseType { get; } = TechType.PlasteelTank;
+        protected override TechType BaseType { get; } = TechType.HighCapacityTank;
         protected override EquipmentType SpecialtyO2Tank { get; } = EquipmentType.Tank;
 
         protected override TechData GetBlueprintRecipe()
@@ -22,8 +22,8 @@
                 Ingredients = new List<Ingredient>(3)
                 {
                     new Ingredient(TechType.PlasteelTank, 1),
-                    new Ingredient(TechType.PurpleBrainCoralPiece, 2),
-                    new Ingredient(TechType.EnameledGlass, 1),
+                    new Ingredient(TechType.PurpleBrainCoralPiece, 1),
+                    new Ingredient(TechType.Glass, 1),
                 }
             };
         }
