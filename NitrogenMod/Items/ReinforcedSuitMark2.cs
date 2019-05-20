@@ -23,7 +23,7 @@
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
                     new Ingredient(TechType.AluminumOxide, 2),
-                    new Ingredient(TechType.Nickel, 2),
+                    new Ingredient(DummySuitItems.RiverEelScaleID, 2),
                 }
             };
         }

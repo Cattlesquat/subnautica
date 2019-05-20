@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Items\ChemosynthesisTank.cs" />
+    <Compile Include="Items\DummySuitItems.cs" />
     <Compile Include="Items\O2TanksCore.cs" />
     <Compile Include="Items\PhotosynthesisSmallTank.cs" />
     <Compile Include="Items\PhotosynthesisTank.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="Items\ReinforcedSuitMark3.cs" />
     <Compile Include="Items\ReinforcedSuitsCore.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="NitrogenOptions.cs" />
+    <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="Patchers\DiveSuitPatchers.cs" />
     <Compile Include="Patchers\NitroLevPatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,10 +95,16 @@
     <Content Include="Assets\chemosynthesistank.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\lavalizardscale.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\photosynthesissmalltank.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\photosynthesistank.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\thermophilesample.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\reinforcedsuit2.png">
@@ -105,6 +114,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\reinforcedstillsuit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\rivereelscale.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\SuitTabIcon.png">

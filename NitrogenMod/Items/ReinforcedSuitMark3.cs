@@ -23,7 +23,7 @@
                 {
                     new Ingredient(ReinforcedSuit2ID, 1),
                     new Ingredient(TechType.Kyanite, 2),
-                    new Ingredient(TechType.PlasteelIngot, 1),
+                    new Ingredient(DummySuitItems.LavaLizardScaleID, 2),
                 }
             };
         }

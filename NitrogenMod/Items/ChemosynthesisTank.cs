@@ -22,7 +22,7 @@
                 Ingredients = new List<Ingredient>(3)
                 {
                     new Ingredient(TechType.PlasteelTank, 1),
-                    new Ingredient(TechType.WhiteMushroomSpore, 2),
+                    new Ingredient(DummySuitItems.ThermoBacteriaID, 2),
                     new Ingredient(TechType.Kyanite, 1),
                 }
             };

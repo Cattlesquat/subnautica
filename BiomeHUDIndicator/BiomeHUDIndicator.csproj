@@ -77,6 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BiomeDisplayOptions.cs" />
     <Compile Include="Items\BiomeHUDIndicator.cs" />
     <Compile Include="Items\CompassCore.cs" />
     <Compile Include="BHIBehaviours\BiomeDisplay.cs" />

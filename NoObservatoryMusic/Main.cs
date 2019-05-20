@@ -84,7 +84,7 @@
             {
                 try
                 {
-                    biomeDisabled = (bool)ConfigMaker.ReadData(Config, typeof(bool));
+                    biomeDisabled = (bool) ConfigMaker.ReadData(Config, typeof(bool));
                 }
                 catch (Exception ex)
                 {

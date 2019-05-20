@@ -3,6 +3,7 @@
     using Harmony;
     using UnityEngine;
     using Items;
+    using NMBehaviours;
     using Common;
     using UWE;
     using UnityEngine.UI;
@@ -22,6 +23,7 @@
             if (__instance.nitrogenEnabled && GameModeUtils.RequiresOxygen() && Time.timeScale > 0f)
             {
                 float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
+
                 if (depthOf < __instance.safeNitrogenDepth - 10f && UnityEngine.Random.value < 0.0125f)
                 {
                     global::Utils.Assert(depthOf < __instance.safeNitrogenDepth, "see log", null);
@@ -33,6 +35,7 @@
                     else if (lethal)
                         component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
+
                 if (__instance.safeNitrogenDepth > 10f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
                 {
                     float atmosPressure = __instance.safeNitrogenDepth - 10f;
@@ -46,6 +49,7 @@
                     else if (lethal)
                         component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
+
                 float num = 1f;
                 if (depthOf < __instance.safeNitrogenDepth && Player.main.motorMode == Player.MotorMode.Dive)
                 {
@@ -145,6 +149,8 @@
             NitroDamagePatcher.Lethality(options.nitroLethal);
             NitroDamagePatcher.AdjustScaler(options.damageScaler);
             BreathPatcher.EnableCrush(options.crushEnabled);
+
+            Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
     }
 

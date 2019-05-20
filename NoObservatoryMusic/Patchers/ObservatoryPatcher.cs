@@ -2,14 +2,13 @@
 {
     using Harmony;
 
-    // This should patch the Observatory for us. Let's do it.
     [HarmonyPatch(typeof(ObservatoryAmbientSound))]
     [HarmonyPatch("IsPlayerInObservatory")]
     internal class InObservatoryPatcher
     {
         public static bool disabled = true;
 
-        [HarmonyPrefix] // We're attempting to cancel the entire method
+        [HarmonyPrefix]
         public static bool Prefix()
         {
             return !disabled;
@@ -22,7 +21,7 @@
     {
         public static bool disabled = true;
 
-        [HarmonyPrefix] // We're attempting to cancel the entire method
+        [HarmonyPrefix]
         public static bool Prefix()
         {
             return !disabled;
@@ -35,7 +34,7 @@
     {
         public static bool disabled = true;
 
-        [HarmonyPrefix] // We're attempting to cancel the entire method
+        [HarmonyPrefix]
         public static bool Prefix()
         {
             return !disabled;
