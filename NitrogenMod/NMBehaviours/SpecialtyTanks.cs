@@ -33,8 +33,11 @@
                 float playerDepth = Ocean.main.GetDepthOf(Player.main.gameObject);
                 if ((tankSlot == O2TanksCore.PhotosynthesisSmallID || tankSlot == O2TanksCore.PhotosynthesisTankID) && playerDepth < 200f)
                 {
-                    if (cachedDayNight == null)
+                    if (cachedDayNight == null) // Safety check
+                    {
+                        cachedDayNight = DayNightCycle.main;
                         return;
+                    }
                     float lightScalar = cachedDayNight.GetLocalLightScalar();
                     if (lightScalar > 0.9f)
                         lightScalar = 0.9f;
@@ -44,12 +47,19 @@
 
                 if (tankSlot == O2TanksCore.ChemosynthesisTankID)
                 {
-                    if (cachedTemp == null)
+                    if (cachedTemp == null) // Safety check
+                    {
+                        cachedTemp = WaterTemperatureSimulation.main;
                         return;
+                    }
                     else
                     {
                         float waterTemp = cachedTemp.GetTemperature(Player.main.transform.position);
-                        if (waterTemp > 30f) cachedOxygenManager.AddOxygen(waterTemp * Time.deltaTime * .5f);
+                        if (waterTemp > 30f)
+                        {
+                            float oxygenAdded = waterTemp *Time.deltaTime * .01f;
+                            cachedOxygenManager.AddOxygen(oxygenAdded);
+                        }
                     }
                 }
             }

@@ -1,12 +1,7 @@
 ﻿namespace NitrogenMod.Patchers
 {
     using Harmony;
-    using UnityEngine;
     using Items;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]

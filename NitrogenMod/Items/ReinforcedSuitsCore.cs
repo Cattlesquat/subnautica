@@ -48,7 +48,7 @@
         public override TechCategory CategoryForPDA { get; } = TechCategory.Workbench;
         public override string AssetsFolder { get; } = Assets;
         public override string[] StepsToFabricatorTab { get; } = craftPath;
-        public override TechType RequiredForUnlock { get; } = TechType.ReinforcedDiveSuit;
+        public override TechType RequiredForUnlock { get; } = TechType.HatchingEnzymes;
 
         public override GameObject GetGameObject()
         {
