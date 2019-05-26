@@ -1,8 +1,6 @@
 ﻿namespace NitrogenMod.NMBehaviours
 {
-    using System.Collections.Generic;
     using UnityEngine;
-    using UnityEngine.UI;
     using Common;
     using Items;
 
@@ -10,16 +8,13 @@
     {
         private const float SolarMaxDepth = 200f;
 
-        private float solarStored = 0f;
-
-        private Oxygen cachedOxygen;
+        private OxygenManager cachedOxygenManager;
         private DayNightCycle cachedDayNight;
         private WaterTemperatureSimulation cachedTemp;
 
         private void Awake()
         {
-            solarStored = 0f;
-            cachedOxygen = Player.main.gameObject.GetComponent<Oxygen>();
+            cachedOxygenManager = Player.main.oxygenMgr;
             cachedDayNight = DayNightCycle.main;
             cachedTemp = WaterTemperatureSimulation.main;
             SeraLogger.Message(Main.modName, "SpecialtyTanks is Awake() and running!");
@@ -33,40 +28,28 @@
         private void Update()
         {
             TechType tankSlot = Inventory.main.equipment.GetTechTypeInSlot("Tank");
-
-            if (tankSlot == O2TanksCore.PhotosynthesisSmallID || tankSlot == O2TanksCore.PhotosynthesisTankID)
+            if (Player.main.motorMode == Player.MotorMode.Dive && GameModeUtils.RequiresOxygen())
             {
-                if (cachedDayNight == null)
-                    return;
-                else
+                float playerDepth = Ocean.main.GetDepthOf(Player.main.gameObject);
+                if ((tankSlot == O2TanksCore.PhotosynthesisSmallID || tankSlot == O2TanksCore.PhotosynthesisTankID) && playerDepth < 200f)
                 {
-                    if (solarStored <= 20f)
-                    {
-                        float lightScalar = cachedDayNight.GetLocalLightScalar();
-                        if (lightScalar > 0.8f)
-                            lightScalar = 0.8f;
-                        if (Ocean.main.GetDepthOf(Player.main.gameObject) < SolarMaxDepth)
-                            solarStored += (Time.deltaTime * lightScalar / Ocean.main.GetDepthOf(Player.main.gameObject));
-                    }
+                    if (cachedDayNight == null)
+                        return;
+                    float lightScalar = cachedDayNight.GetLocalLightScalar();
+                    if (lightScalar > 0.9f)
+                        lightScalar = 0.9f;
+                    float percentage = (200f - playerDepth) / 200f;
+                    cachedOxygenManager.AddOxygen(Time.deltaTime * lightScalar * percentage);
+                }
+
+                if (tankSlot == O2TanksCore.ChemosynthesisTankID)
+                {
+                    if (cachedTemp == null)
+                        return;
                     else
                     {
-                        solarStored = 0f;
-                        ErrorMessage.AddMessage("solarStored has replenished O2!");
-                        cachedOxygen.oxygenAvailable += 2f;
-                    }
-                }
-            }
-
-            if (tankSlot == O2TanksCore.ChemosynthesisTankID)
-            {
-                if (cachedTemp == null)
-                    return;
-                else
-                {
-                    float waterTemp = cachedTemp.GetTemperature(Player.main.transform.position);
-                    if (waterTemp > 30f)
-                    {
-
+                        float waterTemp = cachedTemp.GetTemperature(Player.main.transform.position);
+                        if (waterTemp > 30f) cachedOxygenManager.AddOxygen(waterTemp * Time.deltaTime * .5f);
                     }
                 }
             }

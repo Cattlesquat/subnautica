@@ -6,7 +6,7 @@
     class ReinforcedStillSuit : ReinforcedSuitsCore
     {
         public ReinforcedStillSuit()
-            : base(classID: "reinforcedstillsuit", friendlyName: "Reinforced Still Suit", description: "An upgraded still suit capable of protecting the user from 500m-1300m and temperatures up to 70C.")
+            : base(classID: "reinforcedstillsuit", friendlyName: "Reinforced Still Suit", description: "An upgraded still suit capable of protecting the user at depths up to 1300m and temperatures up to 70C.")
         {
             OnFinishedPatching += SetStaticTechType;
         }
@@ -22,7 +22,7 @@
                 Ingredients = new List<Ingredient>(3)
                 {
                     new Ingredient(TechType.Stillsuit, 1),
-                    new Ingredient(TechType.Diamond, 2),
+                    new Ingredient(DummySuitItems.RiverEelScaleID, 2),
                     new Ingredient(TechType.AramidFibers, 1),
                 }
             };

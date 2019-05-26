@@ -4,10 +4,6 @@
     using UnityEngine;
     using Items;
     using NMBehaviours;
-    using Common;
-    using UWE;
-    using UnityEngine.UI;
-    using UnityEngine.SceneManagement;
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Update")]

@@ -1,12 +1,7 @@
 ﻿namespace NitrogenMod.Patchers
 {
     using Harmony;
-    using UnityEngine;
     using Items;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("HasReinforcedSuit")]
@@ -42,14 +37,6 @@
                     __instance.temperatureDamage.minDamageTemperature += 20f;
                 else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
                     __instance.temperatureDamage.minDamageTemperature += 35f;
-                /*if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                {
-
-                }
-                else if (bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit)
-                {
-
-                }*/
             }
             if (__instance.HasReinforcedGloves())
             {
