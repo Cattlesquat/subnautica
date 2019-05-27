@@ -13,6 +13,7 @@
         private const string nitroEnablerName = "nitrogenmodenabler";
         private const string lethalName = "lethalmodeenabler";
         private const string crushEnablerName = "crushmodenabler";
+        private const string specialtyTanksEnablerName = "specialtytanksenabler";
 
         private const string nitroSliderName = "damagescalerslider";
         private const string crushSliderName = "crushdepthslider";
@@ -20,11 +21,13 @@
         public bool nitroEnabled = true;
         public bool nitroLethal = true;
         public bool crushEnabled = false;
+        public bool specialtyTanksEnabled = true;
 
         public float damageScaler = 1f;
 
         public NitrogenOptions() : base("Nitrogen Mod Options")
         {
+            ToggleChanged += SpecialtyTanksEnabled;
             ToggleChanged += NitrogenEnabled;
             ToggleChanged += NonLethalOption;
             SliderChanged += DamageScalerSlider;
@@ -39,10 +42,20 @@
 
         public override void BuildModOptions()
         {
+            AddToggleOption(specialtyTanksEnablerName, "Specialty Tanks (restart game)", specialtyTanksEnabled);
             AddToggleOption(nitroEnablerName, "Enable Nitrogen", nitroEnabled);
             AddToggleOption(lethalName, "Lethal Decompression", nitroLethal);
             AddSliderOption(nitroSliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
             AddToggleOption(crushEnablerName, "Enable Crush Depth", crushEnabled);
+        }
+
+        private void SpecialtyTanksEnabled(object sender, ToggleChangedEventArgs args)
+        {
+            if (args.Id != specialtyTanksEnablerName)
+                return;
+            specialtyTanksEnabled = args.Value;
+            Main.specialtyTanks = args.Value;
+            SaveSettings();
         }
 
         private void NitrogenEnabled(object sender, ToggleChangedEventArgs args)
@@ -90,7 +103,7 @@
 
         private void SaveSettings()
         {
-            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled));
+            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, specialtyTanksEnabled));
         }
 
         private void ReadSettings()
@@ -109,6 +122,7 @@
                     nitroLethal = Boolean.Parse(loadedData.IsLethal);
                     damageScaler = float.Parse(loadedData.DamageScaler);
                     crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
+                    specialtyTanksEnabled = Boolean.Parse(loadedData.SpecialtyEnabled);
                 }
                 catch (Exception ex)
                 {
@@ -117,8 +131,10 @@
                     nitroLethal = true;
                     damageScaler = 1f;
                     crushEnabled = false;
+                    specialtyTanksEnabled = true;
                     SaveSettings();
                 }
+                Main.specialtyTanks = specialtyTanksEnabled;
             }
         }
     }
@@ -128,15 +144,17 @@
         public string NitrogenEnabled { get; set; }
         public string IsLethal { get; set; }
         public string CrushEnabled { get; set; }
+        public string SpecialtyEnabled { get; set; }
 
         public string DamageScaler { get; set; }
 
-        public SaveData(bool enabled, bool lethal, float scaler, bool crush)
+        public SaveData(bool enabled, bool lethal, float scaler, bool crush, bool specialty)
         {
             NitrogenEnabled = enabled.ToString();
             IsLethal = lethal.ToString();
             DamageScaler = scaler.ToString();
             CrushEnabled = crush.ToString();
+            SpecialtyEnabled = specialty.ToString();
         }
     }
 }

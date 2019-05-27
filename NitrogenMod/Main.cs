@@ -17,9 +17,11 @@
         private const string assetBundle = assetFolder + "n2warning";
         public static GameObject N2HUD { get; set; }
 
+        public static bool specialtyTanks = true;
+
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.0");
+            SeraLogger.PatchStart(modName, "1.1.0");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
@@ -27,13 +29,14 @@
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
-                DummySuitItems.PatchDummyItems();
-                ReinforcedSuitsCore.PatchSuits();
-                O2TanksCore.PatchTanks();
-
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
 
+                DummySuitItems.PatchDummyItems();
+                ReinforcedSuitsCore.PatchSuits();
+                if(specialtyTanks)
+                    O2TanksCore.PatchTanks();
+                
                 SeraLogger.PatchComplete(modName);
             }
             catch (Exception ex)
