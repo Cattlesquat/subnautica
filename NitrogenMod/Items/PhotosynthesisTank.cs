@@ -29,5 +29,7 @@
         }
 
         private void SetStaticTechType() => PhotosynthesisTankID = this.TechType;
+
+        public override TechType RequiredForUnlock { get; } = TechType.PlasteelTank;
     }
 }

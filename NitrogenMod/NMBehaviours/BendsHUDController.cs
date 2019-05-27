@@ -1,9 +1,5 @@
 ﻿namespace NitrogenMod.NMBehaviours
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -18,8 +14,6 @@
         private Text n2Warning;
         private Animator flashRed;
 
-        private bool _cachedUnsafe;
-
         private void Awake()
         {
             _N2HUDWarning = Instantiate<GameObject>(Main.N2HUD);
@@ -30,7 +24,6 @@
 
             n2Warning.enabled = false;
             flashRed.SetBool("unsafe", false);
-            _cachedUnsafe = false;
 
             hudTransform = GameObject.Find("ScreenCanvas").transform.Find("HUD");
             canvasTransform.SetParent(hudTransform, false);

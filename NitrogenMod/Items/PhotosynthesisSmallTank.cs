@@ -29,5 +29,7 @@
         }
 
         private void SetStaticTechType() => PhotosynthesisSmallID = this.TechType;
+
+        public override TechType RequiredForUnlock { get; } = TechType.Rebreather;
     }
 }
