@@ -122,12 +122,12 @@
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     if (depthOf > 0f)
                     {
-                        if (reinforcedSuit1 > 0)
+                        if (reinforcedSuit1 > 0 && depthOf <= 800f)
+                            depthOf /= 1.25f;
+                        else if ((reinforcedSuit2 > 0 || reinforcedStill > 0) && depthOf <= 1300f)
                             depthOf /= 1.5f;
-                        else if (reinforcedSuit2 > 0 || reinforcedStill > 0)
-                            depthOf /= 2f;
                         else if (reinforcedSuit3 > 0)
-                            depthOf /= 2.5f;
+                            depthOf /= 2f;
                     }
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
