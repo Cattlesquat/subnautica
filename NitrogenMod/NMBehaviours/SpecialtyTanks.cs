@@ -20,11 +20,6 @@
             SeraLogger.Message(Main.modName, "SpecialtyTanks is Awake() and running!");
         }
 
-        private void Start()
-        {
-            
-        }
-
         private void Update()
         {
             TechType tankSlot = Inventory.main.equipment.GetTechTypeInSlot("Tank");

@@ -10,6 +10,8 @@
     internal class NitroDamagePatcher
     {
         private static bool lethal = true;
+        private static bool _cachedActive = false;
+        private static bool _cachedAnimating = false;
 
         private static float damageScaler = 0f;
         
@@ -24,7 +26,6 @@
                 {
                     global::Utils.Assert(depthOf < __instance.safeNitrogenDepth, "see log", null);
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-                    ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression. Ascend slower.");
                     float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f;
                     if (component.health - damage > 0f)
                         component.TakeDamage(damage, default, DamageType.Normal, null);
@@ -38,7 +39,6 @@
                     if (atmosPressure < 0f)
                         atmosPressure = 0f;
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-                    ErrorMessage.AddMessage("WARNING: Experiencing unsafe decompression");
                     float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
                     if (component.health - damage > 0f)
                         component.TakeDamage(damage, default, DamageType.Normal, null);
@@ -59,6 +59,7 @@
                         atmosPressure = 0f;
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, atmosPressure, __instance.kDissipateScalar * 2f * Time.deltaTime);
                 }
+                HUDController(__instance);
             }
             return false;
         }
@@ -71,6 +72,30 @@
         public static void AdjustScaler(float val)
         {
             damageScaler = val;
+        }
+
+        private static void HUDController(NitrogenLevel nitrogenInstance)
+        {
+            if (nitrogenInstance.safeNitrogenDepth > 10f && !_cachedActive)
+            {
+                BendsHUDController.SetActive(true);
+                _cachedActive = true;
+            }
+            else if (nitrogenInstance.safeNitrogenDepth < 10f && _cachedActive)
+            {
+                BendsHUDController.SetActive(false);
+                _cachedActive = false;
+            }
+            if (nitrogenInstance.safeNitrogenDepth > 50f && !_cachedAnimating)
+            {
+                BendsHUDController.SetFlashing(true);
+                _cachedAnimating = true;
+            }
+            else if (nitrogenInstance.safeNitrogenDepth < 50f && _cachedAnimating)
+            {
+                BendsHUDController.SetFlashing(false);
+                _cachedAnimating = false;
+            }
         }
     }
 
@@ -92,9 +117,18 @@
 
             if (GameModeUtils.RequiresOxygen())
             {
-                if (__instance.nitrogenEnabled && reinforcedSuits < 1)
+                if (__instance.nitrogenEnabled)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
+                    if (depthOf > 0f)
+                    {
+                        if (reinforcedSuit1 > 0)
+                            depthOf /= 1.5f;
+                        else if (reinforcedSuit2 > 0 || reinforcedStill > 0)
+                            depthOf /= 2f;
+                        else if (reinforcedSuit3 > 0)
+                            depthOf /= 2.5f;
+                    }
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
                 }
@@ -122,7 +156,6 @@
         private static void DamagePlayer(float depthOf)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-            ErrorMessage.AddMessage("WARNING: Water pressure exceeding safe level");
             component.TakeDamage(UnityEngine.Random.value * (depthOf - 500f) / 50f, default, DamageType.Normal, null);
         }
 

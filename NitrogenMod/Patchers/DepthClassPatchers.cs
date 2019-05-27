@@ -2,7 +2,7 @@
 {
     using Harmony;
     using Items;
-
+    using NMBehaviours;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("OnDepthClassChanged")]
@@ -65,6 +65,18 @@
                 return;
             else
                 __result = Ocean.DepthClass.Crush;
+        }
+    }
+
+    // Throwing this patch in here since this is all essentially a HUD patch
+    [HarmonyPatch(typeof(uGUI_DepthCompass))]
+    [HarmonyPatch("Start")]
+    internal class UGUIPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref uGUI_DepthCompass __instance)
+        {
+            __instance.gameObject.AddComponent<BendsHUDController>();
         }
     }
 }

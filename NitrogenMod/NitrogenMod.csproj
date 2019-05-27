@@ -81,6 +81,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="NitrogenOptions.cs" />
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
+    <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\DepthClassPatchers.cs" />
     <Compile Include="Patchers\DiveSuitPatchers.cs" />
     <Compile Include="Patchers\NitroLevPatcher.cs" />
@@ -88,6 +89,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\n2warning">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="mod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
