@@ -109,44 +109,45 @@
         public static bool Prefix (ref NitrogenLevel __instance, Player player)
         {
             Inventory main = Inventory.main;
-            int reinforcedSuit1 = main.equipment.GetCount(TechType.ReinforcedDiveSuit);
-            int reinforcedSuit2 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit2ID);
-            int reinforcedSuit3 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit3ID);
-            int reinforcedStill = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedStillSuit);
-            int reinforcedSuits = reinforcedSuit1 + reinforcedSuit2 + reinforcedSuit3 + reinforcedStill;
-
+            TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
+            TechType headSlot = Inventory.main.equipment.GetTechTypeInSlot("Head");
+            
             if (GameModeUtils.RequiresOxygen())
             {
                 if (__instance.nitrogenEnabled)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
+                    float depthOfModified = depthOf;
                     if (depthOf > 0f)
                     {
-                        if (reinforcedSuit1 > 0 && depthOf <= 800f)
-                            depthOf /= 1.25f;
-                        else if ((reinforcedSuit2 > 0 || reinforcedStill > 0) && depthOf <= 1300f)
-                            depthOf /= 1.5f;
-                        else if (reinforcedSuit3 > 0)
-                            depthOf /= 2f;
+                        if (headSlot == TechType.Rebreather)
+                            depthOfModified *= 0.95f;
+                        if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+                            depthOfModified *= 0.3f;
+                        else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf <= 1300f)
+                            depthOfModified *= 0.5f;
+                        else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf <= 800f)
+                            depthOfModified *= 0.75f;
+                        else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
+                            depthOfModified *= 0.9f;
                     }
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
                 }
+
                 if (crushEnabled && Player.main.motorMode == Player.MotorMode.Dive)
                 {
                     float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     if (UnityEngine.Random.value < 0.5f)
                     {
-                        if (depthOf > 500f && reinforcedSuits < 1)
-                        {
-                            DamagePlayer(depthOf);
-                        }
-                        else if (depthOf > 1000f && reinforcedSuit2 < 1 && reinforcedSuit3 < 1 && reinforcedStill < 1)
-                        {
-                            DamagePlayer(depthOf);
-                        }
-                        else if (depthOf > 1300f && reinforcedSuit3 < 1)
-                            DamagePlayer(depthOf);
+                        if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+                            return false;
+                        else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf >= 1300f)
+                            DamagePlayer(depthOf - 1300f);
+                        else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf >= 800f)
+                            DamagePlayer(depthOf - 800f);
+                        else if (depthOf >= 500f)
+                            DamagePlayer(depthOf - 500f);
                     }
                 }
             }
@@ -156,7 +157,7 @@
         private static void DamagePlayer(float depthOf)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-            component.TakeDamage(UnityEngine.Random.value * (depthOf - 500f) / 50f, default, DamageType.Normal, null);
+            component.TakeDamage(UnityEngine.Random.value * depthOf / 50f, default, DamageType.Normal, null);
         }
 
         public static void EnableCrush (bool isEnabled)
