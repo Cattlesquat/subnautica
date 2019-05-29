@@ -18,7 +18,7 @@ namespace EnzymeChargedBattery
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.2");
+            SeraLogger.PatchStart(modName, "1.0.3");
             try
             {
                 EnzymeBatteryCore.PatchBatteries();
