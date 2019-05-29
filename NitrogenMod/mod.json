@@ -2,9 +2,10 @@
   "Id": "NitrogenMod",
   "DisplayName": "Nitrogen Enabler",
   "Author": "SeraphimRisen",
-  "Version": "1.1.5",
+  "Version": "1.1.6",
   "Enable": true,
   "AssemblyName": "NitrogenMod.dll",
   "EntryMethod": "NitrogenMod.Main.Patch",
-  "Game": "Subnautica",
+  "Dependencies": ["SMLHelper"],
+  "Game": "Subnautica"
 }

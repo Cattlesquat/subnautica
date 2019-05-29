@@ -2,10 +2,10 @@
    "Id": "BiomeHUDIndicator",
   "DisplayName": "Biome HUD Indicator",
   "Author": "SeraphimRisen",
-  "Version": "2.0.0",
+  "Version": "2.0.1",
   "Enable": true,
   "AssemblyName": "BiomeHUDIndicator.dll",
   "EntryMethod": "BiomeHUDIndicator.Main.Patch",
   "Dependencies": ["SMLHelper"],
-  "Game": "Subnautica",
+  "Game": "Subnautica"
 }
