@@ -46,24 +46,20 @@
         [HarmonyPostfix]
         public static void Postfix(ref Player __instance, ref Ocean.DepthClass __result)
         {
-            Inventory main = Inventory.main;
-            int reinforcedSuit1 = main.equipment.GetCount(TechType.ReinforcedDiveSuit);
-            int reinforcedSuit2 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit2ID);
-            int reinforcedSuit3 = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit3ID);
-            int reinforcedStill = main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedStillSuit);
-            int reinforcedSuits = reinforcedSuit1 + reinforcedSuit2 + reinforcedSuit3 + reinforcedStill;
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
 
             __result = Ocean.DepthClass.Safe;
-            if ((reinforcedSuit3 > 0))
+            TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
+
+            if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
                 return;
-            if ((reinforcedSuit2 > 0 || reinforcedStill > 0) && depth <= 1300f)
-                return;
-            else if (reinforcedSuit1 > 0 && depth <= 800f)
-                return;
-            else if (depth <= 500f && reinforcedSuits == 0)
-                return;
-            else
+            else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depth >= 1300f)
+                __result = Ocean.DepthClass.Crush;
+            else if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depth >= 800f)
+                __result = Ocean.DepthClass.Crush;
+            else if (bodySlot == TechType.RadiationSuit && depth >= 500f)
+                __result = Ocean.DepthClass.Crush;
+            else if (depth >= 200f)
                 __result = Ocean.DepthClass.Crush;
         }
     }

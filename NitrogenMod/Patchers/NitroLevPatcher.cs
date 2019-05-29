@@ -144,10 +144,12 @@
                             return false;
                         else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf >= 1300f)
                             DamagePlayer(depthOf - 1300f);
-                        else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf >= 800f)
+                        else if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depthOf >= 800f)
                             DamagePlayer(depthOf - 800f);
-                        else if (depthOf >= 500f)
+                        else if (bodySlot == TechType.RadiationSuit && depthOf >= 500f)
                             DamagePlayer(depthOf - 500f);
+                        else if (depthOf >= 200f)
+                            DamagePlayer(depthOf - 200f);
                     }
                 }
             }
