@@ -11,7 +11,7 @@
         public static void Patch()
         {
             string modName = "[TimeCapsuleLogger]";
-            SeraLogger.PatchStart(modName, "1.0.1");
+            SeraLogger.PatchStart(modName, "1.0.2");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.timecapsulelogger.mod");
