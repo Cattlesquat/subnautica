@@ -3,6 +3,7 @@
     using Harmony;
     using Items;
     using NMBehaviours;
+    using Common;
 
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("OnDepthClassChanged")]
@@ -44,23 +45,38 @@
     internal class PlayerGetDepthClassPatcher
     {
         [HarmonyPostfix]
-        public static void Postfix(ref Player __instance, ref Ocean.DepthClass __result)
+        public static void Postfix(ref Ocean.DepthClass __result)
         {
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
-
-            __result = Ocean.DepthClass.Safe;
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
 
-            if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID || Player.main.motorMode != Player.MotorMode.Dive)
-                return;
-            else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depth >= 1300f)
-                __result = Ocean.DepthClass.Crush;
-            else if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depth >= 800f)
-                __result = Ocean.DepthClass.Crush;
-            else if (bodySlot == TechType.RadiationSuit && depth >= 500f)
-                __result = Ocean.DepthClass.Crush;
-            else if (depth >= 200f)
-                __result = Ocean.DepthClass.Crush;
+            if (Player.main.motorMode == Player.MotorMode.Dive)
+            {
+                if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+                    __result = Ocean.DepthClass.Safe;
+                else
+                {
+                    if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depth <= 1300f)
+                        __result = Ocean.DepthClass.Safe;
+                    else
+                    {
+                        if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depth <= 800f)
+                            __result = Ocean.DepthClass.Safe;
+                        else
+                        {
+                            if (bodySlot == TechType.RadiationSuit && depth <= 500f)
+                                __result = Ocean.DepthClass.Safe;
+                            else
+                            {
+                                if (depth >= 200f)
+                                    __result = Ocean.DepthClass.Crush;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                __result = Ocean.DepthClass.Safe;
         }
     }
 

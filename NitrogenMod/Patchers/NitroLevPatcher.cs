@@ -114,9 +114,9 @@
             
             if (GameModeUtils.RequiresOxygen())
             {
+                float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                 if (__instance.nitrogenEnabled)
                 {
-                    float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     float depthOfModified = depthOf;
                     if (depthOf > 0f)
                     {
@@ -131,22 +131,19 @@
                         else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
                             depthOfModified *= 0.9f;
                     }
-                    float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f);
+                    float num = __instance.depthCurve.Evaluate(depthOfModified / 2048f);
+                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOfModified, num * __instance.kBreathScalar * .75f);
                 }
 
-                if (crushEnabled && Player.main.motorMode == Player.MotorMode.Dive)
+                if (crushEnabled && Player.main.GetDepthClass() == Ocean.DepthClass.Crush)
                 {
-                    float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                     if (UnityEngine.Random.value < 0.5f)
                     {
-                        if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                            return false;
-                        else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf >= 1300f)
+                        if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit)
                             DamagePlayer(depthOf - 1300f);
-                        else if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depthOf >= 800f)
+                        else if (bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit)
                             DamagePlayer(depthOf - 800f);
-                        else if (bodySlot == TechType.RadiationSuit && depthOf >= 500f)
+                        else if (bodySlot == TechType.RadiationSuit)
                             DamagePlayer(depthOf - 500f);
                         else if (depthOf >= 200f)
                             DamagePlayer(depthOf - 200f);
