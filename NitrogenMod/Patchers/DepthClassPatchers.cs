@@ -51,7 +51,7 @@
             __result = Ocean.DepthClass.Safe;
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
 
-            if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+            if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID || Player.main.motorMode != Player.MotorMode.Dive)
                 return;
             else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depth >= 1300f)
                 __result = Ocean.DepthClass.Crush;
