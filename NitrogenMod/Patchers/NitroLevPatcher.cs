@@ -33,7 +33,7 @@
                         component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
 
-                if (__instance.safeNitrogenDepth > 10f && Player.main.motorMode != Player.MotorMode.Dive && UnityEngine.Random.value < 0.025f)
+                if (__instance.safeNitrogenDepth > 10f && !Player.main.IsSwimming() && UnityEngine.Random.value < 0.025f)
                 {
                     float atmosPressure = __instance.safeNitrogenDepth - 10f;
                     if (atmosPressure < 0f)
@@ -47,12 +47,12 @@
                 }
 
                 float num = 1f;
-                if (depthOf < __instance.safeNitrogenDepth && Player.main.motorMode == Player.MotorMode.Dive)
+                if (depthOf < __instance.safeNitrogenDepth && Player.main.IsSwimming())
                 {
                     num = Mathf.Clamp(2f - __instance.GetComponent<Rigidbody>().velocity.magnitude, 0f, 2f) * 1f;
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, __instance.kDissipateScalar * num * Time.deltaTime);
                 }
-                else if (Player.main.motorMode != Player.MotorMode.Dive && __instance.safeNitrogenDepth > 0f)
+                else if (!Player.main.IsSwimming() && __instance.safeNitrogenDepth > 0f)
                 {
                     float atmosPressure = __instance.safeNitrogenDepth - 10f;
                     if (atmosPressure < 0f)
@@ -120,8 +120,6 @@
                     float depthOfModified = depthOf;
                     if (depthOf > 0f)
                     {
-                        if (headSlot == TechType.Rebreather)
-                            depthOfModified *= 0.95f;
                         if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
                             depthOfModified *= 0.3f;
                         else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf <= 1300f)
@@ -130,6 +128,8 @@
                             depthOfModified *= 0.75f;
                         else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
                             depthOfModified *= 0.9f;
+                        if (headSlot == TechType.Rebreather)
+                            depthOfModified = depthOfModified - (depthOf * 0.95f);
                     }
                     float num = __instance.depthCurve.Evaluate(depthOfModified / 2048f);
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOfModified, num * __instance.kBreathScalar * .75f);

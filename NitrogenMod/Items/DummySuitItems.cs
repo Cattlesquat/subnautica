@@ -19,14 +19,15 @@
             riverEelScale.Patch();
             lavaLizardScale.Patch();
             thermoSample.Patch();
-
+            
             CraftDataHandler.SetHarvestOutput(TechType.SpineEel, RiverEelScaleID);
-            CraftDataHandler.SetHarvestOutput(TechType.LavaLizard, LavaLizardScaleID);
-            CraftDataHandler.SetHarvestOutput(TechType.LavaLarva, ThermoBacteriaID);
-
             CraftDataHandler.SetHarvestType(TechType.SpineEel, HarvestType.DamageAlive);
-            CraftDataHandler.SetHarvestType(TechType.LavaLizard, HarvestType.DamageAlive);
+
+            CraftDataHandler.SetHarvestOutput(TechType.LavaLarva, ThermoBacteriaID);
             CraftDataHandler.SetHarvestType(TechType.LavaLarva, HarvestType.DamageAlive);
+
+            CraftDataHandler.SetHarvestOutput(TechType.LavaLizard, LavaLizardScaleID);
+            CraftDataHandler.SetHarvestType(TechType.LavaLizard, HarvestType.DamageAlive);
         }
 
         protected abstract TechType BaseType { get; }

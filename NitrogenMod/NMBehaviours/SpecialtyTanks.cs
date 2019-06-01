@@ -23,7 +23,7 @@
         private void Update()
         {
             TechType tankSlot = Inventory.main.equipment.GetTechTypeInSlot("Tank");
-            if (Player.main.motorMode == Player.MotorMode.Dive && GameModeUtils.RequiresOxygen())
+            if (Player.main.IsSwimming() && GameModeUtils.RequiresOxygen())
             {
                 float playerDepth = Ocean.main.GetDepthOf(Player.main.gameObject);
                 if ((tankSlot == O2TanksCore.PhotosynthesisSmallID || tankSlot == O2TanksCore.PhotosynthesisTankID) && playerDepth < 200f)

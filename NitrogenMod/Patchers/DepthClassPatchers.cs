@@ -50,7 +50,7 @@
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
 
-            if (Player.main.motorMode == Player.MotorMode.Dive)
+            if (Player.main.IsSwimming())
             {
                 if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
                     __result = Ocean.DepthClass.Safe;
