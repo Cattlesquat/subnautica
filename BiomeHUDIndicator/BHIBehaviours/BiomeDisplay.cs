@@ -35,10 +35,9 @@
 
         private void Awake()
         {
-            BiomeDisplayOptions options = new BiomeDisplayOptions();
-            _animationsEnabled = options.animationEnabled;
-            _thumbnailFlag = options.imageEnabled;
-            imageAlpha = options.alphaValue;
+            _animationsEnabled = Main.animationsEnabled;
+            _thumbnailFlag = Main.imagesEnabled;
+            imageAlpha = Main.imageAlpha;
 
             _BiomeHUDObject = Instantiate<GameObject>(Main.BiomeHUD);
 

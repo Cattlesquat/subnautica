@@ -8,7 +8,7 @@
 
     internal class BiomeDisplayOptions : ModOptions
     {
-        private const string configFile = Main.modFolder + "Config.xml";
+        private const string configFile = "./QMods/BiomeHUDIndicator/Config.xml";
 
         private const string imageEnablerName = "biomeimageenabler";
         private const string animationEnablerName = "biomeanimationenabler";

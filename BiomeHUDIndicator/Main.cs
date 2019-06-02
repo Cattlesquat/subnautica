@@ -12,14 +12,19 @@
     {
         public const string modName = "[BiomeHUDIndicator]";
 
-        public const string modFolder = "./QMods/BiomeHUDIndicator/";
+        private const string modFolder = "./QMods/BiomeHUDIndicator/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "biomehudchip";
+
         public static GameObject BiomeHUD { get; set; }
+
+        public static bool animationsEnabled = true;
+        public static bool imagesEnabled = true;
+        public static byte imageAlpha = 255;
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "2.0.1");
+            SeraLogger.PatchStart(modName, "2.0.2");
             try
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
@@ -27,9 +32,14 @@
 
                 CompassCore.PatchCompasses();
 
+                BiomeDisplayOptions savedSettings = new BiomeDisplayOptions();
+                OptionsPanelHandler.RegisterModOptions(savedSettings);
+                animationsEnabled = savedSettings.animationEnabled;
+                imagesEnabled = savedSettings.imageEnabled;
+                imageAlpha = savedSettings.alphaValue;
+
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                OptionsPanelHandler.RegisterModOptions(new BiomeDisplayOptions());
 
                 SeraLogger.PatchComplete(modName);
             }

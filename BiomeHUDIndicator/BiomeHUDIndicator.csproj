@@ -49,10 +49,6 @@
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="iTween">
-      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\iTween.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="QModInstaller">
       <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\QModInstaller.dll</HintPath>
       <Private>False</Private>
