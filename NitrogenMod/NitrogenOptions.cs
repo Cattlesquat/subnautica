@@ -6,7 +6,7 @@
     using Patchers;
     using Common;
 
-    internal class NitrogenOptions : ModOptions
+    class NitrogenOptions : ModOptions
     {
         private const string configFile = "./QMods/NitrogenMod/Config.xml";
 

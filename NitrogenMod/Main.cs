@@ -7,21 +7,23 @@
     using Common;
     using Items;
     using UnityEngine;
+    using Patchers;
 
     public class Main
     {
         public const string modName = "[NitrogenMod]";
 
-        public const string modFolder = "./QMods/NitrogenMod/";
+        private const string modFolder = "./QMods/NitrogenMod/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "n2warning";
         public static GameObject N2HUD { get; set; }
 
         public static bool specialtyTanks = true;
+        public static bool nitrogenEnabled = true;
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.3.0");
+            SeraLogger.PatchStart(modName, "1.3.1");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
@@ -29,8 +31,15 @@
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
+                NitrogenOptions savedSettings = new NitrogenOptions();
+                OptionsPanelHandler.RegisterModOptions(savedSettings);
+
+                NitroDamagePatcher.Lethality(savedSettings.nitroLethal);
+                NitroDamagePatcher.AdjustScaler(savedSettings.damageScaler);
+                BreathPatcher.EnableCrush(savedSettings.crushEnabled);
+                nitrogenEnabled = savedSettings.nitroEnabled;
+
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                OptionsPanelHandler.RegisterModOptions(new NitrogenOptions());
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();

@@ -172,12 +172,8 @@
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            NitrogenOptions options = new NitrogenOptions();
-            __instance.nitrogenEnabled = options.nitroEnabled;
+            __instance.nitrogenEnabled = Main.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
-            NitroDamagePatcher.Lethality(options.nitroLethal);
-            NitroDamagePatcher.AdjustScaler(options.damageScaler);
-            BreathPatcher.EnableCrush(options.crushEnabled);
 
             Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
