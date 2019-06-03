@@ -121,11 +121,11 @@
                     if (depthOf > 0f)
                     {
                         if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                            depthOfModified *= 0.3f;
+                            depthOfModified *= 0.55f;
                         else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf <= 1300f)
-                            depthOfModified *= 0.5f;
+                            depthOfModified *= 0.65f;
                         else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf <= 800f)
-                            depthOfModified *= 0.75f;
+                            depthOfModified *= 0.8f;
                         else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
                             depthOfModified *= 0.9f;
                         if (headSlot == TechType.Rebreather)
