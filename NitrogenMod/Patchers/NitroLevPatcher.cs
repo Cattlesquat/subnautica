@@ -4,6 +4,7 @@
     using UnityEngine;
     using Items;
     using NMBehaviours;
+    using Common;
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Update")]
@@ -117,22 +118,22 @@
                 float depthOf = Ocean.main.GetDepthOf(player.gameObject);
                 if (__instance.nitrogenEnabled)
                 {
-                    float depthOfModified = depthOf;
+                    float modifier = 1f;
                     if (depthOf > 0f)
                     {
                         if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                            depthOfModified *= 0.55f;
+                            modifier = 0.55f;
                         else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf <= 1300f)
-                            depthOfModified *= 0.65f;
+                            modifier = 0.75f;
                         else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf <= 800f)
-                            depthOfModified *= 0.8f;
+                            modifier = 0.85f;
                         else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
-                            depthOfModified *= 0.9f;
+                            modifier = 0.95f;
                         if (headSlot == TechType.Rebreather)
-                            depthOfModified = depthOfModified - (depthOf * 0.95f);
+                            modifier -= 0.05f;
                     }
-                    float num = __instance.depthCurve.Evaluate(depthOfModified / 2048f);
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOfModified, num * __instance.kBreathScalar * .75f);
+                    float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
+                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .75f * modifier);
                 }
 
                 if (crushEnabled && Player.main.GetDepthClass() == Ocean.DepthClass.Crush)
@@ -174,7 +175,7 @@
         {
             __instance.nitrogenEnabled = Main.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
-
+            
             Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
     }
