@@ -50,23 +50,13 @@
         public static void Postfix(ref Ocean.DepthClass __result)
         {
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
-            TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
-            
-            if (Player.main.IsSwimming())
-            {
-                SeraLogger.Message(Main.modName, "depth: " + depth.ToString());
-                SeraLogger.Message(Main.modName, "divingCrushDepth: " + divingCrushDepth.ToString());
+            __result = Ocean.DepthClass.Safe;
 
-                if (depth >= divingCrushDepth)
-                    __result = Ocean.DepthClass.Crush;
-
-                if (__result == Ocean.DepthClass.Unsafe)
-                    __result = Ocean.DepthClass.Safe;
-            }
+            if (Player.main.IsSwimming() && depth >= divingCrushDepth)
+                __result = Ocean.DepthClass.Crush;
         }
     }
 
-    // Throwing this patch in here since this is all essentially a HUD patch
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("Start")]
     internal class UGUIPatcher
