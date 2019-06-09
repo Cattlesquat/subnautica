@@ -82,6 +82,7 @@
     <Compile Include="NitrogenOptions.cs" />
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
+    <Compile Include="Patchers\BreathPatcher.cs" />
     <Compile Include="Patchers\DepthClassPatchers.cs" />
     <Compile Include="Patchers\DiveSuitPatchers.cs" />
     <Compile Include="Patchers\NitroLevPatcher.cs" />

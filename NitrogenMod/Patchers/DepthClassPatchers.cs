@@ -44,39 +44,25 @@
     [HarmonyPatch("GetDepthClass")]
     internal class PlayerGetDepthClassPatcher
     {
+        public static float divingCrushDepth = 200f;
+
         [HarmonyPostfix]
         public static void Postfix(ref Ocean.DepthClass __result)
         {
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
-
+            
             if (Player.main.IsSwimming())
             {
-                if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+                SeraLogger.Message(Main.modName, "depth: " + depth.ToString());
+                SeraLogger.Message(Main.modName, "divingCrushDepth: " + divingCrushDepth.ToString());
+
+                if (depth >= divingCrushDepth)
+                    __result = Ocean.DepthClass.Crush;
+
+                if (__result == Ocean.DepthClass.Unsafe)
                     __result = Ocean.DepthClass.Safe;
-                else
-                {
-                    if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depth <= 1300f)
-                        __result = Ocean.DepthClass.Safe;
-                    else
-                    {
-                        if ((bodySlot == TechType.ReinforcedDiveSuit || bodySlot == TechType.Stillsuit) && depth <= 800f)
-                            __result = Ocean.DepthClass.Safe;
-                        else
-                        {
-                            if (bodySlot == TechType.RadiationSuit && depth <= 500f)
-                                __result = Ocean.DepthClass.Safe;
-                            else
-                            {
-                                if (depth >= 200f)
-                                    __result = Ocean.DepthClass.Crush;
-                            }
-                        }
-                    }
-                }
             }
-            else
-                __result = Ocean.DepthClass.Safe;
         }
     }
 

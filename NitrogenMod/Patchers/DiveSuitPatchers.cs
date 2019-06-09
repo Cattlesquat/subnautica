@@ -29,29 +29,43 @@
         {
             __instance.temperatureDamage.minDamageTemperature = 49f;
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
-            if (__instance.HasReinforcedSuit())
+            float crushDepth = 200f;
+
+            if (bodySlot == TechType.RadiationSuit)
+                crushDepth = 500f;
+            else if (bodySlot == TechType.ReinforcedDiveSuit)
             {
-                if (bodySlot == TechType.ReinforcedDiveSuit || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit)
-                    __instance.temperatureDamage.minDamageTemperature += 15f;
-                else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID)
-                    __instance.temperatureDamage.minDamageTemperature += 20f;
-                else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                    __instance.temperatureDamage.minDamageTemperature += 35f;
+                __instance.temperatureDamage.minDamageTemperature += 15f;
+                crushDepth = 800f;
+            }
+            else if (bodySlot == TechType.Stillsuit)
+                crushDepth = 800f;
+            else if (bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit)
+            {
+                __instance.temperatureDamage.minDamageTemperature += 15f;
+                crushDepth = 1300f;
+            }
+            else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID)
+            {
+                __instance.temperatureDamage.minDamageTemperature += 20f;
+                crushDepth = 1300f;
+            }
+            else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
+            {
+                __instance.temperatureDamage.minDamageTemperature += 35f;
+                crushDepth = 8000f;
             }
             if (__instance.HasReinforcedGloves())
             {
                 __instance.temperatureDamage.minDamageTemperature += 6f;
             }
-            if (bodySlot == TechType.RadiationSuit)
-                ErrorMessage.AddMessage("Safe diving depth now 500m.");
-            else if (bodySlot == TechType.Stillsuit || bodySlot == TechType.ReinforcedDiveSuit)
-                ErrorMessage.AddMessage("Safe diving depth now 800m.");
-            else if (bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit || bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID)
-                ErrorMessage.AddMessage("Safe diving depth now 1300m.");
-            else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                ErrorMessage.AddMessage("Safe diving depth now unlimited.");
+            PlayerGetDepthClassPatcher.divingCrushDepth = crushDepth;
+
+            if (crushDepth < 8000f)
+                ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");
             else
-                ErrorMessage.AddMessage("Safe diving depth now 200m.");
+                ErrorMessage.AddMessage("Safe diving depth now unlimited.");
+            
             return false;
         }
     }
