@@ -36,7 +36,7 @@
                             modifier -= 0.05f;
                     }
                     float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * .8f * modifier);
+                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * modifier);
                 }
 
                 if (crushEnabled && Player.main.GetDepthClass() == Ocean.DepthClass.Crush)

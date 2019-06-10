@@ -14,7 +14,7 @@
         private static bool _cachedActive = false;
         private static bool _cachedAnimating = false;
 
-        private static float damageScaler = 0f;
+        private static float damageScaler = 1f;
         
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
@@ -87,12 +87,12 @@
                 BendsHUDController.SetActive(false);
                 _cachedActive = false;
             }
-            if (nitrogenInstance.safeNitrogenDepth > 50f && !_cachedAnimating)
+            if (nitrogenInstance.safeNitrogenDepth > 10f && !_cachedAnimating)
             {
                 BendsHUDController.SetFlashing(true);
                 _cachedAnimating = true;
             }
-            else if (nitrogenInstance.safeNitrogenDepth < 50f && _cachedAnimating)
+            else if (nitrogenInstance.safeNitrogenDepth < 10f && _cachedAnimating)
             {
                 BendsHUDController.SetFlashing(false);
                 _cachedAnimating = false;
