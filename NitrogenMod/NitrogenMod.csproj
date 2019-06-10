@@ -86,6 +86,7 @@
     <Compile Include="Patchers\DepthClassPatchers.cs" />
     <Compile Include="Patchers\DiveSuitPatchers.cs" />
     <Compile Include="Patchers\NitroLevPatcher.cs" />
+    <Compile Include="Patchers\SurvivalUsePatcher.cs" />
     <Compile Include="Patchers\UnlockScanPatchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

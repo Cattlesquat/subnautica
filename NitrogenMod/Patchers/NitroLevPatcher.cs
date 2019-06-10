@@ -87,12 +87,12 @@
                 BendsHUDController.SetActive(false);
                 _cachedActive = false;
             }
-            if (nitrogenInstance.safeNitrogenDepth > 10f && !_cachedAnimating)
+            if (nitrogenInstance.safeNitrogenDepth > 25f && !_cachedAnimating)
             {
                 BendsHUDController.SetFlashing(true);
                 _cachedAnimating = true;
             }
-            else if (nitrogenInstance.safeNitrogenDepth < 10f && _cachedAnimating)
+            else if (nitrogenInstance.safeNitrogenDepth < 15f && _cachedAnimating)
             {
                 BendsHUDController.SetFlashing(false);
                 _cachedAnimating = false;

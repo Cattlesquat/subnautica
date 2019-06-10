@@ -23,7 +23,7 @@
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.3.4");
+            SeraLogger.PatchStart(modName, "1.4.0");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
