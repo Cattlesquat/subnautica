@@ -20,7 +20,7 @@
                 if (Player.main.gameObject.GetComponent<NitrogenLevel>() != null)
                 {
                     nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
-                    if (nitrogenLevel.safeNitrogenDepth > 0f)
+                    if (nitrogenLevel.safeNitrogenDepth >= 10f)
                         nFlag = true;
                 }
 
