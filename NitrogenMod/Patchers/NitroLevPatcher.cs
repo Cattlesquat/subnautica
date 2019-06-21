@@ -110,7 +110,8 @@
             __instance.nitrogenEnabled = Main.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
             
-            Player.main.gameObject.AddComponent<SpecialtyTanks>();
+            if (Main.specialtyTanks)
+                Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
     }
 
