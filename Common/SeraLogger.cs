@@ -14,7 +14,7 @@
 
         public static void GenericError(string modName, Exception ex)
         {
-            Console.WriteLine(modName + " ERROR: " + ex.ToString());
+            Console.WriteLine(modName + " ERROR: " + ex);
         }
 
         /*
@@ -32,12 +32,12 @@
 
         public static void ConfigReadError(string modName, Exception ex)
         {
-            Console.WriteLine(modName + " Error reading file. Setting defaults. Exception: " + ex.ToString());
+            Console.WriteLine(modName + " Error reading file. Setting defaults. Exception: " + ex);
         }
 
         public static void SeralizerFailed(string file, Exception ex)
         {
-            Console.WriteLine("File I/O Error: " + file + " Exception: " + ex.ToString());
+            Console.WriteLine("File I/O Error: " + file + " Exception: " + ex);
         }
 
         /*
@@ -55,7 +55,7 @@
 
         public static void PatchFailed(string modName, Exception ex)
         {
-            Console.WriteLine(modName + " Patching failed. Exception: " + ex.ToString());
+            Console.WriteLine(modName + " Patching failed. Exception: " + ex);
         }
     }
 }
