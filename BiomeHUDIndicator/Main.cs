@@ -22,9 +22,11 @@
         public static bool imagesEnabled = true;
         public static byte imageAlpha = 255;
 
+        public static bool showCoords = true;
+
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "2.0.3");
+            SeraLogger.PatchStart(modName, "2.1.0");
             try
             {
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
@@ -37,6 +39,7 @@
                 animationsEnabled = savedSettings.animationEnabled;
                 imagesEnabled = savedSettings.imageEnabled;
                 imageAlpha = savedSettings.alphaValue;
+                showCoords = savedSettings.coordsEnabled;
 
                 var harmony = HarmonyInstance.Create("seraphimrisen.biomehudindicator.mod");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
