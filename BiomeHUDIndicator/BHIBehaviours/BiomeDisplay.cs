@@ -85,7 +85,7 @@
 
         private void Update()
         {
-            if (Time.time >= animationTimer + 0.25f && !biomeTextAnimator.GetBool("idle"))
+            if (Time.time >= animationTimer + 2f && !biomeTextAnimator.GetBool("idle"))
             {
                 nowEnteringAnimator.SetBool("idle", true);
                 biomeTextAnimator.SetBool("idle", true);
