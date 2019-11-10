@@ -3,12 +3,12 @@
     using System.Collections.Generic;
     using SMLHelper.V2.Crafting;
 
-    internal class EnzymeBattery : SeraphimBatteryCore
+    internal class KharaaBattery : SeraphimBatteryCore
     {
-        internal static float BattCap { get; private set; } = 1000f;
+        internal static float BattCap { get; private set; } = 2500f;
 
-        public EnzymeBattery()
-            : base(classID: "EnzymeBattery", friendlyName: "Enzyme-Charged Ion Battery", description: "A new battery based on the discovery of a chemical interaction between hatching enzymes, radiation, and ion crystals.")
+        public KharaaBattery(float cap = 2500f)
+            : base(classID: "BiochemBattery", friendlyName: "Biochemical Battery", description: "Based on the power units that supply nearly perpetual power to the Warpers. Does not receive power from their power source, however.")
         {
             OnFinishedPatching += SetStaticTechType;
         }
@@ -22,16 +22,15 @@
             return new TechData
             {
                 craftAmount = 1,
-                Ingredients = new List<Ingredient>(4)
+                Ingredients = new List<Ingredient>(2)
                 {
-                    new Ingredient(TechType.PrecursorIonBattery, 1),
-                    new Ingredient(TechType.HatchingEnzymes, 2),
-                    new Ingredient(TechType.Lead, 1),
-                    new Ingredient (TechType.UraniniteCrystal, 2),
+                    new Ingredient(BioPlasmaItems.BioPlasmaID, 1),
+                    new Ingredient(TechType.Magnetite, 2),
                 }
             };
         }
 
         private void SetStaticTechType() => BattID = this.TechType;
+        public override TechType RequiredForUnlock { get; } = TechType.Warper;
     }
 }

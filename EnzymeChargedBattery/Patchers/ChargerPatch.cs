@@ -6,7 +6,7 @@
     using Items;
 
     [HarmonyPatch(typeof(BatteryCharger))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(BatteryCharger.Initialize))]
     internal class BatteryChargerPatch
     {
         [HarmonyPrefix]
@@ -14,13 +14,13 @@
         {
             FieldInfo compatTechField = typeof(BatteryCharger).GetField("compatibleTech", BindingFlags.Static | BindingFlags.NonPublic);
             var compatTech = (HashSet<TechType>)compatTechField.GetValue(null);
-            if (!compatTech.Contains(EnzymeBatteryCore.BattID))
-                compatTech.Add(EnzymeBatteryCore.BattID);
+            if (!compatTech.Contains(SeraphimBatteryCore.BattID))
+                compatTech.Add(SeraphimBatteryCore.BattID);
         }
     }
 
     [HarmonyPatch(typeof(PowerCellCharger))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(BatteryCharger.Initialize))]
     internal class PowerCellChargerPatch
     {
         [HarmonyPrefix]
@@ -28,8 +28,8 @@
         {
             FieldInfo compatTechField = typeof(PowerCellCharger).GetField("compatibleTech", BindingFlags.Static | BindingFlags.NonPublic);
             var compatTech = (HashSet<TechType>)compatTechField.GetValue(null);
-            if (!compatTech.Contains(EnzymeBatteryCore.PowCelID))
-                compatTech.Add(EnzymeBatteryCore.PowCelID);
+            if (!compatTech.Contains(SeraphimBatteryCore.PowCelID))
+                compatTech.Add(SeraphimBatteryCore.PowCelID);
         }
     }
 }

@@ -36,16 +36,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>E:\dibbl\Documents\My Games\Subnautica\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony-1.2.0.1">
+      <HintPath>..\References\Subnautica\0Harmony-1.2.0.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>..\References\Subnautica\Assembly-CSharp_publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SMLHelper">
-      <HintPath>D:\Epic Games\Subnautica\QMods\Modding Helper\SMLHelper.dll</HintPath>
+      <HintPath>..\References\Subnautica\SMLHelper.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,17 +55,25 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>D:\Epic Games\Subnautica\Subnautica_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\References\Subnautica\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\References\Subnautica\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Items\BioPlasmaItems.cs" />
+    <Compile Include="Items\KharaaBattery.cs" />
     <Compile Include="Items\EnzymeBattery.cs" />
-    <Compile Include="Items\EnzymeBatteryCore.cs" />
+    <Compile Include="Items\KharaaPowerCell.cs" />
+    <Compile Include="Items\SeraphimBatteryCore.cs" />
     <Compile Include="Items\EnzymePowerCell.cs" />
     <Compile Include="Patchers\ChargerPatch.cs" />
     <Compile Include="Patchers\EnergyMixinPatch.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Patchers\UnlockPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,8 +82,21 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\EnzymeBattery.png" />
-    <Content Include="Assets\EnzymePowerCell.png" />
+    <Content Include="Assets\BiochemBattery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\BiochemPowerCell.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\bioplasmacore.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\EnzymeBattery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\EnzymePowerCell.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Common\Common.projitems" Label="Shared" />

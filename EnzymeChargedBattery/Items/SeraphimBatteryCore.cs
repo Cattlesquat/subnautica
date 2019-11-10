@@ -6,7 +6,7 @@
     using UnityEngine;
     using Common;
 
-    internal abstract class EnzymeBatteryCore : Craftable
+    internal abstract class SeraphimBatteryCore : Craftable
     {
         private const string BatCraftTab = "BatteryPower";
         private const string ElecCraftTab = "Electronics";
@@ -39,17 +39,21 @@
             {
                 SeraLogger.Message(Main.modName, "MidGameBatteries installed, adding to crafting tab");
             }
-            var enzBatt = new EnzymeBattery(1000f);
+            var enzBatt = new EnzymeBattery();
             enzBatt.Patch();
-            var enzPowerCell = new EnzymePowerCell(enzBatt);
-            enzPowerCell.Patch();
+            var enzPC = new EnzymePowerCell(enzBatt);
+            enzPC.Patch();
+            var enzBatt2 = new KharaaBattery();
+            enzBatt2.Patch();
+            var enzPC2 = new KharaaPowerCell(enzBatt2);
+            enzPC2.Patch();
         }
 
         protected abstract TechType BaseType { get; }
         protected abstract float PowerCapacity { get; }
         protected abstract EquipmentType ChargerType { get; }
 
-        protected EnzymeBatteryCore(string classID, string friendlyName, string description)
+        protected SeraphimBatteryCore(string classID, string friendlyName, string description)
             : base(classID, friendlyName, description)
         {
             OnFinishedPatching += SetEquipmentType;

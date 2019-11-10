@@ -18,12 +18,15 @@ namespace EnzymeChargedBattery
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.3");
+            SeraLogger.PatchStart(modName, "1.0.4");
             try
             {
-                EnzymeBatteryCore.PatchBatteries();
                 var harmony = HarmonyInstance.Create("seraphimrisen.enzymechargedbatteries.mod");
+
+                BioPlasmaItems.PatchBioPlasmaItems();
+                SeraphimBatteryCore.PatchBatteries();
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
+
                 SeraLogger.PatchComplete(modName);
             }
             catch (Exception ex)

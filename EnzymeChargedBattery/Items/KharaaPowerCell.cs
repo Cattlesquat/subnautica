@@ -3,22 +3,22 @@
     using System.Collections.Generic;
     using SMLHelper.V2.Crafting;
 
-    internal class EnzymePowerCell : SeraphimBatteryCore
+    internal class KharaaPowerCell : SeraphimBatteryCore
     {
         internal const int BattPerPC = 2;
 
-        public EnzymePowerCell(EnzymeBattery enzBatt)
-            : base(classID: "EnzymePowerCell", friendlyName: "Enzyme-Charged Ion Power Cell", description: "A new power cell based on the discovery of a chemical interaction between hatching enzymes, radiation, and ion crystals.")
+        public KharaaPowerCell(KharaaBattery khaBatt)
+            : base(classID: "BiochemPowerCell", friendlyName: "Biochemical Power Cell", description: "Based on the power units that supply nearly perpetual power to the Warpers. Does not receive power from their power source, however.")
         {
-            
-            if (!enzBatt.IsPatched)
-                enzBatt.Patch();
+
+            if (!khaBatt.IsPatched)
+                khaBatt.Patch();
 
             OnFinishedPatching += SetStaticTechType;
         }
 
         protected override TechType BaseType { get; } = TechType.PrecursorIonPowerCell;
-        protected override float PowerCapacity { get; } = EnzymeBattery.BattCap * BattPerPC;
+        protected override float PowerCapacity { get; } = KharaaBattery.BattCap * BattPerPC;
         protected override EquipmentType ChargerType { get; } = EquipmentType.PowerCellCharger;
 
         protected override TechData GetBlueprintRecipe()
@@ -28,12 +28,13 @@
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>(2)
                 {
-                    new Ingredient(EnzymeBattery.BattID, BattPerPC),
+                    new Ingredient(KharaaBattery.BattID, BattPerPC),
                     new Ingredient(TechType.Silicone, 1),
                 }
             };
         }
 
         private void SetStaticTechType() => PowCelID = this.TechType;
+        public override TechType RequiredForUnlock { get; } = TechType.Warper;
     }
 }
