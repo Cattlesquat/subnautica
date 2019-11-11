@@ -20,10 +20,11 @@
 
         public static bool specialtyTanks = true;
         public static bool nitrogenEnabled = true;
+        public static bool decompressionVehicles = false;
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.4.2");
+            SeraLogger.PatchStart(modName, "1.5.0");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
@@ -34,10 +35,12 @@
                 NitrogenOptions savedSettings = new NitrogenOptions();
                 OptionsPanelHandler.RegisterModOptions(savedSettings);
 
+                nitrogenEnabled = savedSettings.nitroEnabled;
+                decompressionVehicles = savedSettings.decompressionVehicles;
                 NitroDamagePatcher.Lethality(savedSettings.nitroLethal);
                 NitroDamagePatcher.AdjustScaler(savedSettings.damageScaler);
+                NitroDamagePatcher.SetDecomVeh(decompressionVehicles);
                 BreathPatcher.EnableCrush(savedSettings.crushEnabled);
-                nitrogenEnabled = savedSettings.nitroEnabled;
 
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
 

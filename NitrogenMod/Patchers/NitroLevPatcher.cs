@@ -13,6 +13,7 @@
         private static bool lethal = true;
         private static bool _cachedActive = false;
         private static bool _cachedAnimating = false;
+        private static bool decompressionVehicles = false;
 
         private static float damageScaler = 1f;
         
@@ -25,7 +26,6 @@
 
                 if (depthOf < __instance.safeNitrogenDepth - 10f && UnityEngine.Random.value < 0.0125f)
                 {
-                    global::Utils.Assert(depthOf < __instance.safeNitrogenDepth, "see log", null);
                     LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                     float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - depthOf) / 10f;
                     if (component.health - damage > 0f)
@@ -34,17 +34,24 @@
                         component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
 
+                bool dVFlag = false;
+                if ((Player.main.GetCurrentSub() != null && Player.main.GetCurrentSub().isCyclops) || (Player.main.GetVehicle() != null && (Player.main.GetVehicle().vehicleDefaultName.Equals("seamoth", System.StringComparison.CurrentCultureIgnoreCase) || Player.main.GetVehicle().vehicleDefaultName.Equals("exosuit", System.StringComparison.CurrentCultureIgnoreCase))))
+                    dVFlag = true;
+
                 if (__instance.safeNitrogenDepth > 10f && !Player.main.IsSwimming() && UnityEngine.Random.value < 0.025f)
                 {
-                    float atmosPressure = __instance.safeNitrogenDepth - 10f;
-                    if (atmosPressure < 0f)
-                        atmosPressure = 0f;
-                    LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-                    float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
-                    if (component.health - damage > 0f)
-                        component.TakeDamage(damage, default, DamageType.Normal, null);
-                    else if (lethal)
-                        component.TakeDamage(damage, default, DamageType.Normal, null);
+                    if (!dVFlag || !decompressionVehicles)
+                    {
+                        float atmosPressure = __instance.safeNitrogenDepth - 10f;
+                        if (atmosPressure < 0f)
+                            atmosPressure = 0f;
+                        LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
+                        float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
+                        if (component.health - damage > 0f)
+                            component.TakeDamage(damage, default, DamageType.Normal, null);
+                        else if (lethal)
+                            component.TakeDamage(damage, default, DamageType.Normal, null);
+                    }
                 }
 
                 float num = 1f;
@@ -65,6 +72,12 @@
             return false;
         }
 
+        private static bool DecompressionSub(Player main)
+        {
+            bool isInSub = false;
+            return isInSub;
+        }
+
         public static void Lethality(bool isLethal)
         {
             lethal = isLethal;
@@ -75,8 +88,15 @@
             damageScaler = val;
         }
 
+        public static void SetDecomVeh(bool val)
+        {
+            decompressionVehicles = val;
+        }
+
         private static void HUDController(NitrogenLevel nitrogenInstance)
         {
+            if (_cachedActive)
+                BendsHUDController.SetDepth(Mathf.RoundToInt(nitrogenInstance.safeNitrogenDepth));
             if (nitrogenInstance.safeNitrogenDepth > 10f && !_cachedActive)
             {
                 BendsHUDController.SetActive(true);

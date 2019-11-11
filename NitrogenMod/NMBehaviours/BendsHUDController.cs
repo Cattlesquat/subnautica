@@ -12,6 +12,7 @@
 
         private Transform canvasTransform;
         private Text n2Warning;
+        private Text n2Depth;
         private Animator flashRed;
 
         private void Awake()
@@ -20,9 +21,11 @@
 
             canvasTransform = _N2HUDWarning.transform;
             n2Warning = canvasTransform.GetChild(0).GetComponent<Text>();
+            n2Depth = canvasTransform.GetChild(1).GetComponent<Text>();
             flashRed = n2Warning.GetComponent<Animator>();
 
             n2Warning.enabled = false;
+            n2Depth.enabled = false;
             flashRed.SetBool("unsafe", false);
 
             hudTransform = GameObject.Find("ScreenCanvas").transform.Find("HUD");
@@ -42,6 +45,7 @@
             if (main == null)
                 return;
             main.n2Warning.enabled = setActive;
+            main.n2Depth.enabled = setActive;
         }
 
         public static void SetFlashing(bool setFlashing)
@@ -49,6 +53,13 @@
             if (main == null)
                 return;
             main.flashRed.SetBool("unsafe", setFlashing);
+        }
+
+        public static void SetDepth(int depth)
+        {
+            if (main == null)
+                return;
+            main.n2Depth.text = depth + "m";
         }
     }
 }

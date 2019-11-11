@@ -14,6 +14,7 @@
         private const string lethalName = "lethalmodeenabler";
         private const string crushEnablerName = "crushmodenabler";
         private const string specialtyTanksEnablerName = "specialtytanksenabler";
+        private const string decompressionVehicleEnablerName = "decompressionvehicles";
 
         private const string nitroSliderName = "damagescalerslider";
         private const string crushSliderName = "crushdepthslider";
@@ -22,6 +23,7 @@
         public bool nitroLethal = true;
         public bool crushEnabled = false;
         public bool specialtyTanksEnabled = true;
+        public bool decompressionVehicles = false;
 
         public float damageScaler = 1f;
 
@@ -32,6 +34,7 @@
             ToggleChanged += NonLethalOption;
             SliderChanged += DamageScalerSlider;
             ToggleChanged += CrushEnabled;
+            ToggleChanged += DecompressionVehiclesEnabled;
             ReadSettings();
         }
 
@@ -47,6 +50,7 @@
             AddToggleOption(lethalName, "Lethal Decompression", nitroLethal);
             AddSliderOption(nitroSliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
             AddToggleOption(crushEnablerName, "Enable Crush Depth", crushEnabled);
+            AddToggleOption(decompressionVehicleEnablerName, "Safe Vehicle Decompression", decompressionVehicles);
         }
 
         private void SpecialtyTanksEnabled(object sender, ToggleChangedEventArgs args)
@@ -101,9 +105,18 @@
             SaveSettings();
         }
 
+        private void DecompressionVehiclesEnabled(object sender, ToggleChangedEventArgs args)
+        {
+            if (args.Id != decompressionVehicleEnablerName)
+                return;
+            decompressionVehicles = args.Value;
+            NitroDamagePatcher.SetDecomVeh(decompressionVehicles);
+            SaveSettings();
+        }
+
         private void SaveSettings()
         {
-            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, specialtyTanksEnabled));
+            ConfigMaker.WriteData(configFile, new SaveData(nitroEnabled, nitroLethal, damageScaler, crushEnabled, specialtyTanksEnabled, decompressionVehicles));
         }
 
         private void ReadSettings()
@@ -123,6 +136,7 @@
                     damageScaler = float.Parse(loadedData.DamageScaler);
                     crushEnabled = Boolean.Parse(loadedData.CrushEnabled);
                     specialtyTanksEnabled = Boolean.Parse(loadedData.SpecialtyEnabled);
+                    decompressionVehicles = Boolean.Parse(loadedData.DecompressionVehiclesEnabled);
                 }
                 catch (Exception ex)
                 {
@@ -132,6 +146,7 @@
                     damageScaler = 1f;
                     crushEnabled = false;
                     specialtyTanksEnabled = true;
+                    decompressionVehicles = false;
                     SaveSettings();
                 }
                 Main.specialtyTanks = specialtyTanksEnabled;
@@ -145,16 +160,18 @@
         public string IsLethal { get; set; }
         public string CrushEnabled { get; set; }
         public string SpecialtyEnabled { get; set; }
+        public string DecompressionVehiclesEnabled { get; set; }
 
         public string DamageScaler { get; set; }
 
-        public SaveData(bool enabled, bool lethal, float scaler, bool crush, bool specialty)
+        public SaveData(bool enabled, bool lethal, float scaler, bool crush, bool specialty, bool decomVeh)
         {
             NitrogenEnabled = enabled.ToString();
             IsLethal = lethal.ToString();
             DamageScaler = scaler.ToString();
             CrushEnabled = crush.ToString();
             SpecialtyEnabled = specialty.ToString();
+            DecompressionVehiclesEnabled = decomVeh.ToString();
         }
     }
 }
