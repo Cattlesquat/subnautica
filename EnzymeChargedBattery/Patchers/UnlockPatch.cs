@@ -12,10 +12,10 @@
         {
             if (entryData.key == TechType.Warper)
             {
-                if (!KnownTech.Contains(KharaaBattery.BattID))
+                if (!KnownTech.Contains(SeraphimBatteryCore.KhaBattID))
                 {
-                    KnownTech.Add(KharaaBattery.BattID);
-                    KnownTech.Add(KharaaPowerCell.PowCelID);
+                    KnownTech.Add(SeraphimBatteryCore.KhaBattID);
+                    KnownTech.Add(SeraphimBatteryCore.KhaPowCelID);
                     ErrorMessage.AddMessage("Added blueprint for biochemical batteries to database");
                 }
             }

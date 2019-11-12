@@ -28,12 +28,12 @@
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>(2)
                 {
-                    new Ingredient(EnzymeBattery.BattID, BattPerPC),
+                    new Ingredient(SeraphimBatteryCore.EnzBattID, BattPerPC),
                     new Ingredient(TechType.Silicone, 1),
                 }
             };
         }
 
-        private void SetStaticTechType() => PowCelID = this.TechType;
+        private void SetStaticTechType() => EnzPowCelID = this.TechType;
     }
 }

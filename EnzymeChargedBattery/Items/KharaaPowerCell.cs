@@ -28,13 +28,13 @@
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>(2)
                 {
-                    new Ingredient(KharaaBattery.BattID, BattPerPC),
+                    new Ingredient(SeraphimBatteryCore.KhaBattID, BattPerPC),
                     new Ingredient(TechType.Silicone, 1),
                 }
             };
         }
 
-        private void SetStaticTechType() => PowCelID = this.TechType;
+        private void SetStaticTechType() => KhaPowCelID = this.TechType;
         public override TechType RequiredForUnlock { get; } = TechType.Warper;
     }
 }

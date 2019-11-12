@@ -30,7 +30,7 @@
             };
         }
 
-        private void SetStaticTechType() => BattID = this.TechType;
+        private void SetStaticTechType() => KhaBattID = this.TechType;
         public override TechType RequiredForUnlock { get; } = TechType.Warper;
     }
 }

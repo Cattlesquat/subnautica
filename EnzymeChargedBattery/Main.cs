@@ -18,7 +18,7 @@ namespace EnzymeChargedBattery
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.5");
+            SeraLogger.PatchStart(modName, "1.0.6");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.enzymechargedbatteries.mod");

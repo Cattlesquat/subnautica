@@ -14,10 +14,10 @@
         {
             FieldInfo compatTechField = typeof(BatteryCharger).GetField("compatibleTech", BindingFlags.Static | BindingFlags.NonPublic);
             var compatTech = (HashSet<TechType>)compatTechField.GetValue(null);
-            if (!compatTech.Contains(SeraphimBatteryCore.BattID))
+            if (!compatTech.Contains(SeraphimBatteryCore.EnzBattID))
             {
-                compatTech.Add(EnzymeBattery.BattID);
-                compatTech.Add(KharaaBattery.BattID);
+                compatTech.Add(SeraphimBatteryCore.EnzBattID);
+                compatTech.Add(SeraphimBatteryCore.KhaBattID);
             }
                 
         }
@@ -32,10 +32,10 @@
         {
             FieldInfo compatTechField = typeof(PowerCellCharger).GetField("compatibleTech", BindingFlags.Static | BindingFlags.NonPublic);
             var compatTech = (HashSet<TechType>)compatTechField.GetValue(null);
-            if (!compatTech.Contains(SeraphimBatteryCore.PowCelID))
+            if (!compatTech.Contains(SeraphimBatteryCore.EnzPowCelID))
             {
-                compatTech.Add(EnzymePowerCell.PowCelID);
-                compatTech.Add(KharaaPowerCell.PowCelID);
+                compatTech.Add(SeraphimBatteryCore.EnzPowCelID);
+                compatTech.Add(SeraphimBatteryCore.KhaBattID);
             }
         }
     }

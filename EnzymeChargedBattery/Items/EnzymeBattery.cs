@@ -32,6 +32,6 @@
             };
         }
 
-        private void SetStaticTechType() => BattID = this.TechType;
+        private void SetStaticTechType() => EnzBattID = this.TechType;
     }
 }

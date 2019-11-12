@@ -14,8 +14,10 @@
         private const string Assets = @"EnzymeChargedBattery/Assets";
         private static readonly string[] CraftPath = new[] { ResCraftTab, ElecCraftTab, BatCraftTab };
 
-        public static TechType BattID { get; protected set; }
-        public static TechType PowCelID { get; protected set; }
+        public static TechType EnzBattID { get; protected set; }
+        public static TechType EnzPowCelID { get; protected set; }
+        public static TechType KhaBattID { get; protected set; }
+        public static TechType KhaPowCelID { get; protected set; }
 
         internal static void PatchBatteries()
         {

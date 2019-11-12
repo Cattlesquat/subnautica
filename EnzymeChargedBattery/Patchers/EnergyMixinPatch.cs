@@ -15,15 +15,17 @@
                 return;
 
             List<TechType> compatibleBatteries = __instance.compatibleBatteries;
-            if(compatibleBatteries.Contains(TechType.PrecursorIonBattery) && !compatibleBatteries.Contains(SeraphimBatteryCore.BattID))
+            if(compatibleBatteries.Contains(TechType.PrecursorIonBattery) && !compatibleBatteries.Contains(SeraphimBatteryCore.EnzBattID))
             {
-                compatibleBatteries.Add(SeraphimBatteryCore.BattID);
+                compatibleBatteries.Add(SeraphimBatteryCore.EnzBattID);
+                compatibleBatteries.Add(SeraphimBatteryCore.KhaBattID);
                 return;
             }
 
-            if(compatibleBatteries.Contains(TechType.PrecursorIonPowerCell) && !compatibleBatteries.Contains(SeraphimBatteryCore.PowCelID))
+            if(compatibleBatteries.Contains(TechType.PrecursorIonPowerCell) && !compatibleBatteries.Contains(SeraphimBatteryCore.EnzPowCelID))
             {
-                compatibleBatteries.Add(SeraphimBatteryCore.PowCelID);
+                compatibleBatteries.Add(SeraphimBatteryCore.EnzPowCelID);
+                compatibleBatteries.Add(SeraphimBatteryCore.KhaPowCelID);
                 return;
             }
         }
@@ -36,7 +38,7 @@
         [HarmonyPostfix]
         public static void Postfix(ref EnergyMixin __instance, InventoryItem item)
         {
-            if (item?.item?.GetTechType() == SeraphimBatteryCore.PowCelID)
+            if (item?.item?.GetTechType() == SeraphimBatteryCore.EnzPowCelID || item?.item?.GetTechType() == SeraphimBatteryCore.KhaPowCelID)
                 __instance.batteryModels[0].model.SetActive(true);
         }
     }
