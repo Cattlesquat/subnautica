@@ -35,7 +35,7 @@
             if (!compatTech.Contains(SeraphimBatteryCore.EnzPowCelID))
             {
                 compatTech.Add(SeraphimBatteryCore.EnzPowCelID);
-                compatTech.Add(SeraphimBatteryCore.KhaBattID);
+                compatTech.Add(SeraphimBatteryCore.KhaPowCelID);
             }
         }
     }

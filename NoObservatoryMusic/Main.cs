@@ -12,7 +12,7 @@
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.0.2");
+            SeraLogger.PatchStart(modName, "1.0.3");
             try
             {
                 var harmony = HarmonyInstance.Create("seraphimrisen.noobservatorymusic.mod");

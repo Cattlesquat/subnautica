@@ -2,7 +2,7 @@
   "Id": "NoObservatoryMusic",
   "DisplayName": "No Observatory Music",
   "Author": "SeraphimRisen",
-  "Version": "1.0.2",
+  "Version": "1.0.3",
   "Enable": true,
   "AssemblyName": "NoObservatoryMusic.dll",
   "EntryMethod": "NoObservatoryMusic.Main.Patch",
