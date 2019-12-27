@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BZSeamoth", "BZSeamoth\BZSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyclopsThermodynamics", "CyclopsThermodynamics\CyclopsThermodynamics.csproj", "{8022E3D1-154A-4C01-9200-7A3533E36284}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiochemicalBatteries", "BiochemicalBatteries\BiochemicalBatteries.csproj", "{FE011D23-94FD-4D87-AEB6-DF342485AB96}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{1e24d9bb-68a8-4a6f-a11b-3bf28c80ae0f}*SharedItemsImports = 13
@@ -28,6 +30,7 @@ Global
 		Common\Common.projitems*{8022e3d1-154a-4c01-9200-7a3533e36284}*SharedItemsImports = 4
 		Common\Common.projitems*{c69e9dba-79b9-4ace-84b8-43860168842e}*SharedItemsImports = 4
 		Common\Common.projitems*{d6b0552d-c642-44aa-81c6-43fbf235f71e}*SharedItemsImports = 4
+		Common\Common.projitems*{fe011d23-94fd-4d87-aeb6-df342485ab96}*SharedItemsImports = 4
 		Common\Common.projitems*{ff6cba01-4d57-417a-83a3-5e6fe0fe0781}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +66,10 @@ Global
 		{8022E3D1-154A-4C01-9200-7A3533E36284}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8022E3D1-154A-4C01-9200-7A3533E36284}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8022E3D1-154A-4C01-9200-7A3533E36284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE011D23-94FD-4D87-AEB6-DF342485AB96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE011D23-94FD-4D87-AEB6-DF342485AB96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE011D23-94FD-4D87-AEB6-DF342485AB96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE011D23-94FD-4D87-AEB6-DF342485AB96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,12 @@
+﻿{
+  "Id": "BiochemicalBatteries",
+  "DisplayName": "BiochemicalBatteries",
+  "Author": "SeraphimRisen with special thanks to PrimeSonic",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "BiochemicalBatteries.dll",
+  "EntryMethod": "BiochemicalBatteries.Main.Patch",
+  "Dependencies": ["SMLHelper", "CustomBatteries"],
+  "LoadAfter": ["CustomBatteries"],
+  "Game": "Subnautica"
+}
