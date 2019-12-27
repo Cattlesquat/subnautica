@@ -12,23 +12,28 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\QMods\BiochemicalBatteries\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\QMods\BiochemicalBatteries\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony-1.2.0.1">
@@ -39,6 +44,10 @@
       <HintPath>..\References\Subnautica\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CustomBatteries">
+      <HintPath>..\References\Subnautica\CustomBatteries.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SMLHelper">
       <HintPath>..\References\Subnautica\SMLHelper.dll</HintPath>
       <Private>False</Private>
@@ -47,7 +56,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
@@ -61,12 +69,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mod.json" />
+    <Compile Include="Items\BiochemicalPack.cs" />
     <Compile Include="Items\BioPlasmaItems.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Patchers\UnlockPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Patchers\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BiochemBattery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
