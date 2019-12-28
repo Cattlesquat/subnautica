@@ -44,7 +44,7 @@
 
         protected override TechType BaseType { get; } = TechType.PrecursorIonCrystal;
 
-        public override string AssetsFolder { get; } = @"EnzymeChargedBattery/Assets";
+        public override string AssetsFolder { get; } = @"BiochemicalBatteries/Assets";
 
         private void SetStaticTechType() => BioPlasmaID = this.TechType;
     }

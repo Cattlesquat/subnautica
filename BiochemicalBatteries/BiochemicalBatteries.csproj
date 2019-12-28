@@ -15,8 +15,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\QMods\BiochemicalBatteries\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -68,15 +68,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mod.json" />
+    <None Include="mod.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="Items\BiochemicalPack.cs" />
     <Compile Include="Items\BioPlasmaItems.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Patchers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Assets\BiochemBattery.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,13 +1,15 @@
 ﻿namespace BiochemicalBatteries.Items
 {
+    using System.Reflection;
     using System.Collections.Generic;
+    using System.IO;
     using CustomBatteries.API;
     using SMLHelper.V2.Utility;
 
     internal class BiochemicalPack : IModPluginPack
     {
-        public Atlas.Sprite BatteryIcon { get; } = ImageUtils.LoadSpriteFromFile("Assets/biochemicalbattery.png");
-        public Atlas.Sprite PowerCellIcon { get; } = ImageUtils.LoadSpriteFromFile("Assets/biochemicalpowercell.png");
+        public Atlas.Sprite BatteryIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "biochemicalbattery.png"));
+        public Atlas.Sprite PowerCellIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "biochemicalpowercell.png"));
         public string PluginPackName { get; } = "Biochemical Batteries";
         public int BatteryCapacity { get; } = 2500;
         public TechType UnlocksWith { get; } = TechType.Warper;
