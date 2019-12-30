@@ -8,8 +8,8 @@
 
     internal class BiochemicalPack : IModPluginPack
     {
-        public Atlas.Sprite BatteryIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "biochemicalbattery.png"));
-        public Atlas.Sprite PowerCellIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "biochemicalpowercell.png"));
+        public Atlas.Sprite BatteryIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "BiochemBattery.png"));
+        public Atlas.Sprite PowerCellIcon { get; } = ImageUtils.LoadSpriteFromFile(IOUtilities.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "BiochemPowerCell.png"));
         public string PluginPackName { get; } = "Biochemical Batteries";
         public int BatteryCapacity { get; } = 2500;
         public TechType UnlocksWith { get; } = TechType.Warper;
