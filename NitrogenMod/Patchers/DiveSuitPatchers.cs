@@ -3,20 +3,15 @@
     using Harmony;
     using Items;
 
-    [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("HasReinforcedSuit")]
-    internal class HasReinforcedSuitPatcher
+    // Code provided by AlexejheroYTB to remove a destructive prefix
+    [HarmonyPatch(typeof(Player), nameof(Player.HasReinforcedSuit))]
+    internal static class HasReinforcedSuitPatcher
     {
-        [HarmonyPrefix]
-        public static bool Prefix (ref bool __result)
+        [HarmonyPostfix]
+        public static void Postfix(ref bool __result)
         {
-            Inventory main = Inventory.main;
-            int reinforcedCount = main.equipment.GetCount(TechType.ReinforcedDiveSuit) + main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedStillSuit) + main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit2ID) + main.equipment.GetCount(ReinforcedSuitsCore.ReinforcedSuit3ID);
-            if (reinforcedCount > 0)
-                __result = true;
-            else
-                __result = false;
-            return false;
+            var main = Inventory.main.equipment;
+            __result = __result || main.GetCount(ReinforcedSuitsCore.ReinforcedStillSuit) + main.GetCount(ReinforcedSuitsCore.ReinforcedSuit2ID) + main.GetCount(ReinforcedSuitsCore.ReinforcedSuit3ID) > 0;
         }
     }
 
