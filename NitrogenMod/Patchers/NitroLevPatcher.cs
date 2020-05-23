@@ -16,6 +16,7 @@
         private static bool decompressionVehicles = false;
 
         private static float damageScaler = 1f;
+        private static float rpgScaler = 1f;
         
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
@@ -47,6 +48,7 @@
                             atmosPressure = 0f;
                         LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
                         float damage = 1f + damageScaler * (__instance.safeNitrogenDepth - atmosPressure) / 10f;
+                        damage *= rpgScaler;
                         if (component.health - damage > 0f)
                             component.TakeDamage(damage, default, DamageType.Normal, null);
                         else if (lethal)
@@ -91,6 +93,11 @@
         public static void SetDecomVeh(bool val)
         {
             decompressionVehicles = val;
+        }
+
+        public static void AdjustRPGScaler(float val)
+        {
+            rpgScaler = val; // For RPG Mod
         }
 
         private static void HUDController(NitrogenLevel nitrogenInstance)
