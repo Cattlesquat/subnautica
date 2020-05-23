@@ -48,7 +48,8 @@
                 ReinforcedSuitsCore.PatchSuits();
                 if(specialtyTanks)
                     O2TanksCore.PatchTanks();
-                
+
+                Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
                 SeraLogger.PatchComplete(modName);
             }
             catch (Exception ex)
