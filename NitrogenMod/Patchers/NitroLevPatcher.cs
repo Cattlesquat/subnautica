@@ -16,7 +16,7 @@
         private static bool decompressionVehicles = false;
 
         private static float damageScaler = 1f;
-        private static float rpgScaler = 1f;
+        public static float rpgScaler = 1f; // Set this up for the RPG mod to allow "leveling up"
         
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
@@ -93,11 +93,6 @@
         public static void SetDecomVeh(bool val)
         {
             decompressionVehicles = val;
-        }
-
-        public static void AdjustRPGScaler(float val)
-        {
-            rpgScaler = val;
         }
 
         private static void HUDController(NitrogenLevel nitrogenInstance)
