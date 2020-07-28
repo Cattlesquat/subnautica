@@ -56,10 +56,9 @@
                     }
                 }
 
-                float num = 1f;
                 if (depthOf < __instance.safeNitrogenDepth && Player.main.IsSwimming())
                 {
-                    num = Mathf.Clamp(2f - __instance.GetComponent<Rigidbody>().velocity.magnitude, 0f, 2f) * 1f;
+                    float num = Mathf.Clamp(2f - __instance.GetComponent<Rigidbody>().velocity.magnitude, 0f, 2f) * 1f;
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, __instance.kDissipateScalar * num * Time.deltaTime);
                 }
                 else if (!Player.main.IsSwimming() && __instance.safeNitrogenDepth > 0f)
