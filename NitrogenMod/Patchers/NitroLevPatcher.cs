@@ -35,13 +35,13 @@
                         component.TakeDamage(damage, default, DamageType.Normal, null);
                 }
 
-                bool dVFlag = false;
-                if ((Player.main.GetCurrentSub() != null && Player.main.GetCurrentSub().isCyclops) || (Player.main.GetVehicle() != null && (Player.main.GetVehicle().vehicleDefaultName.Equals("seamoth", System.StringComparison.CurrentCultureIgnoreCase) || Player.main.GetVehicle().vehicleDefaultName.Equals("exosuit", System.StringComparison.CurrentCultureIgnoreCase))))
-                    dVFlag = true;
+                bool isInVehicle = Player.main.GetCurrentSub()?.isCyclops == true ||
+                   Player.main.GetVehicle() is Seamoth ||
+                   Player.main.GetVehicle() is Exosuit;
 
                 if (__instance.safeNitrogenDepth > 10f && !Player.main.IsSwimming() && UnityEngine.Random.value < 0.025f)
                 {
-                    if (!dVFlag || !decompressionVehicles)
+                    if (!isInVehicle || !decompressionVehicles)
                     {
                         float atmosPressure = __instance.safeNitrogenDepth - 10f;
                         if (atmosPressure < 0f)
