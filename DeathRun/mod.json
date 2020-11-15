@@ -1,0 +1,11 @@
+{
+  "Id": "DeathRun",
+  "DisplayName": "DeathRun",
+  "Author": "Cattlesquat",
+  "Version": "1.1",
+  "Enable": true,
+  "AssemblyName": "DeathRun.dll",
+  "EntryMethod": "DeathRun.Main.Patch",
+  "Dependencies": ["SMLHelper"],
+  "Game": "Subnautica"
+}
