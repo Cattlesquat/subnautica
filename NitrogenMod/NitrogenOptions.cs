@@ -8,7 +8,7 @@
 
     class NitrogenOptions : ModOptions
     {
-        private const string configFile = "./QMods/NitrogenMod/Config.xml";
+        private const string configFile = "./QMods/DeathRun/Config.xml";
 
         private const string nitroEnablerName = "nitrogenmodenabler";
         private const string lethalName = "lethalmodeenabler";

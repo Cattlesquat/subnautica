@@ -11,7 +11,7 @@
 
     public class Main
     {
-        public const string modName = "[NitrogenMod]";
+        public const string modName = "[DeathRun]";
 
         private const string modFolder = "./QMods/DeathRun/";
         private const string assetFolder = modFolder + "Assets/";
@@ -27,7 +27,7 @@
             SeraLogger.PatchStart(modName, "1.5.1");
             try
             {
-                Harmony harmony = new Harmony("seraphimrisen.nitrogenmod.mod");
+                Harmony harmony = new Harmony("cattlesquat.deathrun.mod");
 
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
