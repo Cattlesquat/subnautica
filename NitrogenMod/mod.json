@@ -5,7 +5,7 @@
   "Version": "1.5.1",
   "Enable": true,
   "AssemblyName": "DeathRun.dll",
-  "EntryMethod": "NitrogenMod.Main.Patch",
+  "EntryMethod": "DeathRun.Main.Patch",
   "Dependencies": ["SMLHelper"],
   "Game": "Subnautica"
 }

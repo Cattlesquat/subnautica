@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod.Items
+﻿namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;
@@ -9,7 +9,7 @@
     internal abstract class O2TanksCore : Craftable
     {
         private const string craftTab = "SpecialtyTanks";
-        private const string Assets = @"NitrogenMod/Assets";
+        private const string Assets = @"DeathRun/Assets";
         private static readonly string[] craftPath = new[] { craftTab };
 
         public static TechType PhotosynthesisSmallID { get; protected set; }

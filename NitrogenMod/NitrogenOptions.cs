@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod
+﻿namespace DeathRun
 {
     using System;
     using SMLHelper.V2.Options;
@@ -27,7 +27,7 @@
 
         public float damageScaler = 1f;
 
-        public NitrogenOptions() : base("Nitrogen Mod Options")
+        public NitrogenOptions() : base("DeathRun Options")
         {
             ToggleChanged += SpecialtyTanksEnabled;
             ToggleChanged += NitrogenEnabled;

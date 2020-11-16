@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod.Patchers
+﻿namespace DeathRun.Patchers
 {
     using HarmonyLib;
     using Items;

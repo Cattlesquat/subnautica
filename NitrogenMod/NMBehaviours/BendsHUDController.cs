@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod.NMBehaviours
+﻿namespace DeathRun.NMBehaviours
 {
     using UnityEngine;
     using UnityEngine.UI;

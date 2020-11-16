@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod.Items
+﻿namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;

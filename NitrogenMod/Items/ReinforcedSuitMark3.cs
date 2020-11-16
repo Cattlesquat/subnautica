@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod.Items
+﻿namespace DeathRun.Items
 {
     using System.Collections.Generic;
     using SMLHelper.V2.Crafting;

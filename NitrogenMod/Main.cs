@@ -1,4 +1,4 @@
-﻿namespace NitrogenMod
+﻿namespace DeathRun
 {
     using System;
     using System.Reflection;
