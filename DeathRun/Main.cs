@@ -28,7 +28,7 @@
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.1");
+            SeraLogger.PatchStart(modName, "1.1.1.1");
             try
             {
                 Harmony harmony = new Harmony("cattlesquat.deathrun.mod");
@@ -46,12 +46,18 @@
                 NitroDamagePatcher.SetDecomVeh(decompressionVehicles);
                 BreathPatcher.EnableCrush(savedSettings.crushEnabled);
 
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                //harmony.PatchAll(Assembly.GetExecutingAssembly());
+                harmony.PatchAll();
+
+                //NitrogenLevel poop = new NitrogenLevel();
+                //NitroDamagePatcher.Prefix(ref poop);
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();
                 if(specialtyTanks)
                     O2TanksCore.PatchTanks();
+
+                SeraLogger.Message(modName, "Whee!");
 
                 Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
                 SeraLogger.PatchComplete(modName);

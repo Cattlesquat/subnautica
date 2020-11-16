@@ -36,6 +36,8 @@
             canvasTransform.SetParent(hudTransform, false);
             canvasTransform.SetSiblingIndex(0);
 
+            ErrorMessage.AddMessage("Added HUD Controller");
+
             main = this;
         }
 

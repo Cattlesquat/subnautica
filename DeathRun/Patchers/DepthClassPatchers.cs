@@ -68,6 +68,7 @@
         [HarmonyPostfix]
         public static void Postfix(ref uGUI_DepthCompass __instance)
         {
+            ErrorMessage.AddMessage("Added DepthCompass");
             __instance.gameObject.AddComponent<BendsHUDController>();
         }
     }

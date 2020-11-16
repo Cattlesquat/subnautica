@@ -42,6 +42,9 @@
         {
             float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
 
+            SeraLogger.Message(Main.modName, "Nitro - Got Here");
+            ErrorMessage.AddMessage("Nitro - Got Here");
+
             if (__instance.nitrogenEnabled && Time.timeScale > 0f)
             {                
                 int  ticks = (int)(Time.time * 2);
@@ -278,11 +281,13 @@
         public static void Lethality(bool isLethal)
         {
             lethal = isLethal;
+            ErrorMessage.AddMessage("adjust lethality");
         }
 
         public static void AdjustScaler(float val)
         {
             damageScaler = val;
+            ErrorMessage.AddMessage("adjust scaler");
         }
 
         public static void SetDecomVeh(bool val)
@@ -344,7 +349,10 @@
             __instance.nitrogenEnabled = Main.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
-            
+
+            ErrorMessage.AddMessage("NitroStartPatcher");
+            SeraLogger.Message(Main.modName, "NitroStartPatcher");
+
             if (Main.specialtyTanks)
                 Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
@@ -359,6 +367,9 @@
         {
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
+
+            ErrorMessage.AddMessage("Nitro - On Respawn");
+            SeraLogger.Message(Main.modName, "Nitro - On Respawn");
         }
     }
 }

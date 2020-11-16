@@ -49,7 +49,7 @@
 
         public override void BuildModOptions()
         {
-            AddToggleOption(specialtyTanksEnablerName, "Specialty Tanks (restart game)", specialtyTanksEnabled);
+            //AddToggleOption(specialtyTanksEnablerName, "Specialty Tanks (restart game)", specialtyTanksEnabled);
             AddToggleOption(nitroEnablerName, "Enable Nitrogen", nitroEnabled);
             AddToggleOption(lethalName, "Lethal Decompression", nitroLethal);
             AddSliderOption(nitroSliderName, "Damage Scaler", 0.25f, 10f, damageScaler);
@@ -71,6 +71,7 @@
             if (args.Id != nitroEnablerName)
                 return;
             nitroEnabled = args.Value;
+            ErrorMessage.AddMessage("NitrogenEnabled " + nitroEnabled);
             try
             {
                 DevConsole.SendConsoleCommand("nitrogen");

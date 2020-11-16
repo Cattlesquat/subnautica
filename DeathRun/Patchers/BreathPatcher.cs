@@ -19,6 +19,15 @@
         [HarmonyPrefix]
         public static bool Prefix(ref NitrogenLevel __instance, Player player)
         {
+            //if (NitroDamagePatcher.Prefix(ref __instance))
+            //{
+                ErrorMessage.AddMessage("got a true");
+            //}
+            //else
+            //{
+            //    ErrorMessage.AddMessage("got a false");
+            //}
+
             if (GameModeUtils.RequiresOxygen())
             {
                 float depthOf = Ocean.main.GetDepthOf(player.gameObject);
