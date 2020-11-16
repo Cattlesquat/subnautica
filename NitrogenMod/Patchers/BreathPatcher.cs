@@ -1,61 +1,66 @@
 ﻿namespace NitrogenMod.Patchers
 {
-    using Harmony;
+    using HarmonyLib;
     using Items;
+    using Common;
+    using UnityEngine;
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("OnTookBreath")]
     internal class BreathPatcher
     {
         private static bool crushEnabled = false;
+        private static bool crushed = false;
 
         [HarmonyPrefix]
         public static bool Prefix(ref NitrogenLevel __instance, Player player)
         {
-            Inventory main = Inventory.main;
-            TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
-            TechType headSlot = Inventory.main.equipment.GetTechTypeInSlot("Head");
-
             if (GameModeUtils.RequiresOxygen())
             {
                 float depthOf = Ocean.main.GetDepthOf(player.gameObject);
-                if (__instance.nitrogenEnabled)
-                {
-                    float modifier = 1f;
-                    if (depthOf > 0f)
-                    {
-                        if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
-                            modifier = 0.55f;
-                        else if ((bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID || bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit) && depthOf <= 1300f)
-                            modifier = 0.75f;
-                        else if (bodySlot == TechType.ReinforcedDiveSuit && depthOf <= 800f)
-                            modifier = 0.85f;
-                        else if ((bodySlot == TechType.RadiationSuit || bodySlot == TechType.Stillsuit) && depthOf <= 500f)
-                            modifier = 0.95f;
-                        if (headSlot == TechType.Rebreather)
-                            modifier -= 0.05f;
-                    }
-                    float num = __instance.depthCurve.Evaluate(depthOf / 2048f);
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, depthOf, num * __instance.kBreathScalar * modifier);
-                }
 
-                if (crushEnabled && Player.main.GetDepthClass() == Ocean.DepthClass.Crush)
-                {
-                    if (UnityEngine.Random.value < 0.5f)
+                // Player's personal crush depth
+                if (crushEnabled) {
+                    if (Player.main.GetDepthClass() == Ocean.DepthClass.Crush)
                     {
-                        float crushDepth = PlayerGetDepthClassPatcher.divingCrushDepth;
-                        if (depthOf > crushDepth)
-                            DamagePlayer(depthOf - crushDepth);
+                        if (!crushed)
+                        {
+                            ErrorMessage.AddMessage("Personal crush depth exceeded. Return to safe depth!");
+                            crushed = true;
+                        }                        
+                        if (UnityEngine.Random.value < 0.5f)
+                        {
+                            float crushDepth = PlayerGetDepthClassPatcher.divingCrushDepth;
+                            if (depthOf > crushDepth)
+                            {
+                                float crush = depthOf - crushDepth;
+                                if (crush < 50)
+                                {
+                                    DamagePlayer(4);
+                                }
+                                else if (crush < 100)
+                                {
+                                    DamagePlayer(8);
+                                }
+                                else
+                                {
+                                    DamagePlayer(16);
+                                }
+                            }
+                        }
+                    } else
+                    {
+                        crushed = false;
                     }
                 }
             }
             return false;
         }
 
-        private static void DamagePlayer(float depthOf)
+        private static void DamagePlayer(float ouch)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-            component.TakeDamage(UnityEngine.Random.value * depthOf / 50f, default, DamageType.Normal, null);
+            component.TakeDamage(UnityEngine.Random.value * ouch/2 + ouch/2, default, DamageType.Normal, null);
         }
 
         public static void EnableCrush(bool isEnabled)

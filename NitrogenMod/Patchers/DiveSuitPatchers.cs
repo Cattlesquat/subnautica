@@ -1,6 +1,6 @@
 ﻿namespace NitrogenMod.Patchers
 {
-    using Harmony;
+    using HarmonyLib;
     using Items;
 
     // Code provided by AlexejheroYTB to remove a destructive prefix

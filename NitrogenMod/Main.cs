@@ -2,7 +2,7 @@
 {
     using System;
     using System.Reflection;
-    using Harmony;
+    using HarmonyLib;
     using SMLHelper.V2.Handlers;
     using Common;
     using Items;
@@ -27,7 +27,7 @@
             SeraLogger.PatchStart(modName, "1.5.1");
             try
             {
-                var harmony = HarmonyInstance.Create("seraphimrisen.nitrogenmod.mod");
+                Harmony harmony = new Harmony("seraphimrisen.nitrogenmod.mod");
 
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;

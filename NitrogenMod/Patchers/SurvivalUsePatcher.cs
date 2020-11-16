@@ -1,6 +1,6 @@
 ﻿namespace NitrogenMod.Patchers
 {
-    using Harmony;
+    using HarmonyLib;
     using UnityEngine;
 
     [HarmonyPatch(typeof(Survival))]

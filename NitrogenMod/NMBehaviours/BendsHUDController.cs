@@ -40,11 +40,11 @@
 
         }
 
-        public static void SetActive(bool setActive)
+        public static void SetActive(bool setActive, bool setWarning)
         {
             if (main == null)
                 return;
-            main.n2Warning.enabled = setActive;
+            main.n2Warning.enabled = setActive && setWarning;
             main.n2Depth.enabled = setActive;
         }
 
@@ -55,11 +55,18 @@
             main.flashRed.SetBool("unsafe", setFlashing);
         }
 
-        public static void SetDepth(int depth)
+        public static void SetDepth(int safeDepth, float n2percent)
         {
             if (main == null)
                 return;
-            main.n2Depth.text = depth + "m";
+            if ((n2percent >= 100) && (safeDepth >= 10))
+            {
+                main.n2Depth.text = safeDepth + "m";
+            }
+            else
+            {
+                main.n2Depth.text = Mathf.RoundToInt(n2percent) + "%";
+            }
         }
     }
 }
