@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitrogenMod", "NitrogenMod\NitrogenMod.csproj", "{C69E9DBA-79B9-4ACE-84B8-43860168842E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeathRun", "NitrogenMod\DeathRun.csproj", "{C69E9DBA-79B9-4ACE-84B8-43860168842E}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "Common\Common.shproj", "{1E24D9BB-68A8-4A6F-A11B-3BF28C80AE0F}"
 EndProject

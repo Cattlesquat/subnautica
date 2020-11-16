@@ -1,0 +1,11 @@
+{
+  "Id": "DeathRun",
+  "DisplayName": "Death Run",
+  "Author": "Cattlesquat",
+  "Version": "1.5.1",
+  "Enable": true,
+  "AssemblyName": "DeathRun.dll",
+  "EntryMethod": "NitrogenMod.Main.Patch",
+  "Dependencies": ["SMLHelper"],
+  "Game": "Subnautica"
+}

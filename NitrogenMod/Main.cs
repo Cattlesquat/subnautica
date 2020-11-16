@@ -13,7 +13,7 @@
     {
         public const string modName = "[NitrogenMod]";
 
-        private const string modFolder = "./QMods/NitrogenMod/";
+        private const string modFolder = "./QMods/DeathRun/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "n2warning";
         public static GameObject N2HUD { get; set; }
