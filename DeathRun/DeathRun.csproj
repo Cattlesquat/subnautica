@@ -7,7 +7,7 @@
     <ProjectGuid>{C69E9DBA-79B9-4ACE-84B8-43860168842E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NitrogenMod</RootNamespace>
+    <RootNamespace>DeathRun</RootNamespace>
     <AssemblyName>DeathRun</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

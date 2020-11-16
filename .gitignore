@@ -5,6 +5,10 @@
 QMods/NitrogenMod/0Harmony.xml
 QMods/NitrogenMod/SMLHelper.xml
 .gitignore
+*.vpj
+*.vpw
+*.vpwhist
+*.vtg
 
 # User-specific files
 *.suo
