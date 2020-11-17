@@ -1,4 +1,9 @@
-﻿namespace DeathRun
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Much of the Nitrogen & Bends code from Seraphim Risen's NitrogenMod (just rebalanced and w/ more UI feedback)
+ */
+namespace DeathRun
 {
     using System;
     using System.Reflection;
@@ -32,7 +37,7 @@
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
-                NitrogenOptions savedSettings = new NitrogenOptions();
+                DeathRunOptions savedSettings = new DeathRunOptions();
                 OptionsPanelHandler.RegisterModOptions(savedSettings);
 
                 nitrogenEnabled = savedSettings.nitroEnabled;

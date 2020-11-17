@@ -1,4 +1,9 @@
-﻿namespace DeathRun
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Much of the Nitrogen & Bends code from Seraphim Risen's NitrogenMod (just rebalanced and w/ more UI feedback)
+ */
+namespace DeathRun
 {
     using System;
     using SMLHelper.V2.Options;
@@ -6,7 +11,7 @@
     using Patchers;
     using Common;
 
-    class NitrogenOptions : ModOptions
+    class DeathRunOptions : ModOptions
     {
         private const string configFile = "./QMods/DeathRun/Config.xml";
 
@@ -27,7 +32,7 @@
 
         public float damageScaler = 1f;
 
-        public NitrogenOptions() : base("DeathRun Options")
+        public DeathRunOptions() : base("DeathRun Options")
         {
             ToggleChanged += SpecialtyTanksEnabled;
             ToggleChanged += NitrogenEnabled;

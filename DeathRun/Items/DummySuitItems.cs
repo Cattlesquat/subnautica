@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Items
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;

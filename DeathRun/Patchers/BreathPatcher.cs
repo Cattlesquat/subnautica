@@ -1,4 +1,11 @@
-﻿namespace DeathRun.Patchers
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Adapted from Seraphim Risen's NitrogenMod
+ * * I have moved all of the "nitrogen/bends" code into the single NitroLevPatcher, so I could tune that stuff all in the same place
+ * * I have revised and rebalanced the "crush depth" code, mostly to make it "less forgiving", but also to vary the effect more geometrically by the amount the crush depth is exceeded.
+ */
+namespace DeathRun.Patchers
 {
     using HarmonyLib;
     using Items;
@@ -42,9 +49,13 @@
                                 {
                                     DamagePlayer(8);
                                 }
-                                else
+                                else if (crush < 200)
                                 {
                                     DamagePlayer(16);
+                                } 
+                                else
+                                {
+                                    DamagePlayer(32); // "Okay, Sparky..."
                                 }
                             }
                         }

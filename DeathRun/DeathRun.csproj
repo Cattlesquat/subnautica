@@ -94,7 +94,7 @@
     <Compile Include="Items\ReinforcedSuitMark3.cs" />
     <Compile Include="Items\ReinforcedSuitsCore.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="NitrogenOptions.cs" />
+    <Compile Include="DeathRunOptions.cs" />
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\BreathPatcher.cs" />

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
+/**
+ *  Random start points -- adjust our starting spots to "more challenging places" (picked these out in the Seamoth)
+ */
 namespace DeathRun.Patchers
 {
     [HarmonyPatch(typeof(RandomStart))]

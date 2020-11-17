@@ -6,23 +6,25 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
-namespace DeathRun.Patchers   // This is usually going to be the name of your mod. Just make it consistent for each file in a specific mod.
+/**
+ * Escape Pod sinking -- inspired by and adapted from oldark's "Escape Pod Unleashed" -- basically the idea is to have your escape pod
+ * "sink to the bottom". It's different, and dramatic, and "maybe just a tad more challenging".
+ */ 
+namespace DeathRun.Patchers   
 {
-    [HarmonyPatch(typeof(EscapePod))]   // We're going to patch the EscapePod class.
-    [HarmonyPatch("StartAtPosition")]   // The 'StartAtPosition' method of the EscapePod class.
+    [HarmonyPatch(typeof(EscapePod))]   
+    [HarmonyPatch("StartAtPosition")]   
     internal class EscapePod_StartAtPosition_Patch
     {
-        [HarmonyPrefix]                 // Run our patch before the game's default code.
-        public static bool Prefix(ref Vector3 position, EscapePod __instance)   // EscapePod __instance gives us the equivalent of 'this.'
+        [HarmonyPrefix]            
+        public static bool Prefix(ref Vector3 position, EscapePod __instance) 
         {
-            //position.x += 250;
-            //position.y += 10;
             ErrorMessage.AddMessage("Check Position");
 
             __instance.transform.position = position;
             __instance.anchorPosition = position;
-            __instance.RespawnPlayer();   // So if you compare this with the original EscapePod.StartAtPosition method using dnSpy, you'll see this line as this.RespawnPlayer()
-            return false;                 // returning false means the original method with Subnautica will not run. We replace it entirely with this one.
+            __instance.RespawnPlayer();   
+            return false;                 
         }
     }
 

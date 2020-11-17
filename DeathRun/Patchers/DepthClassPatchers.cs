@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Patchers
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section take directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Patchers
 {
     using HarmonyLib;
     using Items;

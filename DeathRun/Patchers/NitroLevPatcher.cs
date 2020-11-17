@@ -1,4 +1,22 @@
-﻿namespace DeathRun.Patchers
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Adapted from Seraphim Risen's NitrogenMod, but here is where I have "made substantial changes", the Stuff I Came Here To Do:
+ * 1 - All Nitrogen/Bends code moved here into this class (and mainly the Update method), so that it was easier to balance it all (e.g. all happening in the same timescale)
+ * 2 - I've made some effort to make the nitrogen aspect feel a little more like my experiences in actually going SCUBA diving
+ *   a - added a "velocity penalty" for ascending at fast speed (but let you come up fast enough it isn't *boring* as it can be IRL)
+ *   b - the nitrogen issues follow you down into the depths, and indeed increase even more quickly there. (But obviously sparing the real-life hours-and-hours it would be)
+ * 3 - Bends damage is "Damage.Starve", to bypass the "suit protection". (The suits DO help you shed the nitrogen faster and accumulate it slower, but if you get the bends, OUCH!)
+ * 4 - Bends damage has some protection against "one-shotting" the player, but it's serious stuff.
+ * 5 - Tried to increase the "player feedback" of both the positive and negative variety, again in ways that are at least "reminiscent" to those who have used a real dive computer.
+ *   a - Nitrogen initially has a "%" value "grace period" as your dive begins, before rolling into "deco mode". 
+ *   b - Warning for "ascending too fast", before the velocity penalty kicks in
+ *   c - Introduction message when nitrogen first starts to accumulate
+ *   d - Messages when taking Bends damage, to make clear what's happening.
+ *   
+ * I haven't tried to make this a "scuba diving simulator" by any means, but definitely am reaching for some "SCUBA verisimilitude" while adding challenge to the game.
+ */
+namespace DeathRun.Patchers
 {
     using HarmonyLib;
     using UnityEngine;
@@ -36,6 +54,12 @@
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
+            // Nitrogen tracking doesn't start until player leaves the pod (for underwater starts)
+            if (!EscapePod.main.topHatchUsed && !EscapePod.main.bottomHatchUsed)
+            {
+                return false;
+            }
+
             float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
 
             if (__instance.nitrogenEnabled && Time.timeScale > 0f)
@@ -216,7 +240,7 @@
                             ascentWarning--;
                         }
 
-                        // Once we've stopped, can do a text warning again
+                        // Once we've basically stopped, can do a text warning again if we get too fast
                         if (ascentRate <= 0.5f)
                         {
                             ascentWarning = 0;
@@ -233,6 +257,10 @@
             return false;
         }
 
+        /**
+         * DecoDamage - this actually applies the decompression damage from getting the bends. Includes "anti-one-shotting" protection. Also
+         * resets the "safe depth" higher after each shot of damage. 
+         */ 
         private static void DecoDamage(ref NitrogenLevel __instance, float depthOf)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
@@ -291,6 +319,14 @@
             rpgScaler = val; // For RPG Mod
         }
 
+        /**
+         * HUDController - HUD now uses its stages in order to give a gradual feedback:
+         * 
+         * (1) "Off" when no Nitrogen at all
+         * (2) "Percent" when accumulating Nitrogen but still within "grace period"
+         * (3) "Safe Depth" showing when we have deco obligations but are within safe depth
+         * (4) "Flashing" when we are violating safe depth (and eligible to take damage imminently)
+         */ 
         private static void HUDController(NitrogenLevel nitrogenInstance, bool forceFlash)
         {
             if (cachedActive)
@@ -303,19 +339,25 @@
             if (nitrogenInstance.nitrogenLevel >= 1)
             {
                 BendsHUDController.SetActive(true, (nitrogenInstance.nitrogenLevel >= 100) && (nitrogenInstance.safeNitrogenDepth >= 10f));
+
+                // If we're just starting N2 accumulation, and haven't had a warning in at least a minute, display the "intro to nitrogen" message
                 if (!cachedActive && ((cachedTicks == 0) || (oldTicks - cachedTicks > 120)))
                 {
                     ErrorMessage.AddMessage("The deeper you go, the faster nitrogen accumulates in your bloodstream!");
                     cachedTicks = oldTicks;
                 }
+
+                // If any nitrogen at all, turn on the display
                 cachedActive = true;
             }
             else if ((nitrogenInstance.nitrogenLevel < 1) && cachedActive)
             {
+                // If NO nitrogen, turn the display off
                 BendsHUDController.SetActive(false, false);
                 cachedActive = false;
             }
 
+            // Flashing Red is when we're about to take damage -- either violating Safe Depth or else in "dangerously fast ascent".
             bool uhoh = ((depthOf < nitrogenInstance.safeNitrogenDepth) || forceFlash) && (nitrogenInstance.safeNitrogenDepth >= 10f) && (nitrogenInstance.nitrogenLevel >= 100);
             if (uhoh && !cachedAnimating)
             {

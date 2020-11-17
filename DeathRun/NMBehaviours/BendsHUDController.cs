@@ -1,4 +1,9 @@
-﻿namespace DeathRun.NMBehaviours
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section adapted from Seraphim Risen's NitrogenMod - here I revised the text displayed on the HUD to have some additional feedback modes (see the SetDepth method)
+ */
+namespace DeathRun.NMBehaviours
 {
     using UnityEngine;
     using UnityEngine.UI;

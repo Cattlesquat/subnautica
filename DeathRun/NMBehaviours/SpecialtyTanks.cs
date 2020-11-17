@@ -1,4 +1,9 @@
-﻿namespace DeathRun.NMBehaviours
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.NMBehaviours
 {
     using UnityEngine;
     using Common;
