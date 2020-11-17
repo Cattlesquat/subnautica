@@ -61,7 +61,7 @@ namespace DeathRun.Items
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => RiverEelScaleID = this.TechType;
     }
@@ -76,7 +76,7 @@ namespace DeathRun.Items
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => LavaLizardScaleID = this.TechType;
     }
@@ -91,7 +91,7 @@ namespace DeathRun.Items
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => ThermoBacteriaID = this.TechType;
     }

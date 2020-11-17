@@ -57,7 +57,7 @@ namespace DeathRun.NMBehaviours
                         float waterTemp = cachedTemp.GetTemperature(Player.main.transform.position);
                         if (waterTemp > 30f)
                         {
-                            float oxygenAdded = waterTemp *Time.deltaTime * .01f;
+                            float oxygenAdded = waterTemp * Time.deltaTime * .01f;
                             cachedOxygenManager.AddOxygen(oxygenAdded);
                         }
                     }
