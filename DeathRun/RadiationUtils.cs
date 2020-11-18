@@ -19,8 +19,6 @@ namespace DeathRun
         /// </summary>
         public static float GetRadiationDepth()
         {
-            return 30;
-
             // A % of how strong the radiation is compared to max radiation
             float radiationStrengthPerc = LeakingRadiation.main.currentRadius / LeakingRadiation.main.kMaxRadius;
 
@@ -30,16 +28,12 @@ namespace DeathRun
 
         public static bool GetRadiationActive()
         {
-            return true;
-
             // If LeakingRadiation isn't null, ship has exploded and radiation is enabled
             return LeakingRadiation.main != null && CrashedShipExploder.main.IsExploded() && GameModeUtils.HasRadiation() && LeakingRadiation.main.currentRadius > 1;
         }
 
         public static bool GetSurfaceRadiationActive()
         {
-            return true;
-
             return GetRadiationActive() && GetRadiationDepth() > 1;
         }
 
