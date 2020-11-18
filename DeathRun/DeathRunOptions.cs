@@ -24,7 +24,7 @@ namespace DeathRun
         private const string nitroSliderName = "damagescalerslider";
         private const string crushSliderName = "crushdepthslider";
 
-        public bool nitroEnabled = true;
+        public bool nitroEnabled = true; 
         public bool nitroLethal = true;
         public bool crushEnabled = false;
         public bool specialtyTanksEnabled = true;

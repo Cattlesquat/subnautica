@@ -14,7 +14,7 @@ namespace DeathRun.Items
     internal abstract class ReinforcedSuitsCore : Craftable
     {
         private const string craftTab = "ReinforcedSuits";
-        private const string Assets = @"NitrogenMod/Assets";
+        private const string Assets = @"DeathRun/Assets";
         private static readonly string[] craftPath = new[] { craftTab };
 
         public static TechType ReinforcedSuit2ID { get; protected set; }

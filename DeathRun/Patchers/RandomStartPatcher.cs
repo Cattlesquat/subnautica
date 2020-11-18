@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Adapted from libraryaddict's Radiation Challenge mod -- used w/ permission.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
