@@ -25,6 +25,8 @@ namespace DeathRun
         private const string assetBundle = assetFolder + "n2warning";
         public static GameObject N2HUD { get; set; }
 
+        public static bool podAnchored = false;
+
         public static bool specialtyTanks = true;
         public static bool nitrogenEnabled = true;
         public static bool decompressionVehicles = false;

@@ -115,6 +115,7 @@
     <Compile Include="Patchers\UnlockScanPatchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadiationConfig.cs" />
+    <Compile Include="DeathRunUtils.cs" />
     <Compile Include="RadiationUtils.cs" />
   </ItemGroup>
   <ItemGroup>

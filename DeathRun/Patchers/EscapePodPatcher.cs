@@ -19,8 +19,6 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]            
         public static bool Prefix(ref Vector3 position, EscapePod __instance) 
         {
-            ErrorMessage.AddMessage("Check Position");
-
             __instance.transform.position = position;
             __instance.anchorPosition = position;
             __instance.RespawnPlayer();   
@@ -32,15 +30,20 @@ namespace DeathRun.Patchers
     [HarmonyPatch("FixedUpdate")]
     internal class EscapePod_FixedUpdate_Patch
     {
-        static Transform podOriginalTransform;
-        static bool anchored = false;
-        static float lastDepth = -10;
-
+        static Trans podOriginalTransform = new Trans();
+        static Trans podAtPrevSec = new Trans();
+        static bool frozen = false;
+        static int prevSecs = 0;
+        static int frozenSecs = 0;
+        static float lastDepth = 0;
 
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance)
         {
-            podOriginalTransform = __instance.transform;
+            if (!Main.podAnchored)
+            {
+                podOriginalTransform.copyFrom(__instance.transform);
+            }
             WorldForces wf = __instance.GetComponent<WorldForces>();
             float depth = Ocean.main.GetDepthOf(__instance.gameObject);
             if (wf.aboveWaterGravity == 50f && depth > 0)
@@ -48,15 +51,67 @@ namespace DeathRun.Patchers
                 wf.aboveWaterGravity = 9.81f;
             }
 
+            if (depth > 10 && (lastDepth < 10))
+            {
+                ErrorMessage.AddMessage("The Life Pod is sinking!");
+            }
+
             Vector3 here = __instance.transform.position;
             Vector3 down = here;
             down.y -= 2;
 
-            if (Physics.Raycast(here, down, 10, Voxeland.GetTerrainLayerMask(), QueryTriggerInteraction.Ignore))
+            int secs = (int)Time.time;
+            if (secs != prevSecs)
             {
-                if (!anchored) ErrorMessage.AddMessage("The Escape Pod has struck bottom.");
-                anchored = true; // Protection from weirdly falling through the earth                
+                // Note if we've recently been frozen in place by cut scene or player distance
+                if (frozen || __instance.rigidbodyComponent.isKinematic) 
+                {
+                    frozenSecs = secs;
+                }
+
+                // Check when pod hits bottom so we can stop processing it.
+                if ((prevSecs > 0) && (secs - frozenSecs > 2) && (depth > 20))
+                {
+                    float dist = Vector3.Distance(podAtPrevSec.position, podOriginalTransform.position);
+                    if (!Main.podAnchored && (dist < 0.5))
+                    {
+                        ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
+                        Main.podAnchored = true;
+                        __instance.transform.Rotate(Vector3.forward, 30); // Jolt at bottom!
+                        podOriginalTransform.copyFrom(__instance.transform);
+                    }
+                    //ErrorMessage.AddMessage(" Dist:" + dist + " Diff:" + (podAtPrevSec.position.y - podOriginalTransform.position.y));
+                }
+                prevSecs = (int)Time.time;
+                podAtPrevSec.copyFrom(podOriginalTransform);
+            }            
+
+            //if (Physics.Raycast(here, down, 10, Voxeland.GetTerrainLayerMask(), QueryTriggerInteraction.Ignore))
+            //{
+            //    if (!anchored) ErrorMessage.AddMessage("The Escape Pod has struck bottom.");
+            //    anchored = true;
+            //}
+
+            //Bounds podBottom = new Bounds(here, down);
+            //frozen = !LargeWorldStreamer.main.IsRangeActiveAndBuilt(podBottom);
+
+            frozen = Main.podAnchored || (Vector3.Distance(here, Player.main.transform.position) > 20);
+            if (frozen)
+            {
+                wf.underwaterGravity = 0.0f;
             }
+            else
+            {
+                wf.underwaterGravity = 9.81f;
+            }
+
+            //__instance.transform.Rotate(Vector3.forward, 30);
+
+            //RaycastHit raycastHit;
+            //if (UWE.Utils.TraceForTerrain(new Ray(here, down), 2, out raycastHit)) {
+            //    if (!anchored) ErrorMessage.AddMessage("WHOMP! WHOMP! WHOMP! WHOMP!");
+            //    anchored = true; // Protection from weirdly falling through the earth                
+            //}
 
             lastDepth = depth;
             return true;
@@ -65,9 +120,13 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
-            if (anchored)
+            if (Main.podAnchored)
             {
-                __instance.transform.position = podOriginalTransform.position;
+                __instance.rigidbodyComponent.isKinematic = true;
+            }
+            else if (frozen)
+            {
+                podOriginalTransform.copyTo(__instance.transform);                
             }
         }
     }
@@ -86,6 +145,8 @@ namespace DeathRun.Patchers
 
             wf.underwaterGravity = 9.81f;
             wf.aboveWaterGravity = 50f;
+
+            //LargeWorld.main.streamer.cellManager.RegisterEntity(EscapePod.main.gameObject);
         }
     }
 }

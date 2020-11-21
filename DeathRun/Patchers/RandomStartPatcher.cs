@@ -24,10 +24,32 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
-            ErrorMessage.AddMessage("Start Point");
-            __result.x = 131.8f;
+            int picker = UnityEngine.Random.Range(0, 4);
+            ErrorMessage.AddMessage("Start Point: " + picker);
+
+            Main.podAnchored = false;
+
+            float x;
+            float z;
+            switch (picker)
+            {
+                case 0: x = 104.5f; z = -317.4f; break; 
+                case 1: x = -530.0f; z = 377.1f; break; ///
+                case 2: x = 98.7f; z = 717.7f;   break;
+                case 3: x = 97.7f; z = 626.2f;   break;
+                case 4:
+                default:
+                    x = -649.4f; z = 92.2f; break;
+            }
+
+            //x = 131.8f; z = -399.8f; break; // Right by Delgasi cave. Very hard! But I was able to make oxygen tank, fins, scanner. Seems doable.
+            //x = -658.8f; z = 398.7f; // On a Tree Mushroom! Hard but doable...
+            //x = -93.8f; z = 82.2f;   // Shallow near a cool cave
+            //x = -530.0f; z = 377.1f; // Quite deep, but wasn't too hard.
+
+            __result.x = x;
             __result.y = 0;
-            __result.z = -317.4f;
+            __result.z = z;
             return false;
         }
     }
