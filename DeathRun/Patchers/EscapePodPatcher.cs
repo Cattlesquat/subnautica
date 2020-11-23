@@ -40,25 +40,68 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance)
         {
+            WorldForces wf = __instance.GetComponent<WorldForces>();
+            float depth = Ocean.main.GetDepthOf(__instance.gameObject);
+
+            //ErrorMessage.AddMessage(Main.saveData.exampleString);
+
+            // Copy our current transform
             if (!Main.podAnchored)
             {
                 podOriginalTransform.copyFrom(__instance.transform);
             }
-            WorldForces wf = __instance.GetComponent<WorldForces>();
-            float depth = Ocean.main.GetDepthOf(__instance.gameObject);
+
+            // This block makes sure the pod doesn't sink *during* the opening cinematic etc.
+            if (!Main.podSinking)
+            {
+                frozen = false;
+
+                // This checks if we're holding on the "press any key to continue" screen
+                if (Player.main != null)
+                {
+                    Survival surv = Player.main.GetComponent<Survival>();
+                    if ((surv != null) && surv.freezeStats)
+                    {
+                        return true;
+                    }
+                }
+
+                // Checks if opening animation is running
+                if ((__instance.IsPlayingIntroCinematic() && __instance.IsNewBorn()))
+                {
+                    return true;
+                }
+
+                // Otherwise, "turn on gravity" for the pod
+                if (depth <= 10) {
+                    Main.podSinking = true;
+                    wf.underwaterGravity = 9.81f;
+                    if (depth <= 0)
+                    {
+                        wf.aboveWaterGravity = 50f;
+                    } else
+                    {
+                        wf.aboveWaterGravity = 9.81f;
+                    }
+                }
+            }
+
+            // Once we're below the surface, return gravity to normal
             if (wf.aboveWaterGravity == 50f && depth > 0)
             {
                 wf.aboveWaterGravity = 9.81f;
             }
 
-            if (depth > 10 && (lastDepth < 10))
+            // Give player some early feedback the lifepod is sinking
+            if (depth > 6 && (lastDepth < 6))
             {
                 ErrorMessage.AddMessage("The Life Pod is sinking!");
+                DeathRunUtils.CenterMessage("The Life Pod is sinking!", 4);
             }
 
-            Vector3 here = __instance.transform.position;
-            Vector3 down = here;
-            down.y -= 2;
+            //Vector3 here = __instance.transform.position;
+            //Vector3 down = here;
+            //down.y -= 2;
 
             int secs = (int)Time.time;
             if (secs != prevSecs)
@@ -76,6 +119,7 @@ namespace DeathRun.Patchers
                     if (!Main.podAnchored && (dist < 0.5))
                     {
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
+                        DeathRunUtils.CenterMessage("The Escape Pod has truck bottom!", 4);
                         Main.podAnchored = true;
                         __instance.transform.Rotate(Vector3.forward, 30); // Jolt at bottom!
                         podOriginalTransform.copyFrom(__instance.transform);
@@ -95,7 +139,8 @@ namespace DeathRun.Patchers
             //Bounds podBottom = new Bounds(here, down);
             //frozen = !LargeWorldStreamer.main.IsRangeActiveAndBuilt(podBottom);
 
-            frozen = Main.podAnchored || (Vector3.Distance(here, Player.main.transform.position) > 20);
+            // If player is away from the pod, stop gravity so that it doesn't fall through the world when the geometry unloads
+            frozen = Main.podAnchored || (Vector3.Distance(__instance.transform.position, Player.main.transform.position) > 20);
             if (frozen)
             {
                 wf.underwaterGravity = 0.0f;
@@ -122,11 +167,11 @@ namespace DeathRun.Patchers
         {
             if (Main.podAnchored)
             {
-                __instance.rigidbodyComponent.isKinematic = true;
+                __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
             else if (frozen)
             {
-                podOriginalTransform.copyTo(__instance.transform);                
+                podOriginalTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
             }
         }
     }
@@ -138,15 +183,8 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            EscapePod pod = EscapePod.main;
-
-            WorldForces wf = pod.GetComponent<WorldForces>();
-            //wf.underwaterGravity = 0.0f;
-
-            wf.underwaterGravity = 9.81f;
-            wf.aboveWaterGravity = 50f;
-
-            //LargeWorld.main.streamer.cellManager.RegisterEntity(EscapePod.main.gameObject);
+            Main.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
+            //EscapePod pod = EscapePod.main;
         }
     }
 }

@@ -62,6 +62,9 @@ namespace DeathRun.Patchers
 
             float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
 
+            //
+            // NITROGEN controller
+            //
             if (__instance.nitrogenEnabled && Time.timeScale > 0f)
             {                
                 int  ticks = (int)(Time.time * 2);
@@ -81,9 +84,7 @@ namespace DeathRun.Patchers
                                    Player.main.GetVehicle() is Exosuit;
 
                 float ascent = __instance.GetComponent<Rigidbody>().velocity.y;  // Player's current positive Y velocity is the ascent rate (fastest seems somewhat above 6)
-                ascentRate = ((ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second
-
-                //float num = Mathf.Clamp(2f - __instance.GetComponent<Rigidbody>().velocity.magnitude, 0f, 2f) * 1f;
+                ascentRate = ((ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second                
 
                 //
                 // NITROGEN - Main Nitrogen adjustment calculations - run twice a second.
@@ -191,15 +192,10 @@ namespace DeathRun.Patchers
                     {
                         if (ascentRate > 4)
                         {
-                            //if ((int)ascentRate != (int)lastAscent)
-                            //{
-                            //    ErrorMessage.AddMessage("Ascent " + (int)ascentRate);
-                            //}
-                            //lastAscent = ascentRate;
-
                             ascentWarning++;
                             if (ascentWarning == 1)
                             {
+                                DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
                                 ErrorMessage.AddMessage("Ascending too quickly!");
                             }
                             else if (ascentRate >= 5)
@@ -227,6 +223,7 @@ namespace DeathRun.Patchers
                                     if ((ascentWarning % 120) == 0)
                                     {
                                         ErrorMessage.AddMessage("Ascending too quickly!");
+                                        DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
                                     }
                                 }
                             }
@@ -282,10 +279,12 @@ namespace DeathRun.Patchers
             if (component.health - damage > 0f)
             {
                 ErrorMessage.AddMessage("You have the bends from ascending too quickly!");
+                DeathRunUtils.CenterMessage("You have the bends!", 4);
             }
             else 
             {
                 ErrorMessage.AddMessage("You died of the bends!");
+                DeathRunUtils.CenterMessage("You died of the bends!", 5);
             }
 
             component.TakeDamage(damage, default, DamageType.Starve, null);

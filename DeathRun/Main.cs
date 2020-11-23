@@ -17,15 +17,23 @@ namespace DeathRun
 
     [QModCore]
     public class Main
-    {
+    {        
+        public const string modID = "DeathRun";
         public const string modName = "[DeathRun]";
+        public const string SaveFile = modID + "_" + "SavedGame.json";
+
+        public static DeathRunSaveData saveData = new DeathRunSaveData();
+        public static DeathRunSaveListener saveListener; 
 
         private const string modFolder = "./QMods/DeathRun/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "n2warning";
+
         public static GameObject N2HUD { get; set; }
 
         public static bool podAnchored = false;
+        public static bool podSinking  = false;
+        public static bool podGravity  = true;
 
         public static bool specialtyTanks = true;
         public static bool nitrogenEnabled = true;
@@ -181,6 +189,11 @@ namespace DeathRun
                 }
 
                 Console.WriteLine("[DeathRun] Patched");
+
+                //saveData.exampleString = "Saved This String";
+                //saveData.Save();
+                //saveData.exampleString = "not this one";
+                //saveData.Load();
             }
             catch (Exception ex)
             {
