@@ -104,6 +104,8 @@
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\BreathPatcher.cs" />
+    <Compile Include="Patchers\DamagePatcher.cs" />
+    <Compile Include="Patchers\MoveToTargetPatcher.cs" />
     <Compile Include="Patchers\PatchExplosion.cs" />
     <Compile Include="Patchers\PatchBreathing.cs" />
     <Compile Include="Patchers\DepthClassPatchers.cs" />

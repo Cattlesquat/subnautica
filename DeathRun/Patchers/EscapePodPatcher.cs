@@ -8,7 +8,8 @@ using UnityEngine;
 
 /**
  * Escape Pod sinking -- inspired by and adapted from oldark's "Escape Pod Unleashed" -- basically the idea is to have your escape pod
- * "sink to the bottom". It's different, and dramatic, and "maybe just a tad more challenging".
+ * "sink to the bottom". It's different, and dramatic, and "maybe just a tad more challenging", especially combined with the N2 changes,
+ * etc.
  */ 
 namespace DeathRun.Patchers   
 {
@@ -183,8 +184,9 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
+            // This adds a listener to the Escape Pod's game object, entirely for the purpose of letting the whole mod know
+            // when the player is saving/loading the game so that we will save and load our part.
             Main.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
-            //EscapePod pod = EscapePod.main;
         }
     }
 }

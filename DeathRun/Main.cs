@@ -39,6 +39,9 @@ namespace DeathRun
         public static bool nitrogenEnabled = true;
         public static bool decompressionVehicles = false;
 
+        public static float aggressionMultiplier = 2.0f; // baseline is 1
+        public static int aggressionRadius = 3;          // baseline is 1
+
         //private static readonly string configPath = @"./QMods/DeathRun/config.json";
 
         private static void LoadConfig()
