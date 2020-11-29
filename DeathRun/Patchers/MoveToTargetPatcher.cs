@@ -18,15 +18,16 @@ namespace DeathRun.Patchers
      */
     [HarmonyPatch(typeof(MoveTowardsTarget))]
     [HarmonyPatch("UpdateCurrentTarget")]
-    class MoveTowardsTarget_UpdateCurrentTarget_Patch
+    internal class MoveTowardsTarget_UpdateCurrentTarget_Patch
     {
+        [HarmonyPrefix]
         public static bool Prefix(MoveTowardsTarget __instance)
         {
             ProfilingUtils.BeginSample("UpdateCurrentTarget");
-            if (EcoRegionManager.main != null && (Mathf.Approximately(__instance.requiredAggression, 0f) || __instance.creature.Aggression.Value * Main.aggressionMultiplier >= __instance.requiredAggression))
+            if (EcoRegionManager.main != null && (Mathf.Approximately(__instance.requiredAggression, 0f) || __instance.creature.Aggression.Value * DeathRun.aggressionMultiplier >= __instance.requiredAggression))
             {
-                //AccessTools.FieldRefAccess<Transform, Vector3>(__instance)
-                IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, Main.aggressionRadius);
+                IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, DeathRun.aggressionRadius);
+
                 if (ecoTarget != null)
                 {
                     __instance.currentTarget = ecoTarget;

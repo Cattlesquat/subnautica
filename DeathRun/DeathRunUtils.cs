@@ -65,16 +65,16 @@ namespace DeathRun
                 Directory.CreateDirectory(saveDirectory);
             }
 
-            File.WriteAllText(Path.Combine(saveDirectory, Main.SaveFile), saveDataJson);
+            File.WriteAllText(Path.Combine(saveDirectory, DeathRun.SaveFile), saveDataJson);
         }
 
         public void Load() 
         {
-            var path = Path.Combine(SaveUtils.GetCurrentSaveDataDir(), Main.SaveFile);
+            var path = Path.Combine(SaveUtils.GetCurrentSaveDataDir(), DeathRun.SaveFile);
 
             if (!File.Exists(path))
             {
-                SeraLogger.Message(Main.modName, "Death Run data not found - using defaults");
+                SeraLogger.Message(DeathRun.modName, "Death Run data not found - using defaults");
                 setDefaults();
                 return;
             }
@@ -93,13 +93,13 @@ namespace DeathRun
                 //this.exampleString = json.exampleString;
                 //this.exampleData = json.exampleData;
 
-                Main.saveData = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
+                DeathRun.saveData = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
             }
             catch (Exception e)
             {
-                SeraLogger.GenericError(Main.modName, e);
-                SeraLogger.Message(Main.modName, "Death Run data not found - using defaults");
-                SeraLogger.Message(Main.modName, e.StackTrace);
+                SeraLogger.GenericError(DeathRun.modName, e);
+                SeraLogger.Message(DeathRun.modName, "Death Run data not found - using defaults");
+                SeraLogger.Message(DeathRun.modName, e.StackTrace);
                 setDefaults();
             }
         }
@@ -114,12 +114,12 @@ namespace DeathRun
     {
         public void OnProtoDeserialize(ProtobufSerializer serializer)
         {
-            Main.saveData.Load();
+            DeathRun.saveData.Load();
         }
 
         public void OnProtoSerialize(ProtobufSerializer serializer)
         {
-            Main.saveData.Save();
+            DeathRun.saveData.Save();
         }
     }
 

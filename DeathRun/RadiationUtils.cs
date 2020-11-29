@@ -12,44 +12,52 @@ namespace DeathRun
 {
     public class RadiationUtils
     {
-        /// <summary>
-        /// How deep into the ocean the radiation can penetrate.
-        ///
-        /// From 1 to X
-        /// </summary>
-        public static float GetRadiationDepth()
+        /**
+         * How deep into the ocean the radiation can penetrate (1 to X)
+         */
+        public static float getRadiationDepth()
         {
             // A % of how strong the radiation is compared to max radiation
             float radiationStrengthPerc = LeakingRadiation.main.currentRadius / LeakingRadiation.main.kMaxRadius;
 
             // How deep the radiation can reach
-            return Main.config.radiativeDepth * radiationStrengthPerc;
+
+            if (Config.RADIATION_DEATHRUN.Equals(DeathRun.config.radiationDepth))
+            {
+                return 60 * radiationStrengthPerc;
+            }
+            else if (Config.RADIATION_HARD.Equals(DeathRun.config.radiationDepth))
+            {
+                return 60 * radiationStrengthPerc;
+            }
+
+            return 0;
         }
 
-        public static bool GetRadiationActive()
+        public static bool isRadiationActive()
         {
             // If LeakingRadiation isn't null, ship has exploded and radiation is enabled
             return LeakingRadiation.main != null && CrashedShipExploder.main.IsExploded() && GameModeUtils.HasRadiation() && LeakingRadiation.main.currentRadius > 1;
         }
 
-        public static bool GetSurfaceRadiationActive()
+        public static bool isSurfaceRadiationActive()
         {
-            return GetRadiationActive() && GetRadiationDepth() > 1;
+            return isRadiationActive() && getRadiationDepth() > 1;
         }
 
-        public static bool GetInShipsRadiation(UnityEngine.Transform transform)
+        public static bool isInShipsRadiation(UnityEngine.Transform transform)
         {
-            return GetRadiationActive() && (transform.position - LeakingRadiation.main.transform.position).magnitude <= LeakingRadiation.main.currentRadius;
+            return isRadiationActive() && (transform.position - LeakingRadiation.main.transform.position).magnitude <= LeakingRadiation.main.currentRadius;
         }
 
-        public static bool GetInAnyRadiation(UnityEngine.Transform transform)
+        public static bool isInAnyRadiation(UnityEngine.Transform transform)
         {
-            if (!GetRadiationActive())
+            if (!isRadiationActive())
             {
                 return false;
             }
 
-            float depth = GetRadiationDepth();
+            float depth = getRadiationDepth();
 
             if (depth > 1 && transform.position.y >= -depth)
             {
@@ -59,14 +67,14 @@ namespace DeathRun
             return (transform.position - LeakingRadiation.main.transform.position).magnitude <= LeakingRadiation.main.currentRadius;
         }
 
-        public static bool GetInSurfaceRadiation(UnityEngine.Transform transform)
+        public static bool isInSurfaceRadiation(UnityEngine.Transform transform)
         {
-            if (!GetRadiationActive())
+            if (!isRadiationActive())
             {
                 return false;
             }
 
-            float depth = GetRadiationDepth();
+            float depth = getRadiationDepth();
 
             return depth > 1 && transform.position.y >= -depth;
         }

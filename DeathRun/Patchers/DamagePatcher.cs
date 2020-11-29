@@ -25,12 +25,25 @@ namespace DeathRun.Patchers
                         break;
 
                     case DamageType.Heat:
+                        __result *= 10;
+                        break;
+
                     case DamageType.Collide:
                         __result *= 10;
                         break;
 
-                    //case DamageType.Pressure:
+                    case DamageType.Normal:
+                        __result *= 10;
+                        break;
 
+                    case DamageType.Poison:
+                        __result *= 5;
+                        break;
+
+                    case DamageType.Acid:
+                    case DamageType.Explosive:
+                    case DamageType.Pressure:
+                    case DamageType.Puncture:
                     default:
                         __result *= 5;
                         break;

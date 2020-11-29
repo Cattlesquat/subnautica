@@ -22,7 +22,7 @@ namespace DeathRun.NMBehaviours
             cachedOxygenManager = Player.main.oxygenMgr;
             cachedDayNight = DayNightCycle.main;
             cachedTemp = WaterTemperatureSimulation.main;
-            SeraLogger.Message(Main.modName, "SpecialtyTanks is Awake() and running!");
+            SeraLogger.Message(DeathRun.modName, "SpecialtyTanks is Awake() and running!");
         }
 
         private void Update()

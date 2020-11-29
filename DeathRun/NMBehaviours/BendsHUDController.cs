@@ -22,7 +22,7 @@ namespace DeathRun.NMBehaviours
 
         private void Awake()
         {
-            _N2HUDWarning = Instantiate<GameObject>(Main.N2HUD);
+            _N2HUDWarning = Instantiate<GameObject>(DeathRun.N2HUD);
 
             canvasTransform = _N2HUDWarning.transform;
             n2Warning = canvasTransform.GetChild(0).GetComponent<Text>();

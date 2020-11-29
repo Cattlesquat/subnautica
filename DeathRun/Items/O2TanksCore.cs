@@ -25,7 +25,7 @@ namespace DeathRun.Items
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TankTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Specialty O2 Tanks", tabIcon);
-            SeraLogger.Message(Main.modName, "Creating new O2 tank crafting tab");
+            SeraLogger.Message(DeathRun.modName, "Creating new O2 tank crafting tab");
 
             var smallPhotoTank = new PhotosynthesisSmallTank();
             var photoTank = new PhotosynthesisTank();

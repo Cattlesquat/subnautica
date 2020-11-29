@@ -25,7 +25,7 @@ namespace DeathRun.Items
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/SuitTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Dive Suit Upgrades", tabIcon);
-            SeraLogger.Message(Main.modName, "Creating new dive suit crafting tab");
+            SeraLogger.Message(DeathRun.modName, "Creating new dive suit crafting tab");
 
             var DiveSuitMk2 = new ReinforcedSuitMark2();
             var DiveSuitMk3 = new ReinforcedSuitMark3();

@@ -1,7 +1,9 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * This section taken directly from Seraphim Risen's NitrogenMod
+ * This section inspired by Seraphim Risen's Nitrogen Mod, but I have simplified the use of First Aid Kits (always works for both
+ * nitrogen and health, to save player having to try to understand which will be affected). Have also adapted the effects to be
+ * appropriate for current Nitrogen balance settings. Added some player feedback.
  */
 namespace DeathRun.Patchers
 {
@@ -12,50 +14,40 @@ namespace DeathRun.Patchers
     [HarmonyPatch("Use")]
     internal class SurvivalUsePatcher
     {
+        static float ticksNotice = 0;
+
         [HarmonyPrefix]
         public static bool Prefix(ref Survival __instance, ref bool __result, GameObject useObj)
         {
-            bool prefixFlag = true;
             if (useObj != null)
             {
                 TechType techType = CraftData.GetTechType(useObj);
-                NitrogenLevel nitrogenLevel = null;
-                bool nFlag = false;
-
-                if (Player.main.gameObject.GetComponent<NitrogenLevel>() != null)
-                {
-                    nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
-                    if (nitrogenLevel.safeNitrogenDepth >= 10f)
-                        nFlag = true;
-                }
 
                 if (techType == TechType.FirstAidKit)
                 {
-                    if (Player.main.GetComponent<LiveMixin>().AddHealth(50f) > 0.1f)
-                    {
-                        prefixFlag = false;
-                        __result = true;
-                    }
-                        
-                    if (nFlag)
-                    {
-                        if (nitrogenLevel.safeNitrogenDepth > 10f)
-                            nitrogenLevel.safeNitrogenDepth -= 10f;
-                        else
-                            nitrogenLevel.safeNitrogenDepth = 0f;
+                    NitrogenLevel nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
 
-                        prefixFlag = false;
-                        __result = true;
-                    }
-                    
-                    if (__result)
+                    if (nitrogenLevel.safeNitrogenDepth > 10f)
                     {
-                        string useEatSound = CraftData.GetUseEatSound(techType);
-                        FMODUWE.PlayOneShot(useEatSound, Player.main.transform.position, 1f);
+                        nitrogenLevel.safeNitrogenDepth /= 2;
+
+                        if (Time.time - ticksNotice > 60)
+                        {
+                            ticksNotice = Time.time;
+                            ErrorMessage.AddMessage("First Aid Kit helps purge Nitrogen from your bloodstream.");
+                        }
+
+                        if (nitrogenLevel.safeNitrogenDepth < 10f)
+                        {
+                            nitrogenLevel.nitrogenLevel = nitrogenLevel.safeNitrogenDepth * 10;
+                        }
+                    } else
+                    {
+                        nitrogenLevel.nitrogenLevel = 0;
                     }
                 }
             }
-            return prefixFlag;
+            return true;
         }
     }
 }

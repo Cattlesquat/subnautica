@@ -63,7 +63,7 @@ namespace DeathRun
             if (args.Id != specialtyTanksEnablerName)
                 return;
             specialtyTanksEnabled = args.Value;
-            Main.specialtyTanks = args.Value;
+            DeathRun.specialtyTanks = args.Value;
             SaveSettings();
         }
 
@@ -78,7 +78,7 @@ namespace DeathRun
             }
             catch (Exception ex)
             {
-                SeraLogger.GenericError(Main.modName, ex);
+                SeraLogger.GenericError(DeathRun.modName, ex);
             }
             SaveSettings();
         }
@@ -128,7 +128,7 @@ namespace DeathRun
         {
             if (!File.Exists(configFile))
             {
-                SeraLogger.ConfigNotFound(Main.modName);
+                SeraLogger.ConfigNotFound(DeathRun.modName);
                 SaveSettings();
             }
             else
@@ -145,7 +145,7 @@ namespace DeathRun
                 }
                 catch (Exception ex)
                 {
-                    SeraLogger.ConfigReadError(Main.modName, ex);
+                    SeraLogger.ConfigReadError(DeathRun.modName, ex);
                     nitroEnabled = true;
                     nitroLethal = true;
                     damageScaler = 1f;
@@ -154,7 +154,7 @@ namespace DeathRun
                     decompressionVehicles = false;
                     SaveSettings();
                 }
-                Main.specialtyTanks = specialtyTanksEnabled;
+                DeathRun.specialtyTanks = specialtyTanksEnabled;
             }
         }
     }

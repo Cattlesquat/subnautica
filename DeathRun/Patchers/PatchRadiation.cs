@@ -1,7 +1,7 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * Adapted from libraryaddict's Radiation Challenge mod -- used w/ permission.
+ * From libraryaddict's Radiation Challenge mod -- used w/ permission.
  */
 
 using HarmonyLib;
@@ -33,58 +33,21 @@ namespace DeathRun.Patchers
 
                 if (distanceToPlayer <= __instance.damageRadius)
                 {
-                    if (__instance.doDebug)
-                    {
-                        Debug.Log(string.Concat(new object[]
-                        {
-                        __instance.gameObject.name,
-                        ".DamagePlayerInRadius() - dist/damageRadius: ",
-                        distanceToPlayer,
-                        "/",
-                        __instance.damageRadius,
-                        " => damageAmount: ",
-                        __instance.damageAmount
-                        }));
-                    }
-
                     float radiationAmount = Player.main.radiationAmount;
                     if (radiationAmount == 0f)
                     {
                         return false;
                     }
-
-                    if (__instance.doDebug)
-                    {
-                        Debug.Log(string.Concat(new object[]
-                        {
-                        "TakeDamage: ",
-                        __instance.damageAmount,
-                        " ",
-                        __instance.damageType.ToString()
-                        }));
-                    }
                     Player.main.GetComponent<LiveMixin>().TakeDamage(__instance.damageAmount, __instance.transform.position, __instance.damageType, null);
-                }
-                else if (__instance.doDebug)
-                {
-                    Debug.Log(string.Concat(new object[]
-                    {
-                    __instance.gameObject.name,
-                    ".DamagePlayerInRadius() - dist/damageRadius: ",
-                    distanceToPlayer,
-                    "/",
-                    __instance.damageRadius,
-                    " => no damage"
-                    }));
                 }
             }
 
             return false;
         }
 
-        /// <summary>
-        /// Readjust the radiation values dependent on where the player is
-        /// </summary>
+        /**
+         * Readjust the radiation values dependent on where the player is
+         */
         [HarmonyPrefix]
         public static bool Radiate(RadiatePlayerInRange __instance)
         {
@@ -120,9 +83,9 @@ namespace DeathRun.Patchers
             return false;
         }
 
-        /// <summary>
-        /// Forces the radiated symbol to appear on the player's screen, even if they're fully immune
-        /// </summary>
+        /**
+         * Forces the radiated symbol to appear on the player's screen, even if they're fully immune
+         */
         [HarmonyPrefix]
         public static bool IsRadiated(uGUI_RadiationWarning __instance, ref bool __result)
         {
@@ -147,14 +110,14 @@ namespace DeathRun.Patchers
         private static float GetDistance(PlayerDistanceTracker tracker)
         {
             // If the object is null, ship hasn't exploded yet or radius is too small
-            if (!RadiationUtils.GetSurfaceRadiationActive())
+            if (!RadiationUtils.isSurfaceRadiationActive())
             {
                 return tracker.distanceToPlayer;
             }
 
             // How deep the player is
             float playerDepth = Math.Max(0, -Player.main.transform.position.y);
-            float radiationDepth = RadiationUtils.GetRadiationDepth();
+            float radiationDepth = RadiationUtils.getRadiationDepth();
 
             // If they are deeper than the radiation, return
             if (playerDepth > radiationDepth)

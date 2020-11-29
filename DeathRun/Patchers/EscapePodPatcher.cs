@@ -44,16 +44,14 @@ namespace DeathRun.Patchers
             WorldForces wf = __instance.GetComponent<WorldForces>();
             float depth = Ocean.main.GetDepthOf(__instance.gameObject);
 
-            //ErrorMessage.AddMessage(Main.saveData.exampleString);
-
             // Copy our current transform
-            if (!Main.podAnchored)
+            if (!DeathRun.podAnchored)
             {
                 podOriginalTransform.copyFrom(__instance.transform);
             }
 
             // This block makes sure the pod doesn't sink *during* the opening cinematic etc.
-            if (!Main.podSinking)
+            if (!DeathRun.podSinking)
             {
                 frozen = false;
 
@@ -74,13 +72,15 @@ namespace DeathRun.Patchers
                 }
 
                 // Otherwise, "turn on gravity" for the pod
-                if (depth <= 10) {
-                    Main.podSinking = true;
+                if (DeathRun.podGravity)
+                {
+                    DeathRun.podSinking = true;
                     wf.underwaterGravity = 9.81f;
                     if (depth <= 0)
                     {
                         wf.aboveWaterGravity = 50f;
-                    } else
+                    }
+                    else
                     {
                         wf.aboveWaterGravity = 9.81f;
                     }
@@ -94,15 +94,11 @@ namespace DeathRun.Patchers
             }
 
             // Give player some early feedback the lifepod is sinking
-            if (depth > 6 && (lastDepth < 6))
+            if (DeathRun.podGravity && (depth > 6) && (lastDepth < 6))
             {
                 ErrorMessage.AddMessage("The Life Pod is sinking!");
-                DeathRunUtils.CenterMessage("The Life Pod is sinking!", 4);
+                DeathRunUtils.CenterMessage("The Life Pod is sinking!", 6);
             }
-
-            //Vector3 here = __instance.transform.position;
-            //Vector3 down = here;
-            //down.y -= 2;
 
             int secs = (int)Time.time;
             if (secs != prevSecs)
@@ -117,31 +113,21 @@ namespace DeathRun.Patchers
                 if ((prevSecs > 0) && (secs - frozenSecs > 2) && (depth > 20))
                 {
                     float dist = Vector3.Distance(podAtPrevSec.position, podOriginalTransform.position);
-                    if (!Main.podAnchored && (dist < 0.5))
+                    if (!DeathRun.podAnchored && (dist < 0.5))
                     {
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
-                        DeathRunUtils.CenterMessage("The Escape Pod has truck bottom!", 4);
-                        Main.podAnchored = true;
+                        DeathRunUtils.CenterMessage("The Escape Pod has struck bottom!", 4);
+                        DeathRun.podAnchored = true;
                         __instance.transform.Rotate(Vector3.forward, 30); // Jolt at bottom!
                         podOriginalTransform.copyFrom(__instance.transform);
                     }
-                    //ErrorMessage.AddMessage(" Dist:" + dist + " Diff:" + (podAtPrevSec.position.y - podOriginalTransform.position.y));
                 }
                 prevSecs = (int)Time.time;
                 podAtPrevSec.copyFrom(podOriginalTransform);
             }            
 
-            //if (Physics.Raycast(here, down, 10, Voxeland.GetTerrainLayerMask(), QueryTriggerInteraction.Ignore))
-            //{
-            //    if (!anchored) ErrorMessage.AddMessage("The Escape Pod has struck bottom.");
-            //    anchored = true;
-            //}
-
-            //Bounds podBottom = new Bounds(here, down);
-            //frozen = !LargeWorldStreamer.main.IsRangeActiveAndBuilt(podBottom);
-
             // If player is away from the pod, stop gravity so that it doesn't fall through the world when the geometry unloads
-            frozen = Main.podAnchored || (Vector3.Distance(__instance.transform.position, Player.main.transform.position) > 20);
+            frozen = DeathRun.podAnchored || (Vector3.Distance(__instance.transform.position, Player.main.transform.position) > 20);
             if (frozen)
             {
                 wf.underwaterGravity = 0.0f;
@@ -151,14 +137,6 @@ namespace DeathRun.Patchers
                 wf.underwaterGravity = 9.81f;
             }
 
-            //__instance.transform.Rotate(Vector3.forward, 30);
-
-            //RaycastHit raycastHit;
-            //if (UWE.Utils.TraceForTerrain(new Ray(here, down), 2, out raycastHit)) {
-            //    if (!anchored) ErrorMessage.AddMessage("WHOMP! WHOMP! WHOMP! WHOMP!");
-            //    anchored = true; // Protection from weirdly falling through the earth                
-            //}
-
             lastDepth = depth;
             return true;
         }
@@ -166,7 +144,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
-            if (Main.podAnchored)
+            if (DeathRun.podAnchored || !DeathRun.podGravity)
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
@@ -186,7 +164,7 @@ namespace DeathRun.Patchers
         {
             // This adds a listener to the Escape Pod's game object, entirely for the purpose of letting the whole mod know
             // when the player is saving/loading the game so that we will save and load our part.
-            Main.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
+            DeathRun.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
         }
     }
 }

@@ -5,7 +5,7 @@
   "Version": "1.5.1",
   "Enable": true,
   "AssemblyName": "DeathRun.dll",
-  "EntryMethod": "DeathRun.Main.Patch",
+  "EntryMethod": "DeathRun.DeathRun.Patch",
   "Dependencies": ["SMLHelper"],
   "Game": "Subnautica"
 }

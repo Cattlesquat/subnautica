@@ -99,10 +99,11 @@
     <Compile Include="Items\ReinforcedSuitMark2.cs" />
     <Compile Include="Items\ReinforcedSuitMark3.cs" />
     <Compile Include="Items\ReinforcedSuitsCore.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="DeathRun.cs" />
     <Compile Include="DeathRunOptions.cs" />
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
+    <Compile Include="Patchers\AggressionPatcher.cs" />
     <Compile Include="Patchers\BreathPatcher.cs" />
     <Compile Include="Patchers\DamagePatcher.cs" />
     <Compile Include="Patchers\MoveToTargetPatcher.cs" />
@@ -119,7 +120,7 @@
     <Compile Include="Patchers\SurvivalUsePatcher.cs" />
     <Compile Include="Patchers\UnlockScanPatchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RadiationConfig.cs" />
+    <Compile Include="DeathRunConfig.cs" />
     <Compile Include="DeathRunUtils.cs" />
     <Compile Include="RadiationUtils.cs" />
   </ItemGroup>

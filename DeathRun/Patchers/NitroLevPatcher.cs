@@ -60,7 +60,7 @@ namespace DeathRun.Patchers
                 return false;
             }
 
-            float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
+            float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
 
             //
             // NITROGEN controller
@@ -77,7 +77,7 @@ namespace DeathRun.Patchers
 
                 bool isSwimming = Player.main.IsSwimming();
 
-                bool isInBase = !isSwimming && (depthOf > 10) && !GameModeUtils.RequiresOxygen();
+                bool isInBase = !isSwimming && (depth > 10) && !GameModeUtils.RequiresOxygen();
 
                 bool isInVehicle = Player.main.GetCurrentSub()?.isCyclops == true ||
                                    Player.main.GetVehicle() is SeaMoth ||
@@ -95,7 +95,7 @@ namespace DeathRun.Patchers
                     if (isSwimming)
                     {
                         modifier = 1f;
-                        if (depthOf > 0f)
+                        if (depth > 0f)
                         {
                             // Increasingly better suits help lower rate of nitrogen accumulation
                             if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
@@ -115,9 +115,9 @@ namespace DeathRun.Patchers
                         modifier = 0.5f;
                     }
 
-                    float num = __instance.depthCurve.Evaluate(depthOf / 2048f) * 2;
+                    float num = __instance.depthCurve.Evaluate(depth / 2048f) * 2;
 
-                    float baselineSafe = (depthOf < 0) ? 0 : depthOf * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
+                    float baselineSafe = (depth < 0) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
 
                     if ((baselineSafe < __instance.safeNitrogenDepth) || (__instance.safeNitrogenDepth < 10))
                     {
@@ -135,15 +135,15 @@ namespace DeathRun.Patchers
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, baselineSafe, num * __instance.kBreathScalar * modifier);
 
                     // This little % buffer helps introduce the concept of N2 (both initially and as a positive feedback reminder)
-                    float target = ((depthOf < 10) && (__instance.safeNitrogenDepth <= 10f)) ? 0 : 100;
+                    float target = ((depth < 10) && (__instance.safeNitrogenDepth <= 10f)) ? 0 : 100;
                     float rate;
                     if (target > 0)
                     {
-                        rate = 1 + depthOf / 50f;
+                        rate = 1 + depth / 50f;
                     } 
                     else
                     {
-                        rate = (depthOf <= 1) ? 4 : 2;
+                        rate = (depth <= 1) ? 4 : 2;
                     }
 
                     __instance.nitrogenLevel = UWE.Utils.Slerp(__instance.nitrogenLevel, target, rate * modifier);
@@ -161,7 +161,7 @@ namespace DeathRun.Patchers
                 //
                 // DAMAGE - Check if we need to take damage
                 //
-                if ((__instance.nitrogenLevel >= 100) && (__instance.safeNitrogenDepth >= 10f) && ((int)depthOf < (int)__instance.safeNitrogenDepth))
+                if ((__instance.nitrogenLevel >= 100) && (__instance.safeNitrogenDepth >= 10f) && ((int)depth < (int)__instance.safeNitrogenDepth))
                 {                    
                     if ((!isInVehicle && !isInBase) || !decompressionVehicles)
                     {
@@ -169,7 +169,7 @@ namespace DeathRun.Patchers
                         {
                             if ((tookDamageTicks == 0) || (ticks - tookDamageTicks > 10))
                             {
-                                DecoDamage(ref __instance, depthOf);
+                                DecoDamage(ref __instance, depth);
                                 tookDamageTicks = ticks;
                             }
                         }
@@ -177,7 +177,7 @@ namespace DeathRun.Patchers
                 }
                 else
                 {
-                    if ((__instance.nitrogenLevel <= 90) || ((depthOf <= 1) && (ascentRate < 4) && (__instance.safeNitrogenDepth < 10f)) || ((depthOf >= __instance.safeNitrogenDepth + 10) && isSwimming))
+                    if ((__instance.nitrogenLevel <= 90) || ((depth <= 1) && (ascentRate < 4) && (__instance.safeNitrogenDepth < 10f)) || ((depth >= __instance.safeNitrogenDepth + 10) && isSwimming))
                     {
                         tookDamageTicks = 0;
                     }
@@ -213,7 +213,7 @@ namespace DeathRun.Patchers
                                     {
                                         if (ascentWarning % 10 == 0)
                                         {
-                                            if (__instance.safeNitrogenDepth < depthOf * 1.25f)
+                                            if (__instance.safeNitrogenDepth < depth * 1.25f)
                                             {
                                                 __instance.safeNitrogenDepth += 1;
                                             }
@@ -378,11 +378,11 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            __instance.nitrogenEnabled = Main.nitrogenEnabled;
+            __instance.nitrogenEnabled = DeathRun.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
             
-            if (Main.specialtyTanks)
+            if (DeathRun.specialtyTanks)
                 Player.main.gameObject.AddComponent<SpecialtyTanks>();
         }
     }

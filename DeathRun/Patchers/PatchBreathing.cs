@@ -2,6 +2,9 @@
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
  * Adapted from libraryaddict's Radiation Challenge mod -- used w/ permission.
+ * 
+ * Significant adjustment here:
+ *   - option for surface air ALWAYS poisoned.
  */
 using HarmonyLib;
 using System;
@@ -14,40 +17,29 @@ namespace DeathRun.Patchers
 {
     public class PatchBreathing
     {
-        /// <summary>
-        /// If the player is in a radiative zone outside a vehicle/base/escape pod
-        /// </summary>
-        private static bool IsRadiativeAir(Player player)
+        /**
+         * True if player can't breathe the current air, because on the surface. 
+         */
+        private static bool isAirPoisoned(Player player)
         {
-            return RadiationUtils.GetInAnyRadiation(player.transform) && player.transform.position.y >= -1 && !player.IsInside();
+            if (Config.ALWAYS.Equals(DeathRun.config.surfaceAir)) return false;
+            if (player.IsInside()) return false;
+            float depth = Ocean.main.GetDepthOf(player.gameObject);
+            if (depth > 0) return false;
+            if (Config.NEVER.Equals(DeathRun.config.surfaceAir)) return true;
+            return RadiationUtils.isInAnyRadiation(player.transform);
         }
 
-        /// <summary>
-        /// Prevent PipeSurfaceFloater from providing oxygen when in close range
-        /// </summary>
-        public static bool GetProvidesOxygen(PipeSurfaceFloater __instance, ref bool __result)
-        {
-            if (!RadiationUtils.GetInShipsRadiation(__instance.floater.transform))
-            {
-                // Not in a radiative hotzone
-                return true;
-            }
-
-            // Don't let it provide oxygen
-            __result = false;
-            return false;
-        }
-
-        /// <summary>
-        /// Called when it wants to check about adding air to the player, we cancel if the air is bad
-        /// </summary>
+        /**
+         * Called when it wants to check about adding air to the player, we cancel if the air is bad
+         */
         [HarmonyPrefix]
         public static bool AddOxygenAtSurface(OxygenManager __instance, ref float timeInterval)
         {
             Player player = Player.main;
 
             // If this is the wrong oxygen manager, or air isnt bad
-            if (player.oxygenMgr != __instance || !IsRadiativeAir(player))
+            if (player.oxygenMgr != __instance || !isAirPoisoned(player))
             {
                 return true;
             }
@@ -56,14 +48,13 @@ namespace DeathRun.Patchers
             return false;
         }
 
-        /// <summary>
-        /// Called when player surfaces, we override this because breathing hard on surface when you
-        /// can't breathe is...
-        /// </summary>
+        /**
+         * Called when player surfaces in unbreathable air, to cancel the "breathing a lot" sounds
+         */
         [HarmonyPrefix]
         public static bool PlayReachSurfaceSound(WaterAmbience __instance)
         {
-            if (!IsRadiativeAir(Player.main))
+            if (!isAirPoisoned(Player.main))
             {
                 return true;
             }
@@ -84,14 +75,13 @@ namespace DeathRun.Patchers
             return false;
         }
 
-        /// <summary>
-        /// Overrides a check in Player, this controls if the player can breathe fresh air where they
-        /// are currently
-        /// </summary>
+        /**
+         * Overrides a check in Player, this controls if the player can breathe fresh air where they are currently
+         */
         [HarmonyPrefix]
         public static bool CanBreathe(Player __instance, ref bool __result)
         {
-            if (IsRadiativeAir(__instance))
+            if (isAirPoisoned(__instance))
             {
                 __result = false;
                 return false;
@@ -101,13 +91,13 @@ namespace DeathRun.Patchers
             return true;
         }
 
-        /// <summary>
-        /// This is overriden as the breath period on surface would be a very large value otherwise
-        /// </summary>
+        /**
+         * This is overriden as the breath period on surface would be a very large value otherwise
+         */
         [HarmonyPostfix]
         public static void GetBreathPeriod(ref float __result)
         {
-            if (!IsRadiativeAir(Player.main))
+            if (!isAirPoisoned(Player.main))
             {
                 return;
             }
