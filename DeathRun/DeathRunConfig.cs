@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using SMLHelper.V2.Json;
 using SMLHelper.V2.Options.Attributes;
+using DeathRun.Patchers;
 
 namespace DeathRun
 {
@@ -32,7 +33,9 @@ namespace DeathRun
 
         public const string DEATHRUN   = "Death Run";
         public const string HARD       = "Hard";
-        public const string NORMAL     = "Easy (Normal)";
+        public const string NORMAL     = "Easy";
+
+        public const string RANDOM     = "RANDOM";
 
         public const string AGGRESSIVE = "Death Run";
 
@@ -55,6 +58,12 @@ namespace DeathRun
         [Choice("Radiation", new string[] { RADIATION_DEATHRUN, RADIATION_HARD, NORMAL })]
         public string radiationDepth = RADIATION_DEATHRUN;
 
+        [Choice("Nitrogen and the Bends", new string[] { DEATHRUN, HARD, NORMAL })]
+        public string nitrogenBends = DEATHRUN;
+
+        [Choice("Personal Diving Depth", new string[] { DEATHRUN, HARD, NORMAL })]
+        public string personalCrushDepth = DEATHRUN;
+
         [Choice("Ship Explosion", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
         public string explosionDepth = EXPLOSION_DEATHRUN;
 
@@ -67,13 +76,47 @@ namespace DeathRun
         [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL })]
         public string builderCosts = DEATHRUN;
 
-        [Choice("Creature Aggression", new string[] { AGGRESSIVE, NORMAL })]
-        public string creatureAggression = AGGRESSIVE;
+        [Choice("Creature Aggression", new string[] { DEATHRUN, HARD, NORMAL })]
+        public string creatureAggression = DEATHRUN;
 
-
+        //FIXME - ideally this should use the values from RandomStartPatcher's "spots" List, but if I did that I wouldn't be able to
+        //use this easy-to-use "[Choice(...)]" annotation, so I've just hacked this horrible thing in (where the strings need to correspond
+        //precisely with the ones in the other list). If some kind soul knowledgeable in the Ways Of SMLHelper were to push a PR that did this,
+        //I would gratefully merge it.
+        [Choice("Start Location", new string[] { RANDOM,
+            "Bullseye",
+            "Cul-de-Sac",
+            "Rolled In",
+            "Hundred Below",
+            "Very Remote",
+            "Uh Oh",
+            "Won't Be Easy",
+            "Dramatic View!",
+            "Quite Deep",
+            "TOO close...?",
+            "Disorienting",
+            "Kelp Forest",
+            "Grassy Plains",
+            "Far From Kelp",
+            "Crag",
+            "Stinger Cave",
+            "Low Copper",
+            "Scarcity",
+            "Buena Vista",
+            "Big Wreck",
+            "Deep Wreck",
+            "Very Difficult!",
+            "Deep Delgasi",
+            "Precipice!",
+            "Kelpy",
+            "Deep and Unusual",
+            "Jellyshroom",
+            "Shallow Arch"
+         })]
+        public string startLocation = RANDOM;
 
         [Choice("Allow Food From Island", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
-        public string islandFood = "Always";
+        public string islandFood = ALWAYS;
 
         [Toggle("Allow Specialty Air Tanks")]
         public bool enableSpecialtyTanks = false;

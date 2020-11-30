@@ -3,8 +3,9 @@
  * 
  * Adapted from libraryaddict's Radiation Challenge mod -- used w/ permission.
  * 
- * Significant adjustment here:
- *   - option for surface air ALWAYS poisoned.
+ * Main adjustments here:
+ *   - options for surface air BREATHABLE (always breathable) and POISONED (never breathable)
+ *   - Clearer feedback/messages when air isn't breathable.
  */
 using HarmonyLib;
 using System;
@@ -17,17 +18,26 @@ namespace DeathRun.Patchers
 {
     public class PatchBreathing
     {
+        public static bool warnedNotBreathable = false;
+        public static float warningTime = 0;
+
+        private static bool isSurfaceAirPoisoned ()
+        {
+            if (Config.BREATHABLE.Equals(DeathRun.config.surfaceAir)) return false;
+            if (Config.POISONED.Equals(DeathRun.config.surfaceAir)) return true;
+            return RadiationUtils.isRadiationActive();
+        }
+
         /**
          * True if player can't breathe the current air, because on the surface. 
          */
         private static bool isAirPoisoned(Player player)
         {
-            if (Config.ALWAYS.Equals(DeathRun.config.surfaceAir)) return false;
+            if (!isSurfaceAirPoisoned()) return false;
             if (player.IsInside()) return false;
             float depth = Ocean.main.GetDepthOf(player.gameObject);
-            if (depth > 0) return false;
-            if (Config.NEVER.Equals(DeathRun.config.surfaceAir)) return true;
-            return RadiationUtils.isInAnyRadiation(player.transform);
+            if (depth > 5) return false;
+            return true;
         }
 
         /**
@@ -56,7 +66,37 @@ namespace DeathRun.Patchers
         {
             if (!isAirPoisoned(Player.main))
             {
+                if (!isSurfaceAirPoisoned() && !Player.main.IsInside() && (Ocean.main.GetDepthOf(Player.main.gameObject) < 5))
+                {
+                    if (warnedNotBreathable)
+                    {
+                        warnedNotBreathable = true;
+                        warningTime = Time.time;
+                        ErrorMessage.AddMessage("You find the surface air is now breathable!");
+                    }
+                }
+
                 return true;
+            }
+
+            // Smoke choke sounds in unbreathable atmosphere
+            PlayerDamageSounds s = Player.main.gameObject.GetComponent<PlayerDamageSounds>();
+            if (s != null) {
+                s.painSmoke.Play();
+            }
+
+            if (!warnedNotBreathable || (Time.time > warningTime + 30f))
+            {
+                warnedNotBreathable = true;
+                warningTime = Time.time;
+                if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+                {
+                    ErrorMessage.AddMessage("WARNING! The surface air on this planet is not breathable!");
+                }
+                else
+                {
+                    ErrorMessage.AddMessage("The surface air is now too irradiated to breathe!");
+                }
             }
 
             var time = __instance.GetType().GetField("timeReachSurfaceSoundPlayed", System.Reflection.BindingFlags.NonPublic

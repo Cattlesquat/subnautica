@@ -26,7 +26,15 @@ namespace DeathRun.Patchers
         public static void Postfix(AggressiveWhenSeeTarget __instance, ref GameObject __result)
         {
             int maxSearchRings = __instance.maxSearchRings;
-            maxSearchRings *= 3; //BR// Triple aggression search
+
+            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+            {
+                maxSearchRings *= 3; //BR// Triple aggression search
+            }
+            else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+            {
+                maxSearchRings += 1;
+            }
 
             IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, maxSearchRings);
             if (ecoTarget == null)
@@ -102,7 +110,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if ((target != Player.main.gameObject) && !target.GetComponent<Vehicle>())
+            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) || (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)))
             {
                 __result = __instance.creature.GetCanSeeObject(target);
             }
@@ -143,7 +151,14 @@ namespace DeathRun.Patchers
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
                     if ((ecoTarget.GetGameObject() == Player.main.gameObject) || (ecoTarget.GetGameObject().GetComponent<Vehicle>()))
                     {
-                        sqrMagnitude = 9; //BR// Player appears close! (i.e. attractive target)
+                        if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+                        {
+                            sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
+                        }
+                        else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+                        {
+                            sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
+                        }
                     }
 
                     if (sqrMagnitude < num && (isTargetValid == null || isTargetValid(ecoTarget)))

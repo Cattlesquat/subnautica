@@ -1,7 +1,7 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * This patch ups the aggression level of creatures.
+ * This patch increases the aggression level of creatures.
  */
 namespace DeathRun.Patchers
 {
@@ -23,10 +23,29 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(MoveTowardsTarget __instance)
         {
-            ProfilingUtils.BeginSample("UpdateCurrentTarget");
-            if (EcoRegionManager.main != null && (Mathf.Approximately(__instance.requiredAggression, 0f) || __instance.creature.Aggression.Value * DeathRun.aggressionMultiplier >= __instance.requiredAggression))
+            float aggressionMultiplier;
+            int aggressionRadius;
+
+            //BR// Adjust aggression levels
+            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
             {
-                IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, DeathRun.aggressionRadius);
+                aggressionMultiplier = 4;
+                aggressionRadius = 6;
+            }
+            else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+            {
+                aggressionMultiplier = 2;
+                aggressionRadius = 3;
+            }
+            else
+            {
+                return true; // Just run normal method
+            }
+
+            ProfilingUtils.BeginSample("UpdateCurrentTarget");
+            if (EcoRegionManager.main != null && (Mathf.Approximately(__instance.requiredAggression, 0f) || __instance.creature.Aggression.Value * aggressionMultiplier >= __instance.requiredAggression))
+            {
+                IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, aggressionRadius);
 
                 if (ecoTarget != null)
                 {

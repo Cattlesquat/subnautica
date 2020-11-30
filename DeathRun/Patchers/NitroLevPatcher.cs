@@ -65,7 +65,7 @@ namespace DeathRun.Patchers
             //
             // NITROGEN controller
             //
-            if (__instance.nitrogenEnabled && Time.timeScale > 0f)
+            if (!Config.NORMAL.Equals(DeathRun.config.nitrogenBends) && Time.timeScale > 0f)
             {                
                 int  ticks = (int)(Time.time * 2);
                 bool tick  = (ticks != oldTicks) && (oldTicks > 0);
@@ -117,7 +117,14 @@ namespace DeathRun.Patchers
 
                     float num = __instance.depthCurve.Evaluate(depth / 2048f) * 2;
 
-                    float baselineSafe = (depth < 0) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
+                    float baselineSafe;
+                    if (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
+                    {
+                        baselineSafe = (depth < 0) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
+                    } else
+                    {
+                        baselineSafe = (depth < 0) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
+                    }
 
                     if ((baselineSafe < __instance.safeNitrogenDepth) || (__instance.safeNitrogenDepth < 10))
                     {
@@ -204,14 +211,26 @@ namespace DeathRun.Patchers
                                 {
                                     if (ascentWarning % 2 == 0)
                                     {
-                                        __instance.nitrogenLevel++;
+                                        if (((ascentWarning % 4) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
+                                        {
+                                            __instance.nitrogenLevel++;
+                                        }
                                     }
                                 }
                                 else
                                 {
                                     if (ascentWarning >= 60) // After about 2 seconds of too fast
                                     {
-                                        if (ascentWarning % 10 == 0)
+                                        int tickrate;
+                                        if (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
+                                        {
+                                            tickrate = 10;
+                                        } else
+                                        {
+                                            tickrate = 20;
+                                        }
+
+                                        if (ascentWarning % tickrate == 0)
                                         {
                                             if (__instance.safeNitrogenDepth < depth * 1.25f)
                                             {
@@ -262,7 +281,9 @@ namespace DeathRun.Patchers
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
 
-            float damage = 20f + UnityEngine.Random.value * 20 + (__instance.safeNitrogenDepth - depthOf);
+            float damageBase = (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends)) ? 20f : 10f;
+
+            float damage = damageBase + UnityEngine.Random.value * damageBase + (__instance.safeNitrogenDepth - depthOf);
 
             if (damage >= component.health)
             {
@@ -378,7 +399,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            __instance.nitrogenEnabled = DeathRun.nitrogenEnabled;
+            __instance.nitrogenEnabled = true; //DeathRun.nitrogenEnabled;
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
             

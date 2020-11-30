@@ -1,7 +1,7 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * This section take directly from Seraphim Risen's NitrogenMod
+ * This section taken with minor adjustments from Seraphim Risen's NitrogenMod
  */
 namespace DeathRun.Patchers
 {
@@ -29,32 +29,72 @@ namespace DeathRun.Patchers
         {
             __instance.temperatureDamage.minDamageTemperature = 49f;
             TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
+
             float crushDepth = 200f;
 
             if (bodySlot == TechType.RadiationSuit)
+            {
                 crushDepth = 500f;
+            }
             else if (bodySlot == TechType.ReinforcedDiveSuit)
             {
                 __instance.temperatureDamage.minDamageTemperature += 15f;
-                crushDepth = 800f;
+
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    crushDepth = 800f;
+                } else
+                {
+                    crushDepth = 8000f;
+                }
             }
             else if (bodySlot == TechType.Stillsuit)
-                crushDepth = 800f;
+            {
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    crushDepth = 800f;
+                }
+                else
+                {
+                    crushDepth = 1300f;
+                }
+            }
             else if (bodySlot == ReinforcedSuitsCore.ReinforcedStillSuit)
             {
                 __instance.temperatureDamage.minDamageTemperature += 15f;
-                crushDepth = 1300f;
+
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    crushDepth = 1300f;
+                }
+                else
+                {
+                    crushDepth = 8000f;
+                }
             }
             else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID)
             {
                 __instance.temperatureDamage.minDamageTemperature += 20f;
-                crushDepth = 1300f;
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    crushDepth = 1300f;
+                }
+                else
+                {
+                    crushDepth = 8000f;
+                }
             }
             else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit3ID)
             {
                 __instance.temperatureDamage.minDamageTemperature += 35f;
                 crushDepth = 8000f;
             }
+
+            if (Config.NORMAL.Equals(DeathRun.config.personalCrushDepth))
+            {
+                crushDepth = 8001f;
+            }
+
             if (__instance.HasReinforcedGloves())
             {
                 __instance.temperatureDamage.minDamageTemperature += 6f;
@@ -62,8 +102,8 @@ namespace DeathRun.Patchers
             PlayerGetDepthClassPatcher.divingCrushDepth = crushDepth;
 
             if (crushDepth < 8000f)
-                ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");
-            else
+                ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");            
+            else if (crushDepth == 8000f)
                 ErrorMessage.AddMessage("Safe diving depth now unlimited.");
             
             return false;

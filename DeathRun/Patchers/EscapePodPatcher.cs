@@ -1,4 +1,12 @@
-﻿using System;
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * Escape Pod sinking -- inspired by and adapted from oldark's "Escape Pod Unleashed" -- basically the idea is to have your escape pod
+ * "sink to the bottom". It's different, and dramatic, and "maybe just a tad more challenging", especially combined with the N2 changes,
+ * etc.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +14,6 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
-/**
- * Escape Pod sinking -- inspired by and adapted from oldark's "Escape Pod Unleashed" -- basically the idea is to have your escape pod
- * "sink to the bottom". It's different, and dramatic, and "maybe just a tad more challenging", especially combined with the N2 changes,
- * etc.
- */ 
 namespace DeathRun.Patchers   
 {
     [HarmonyPatch(typeof(EscapePod))]   
@@ -118,7 +121,28 @@ namespace DeathRun.Patchers
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
                         DeathRunUtils.CenterMessage("The Escape Pod has struck bottom!", 4);
                         DeathRun.podAnchored = true;
-                        __instance.transform.Rotate(Vector3.forward, 30); // Jolt at bottom!
+                        float random = UnityEngine.Random.value;
+                        float angle;
+                        if (random < .25f)
+                        {
+                            angle = 30;
+                        } else if (random < .5f)
+                        {
+                            angle = 45;
+                        } else if (random < .75f)
+                        {
+                            angle = 60;
+                        } else if (random < 85f)
+                        {
+                            angle = 85;
+                        } else if (random < 95f)
+                        {
+                            angle = 120;
+                        } else
+                        {
+                            angle = 160;
+                        }
+                        __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
                         podOriginalTransform.copyFrom(__instance.transform);
                     }
                 }
