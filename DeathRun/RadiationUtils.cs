@@ -34,22 +34,34 @@ namespace DeathRun
             return 0;
         }
 
+        /**
+         *  @return true if world is in irradiated state (ship has exploded and there is still active radiation)
+         */
         public static bool isRadiationActive()
         {
             // If LeakingRadiation isn't null, ship has exploded and radiation is enabled
             return LeakingRadiation.main != null && CrashedShipExploder.main.IsExploded() && GameModeUtils.HasRadiation() && LeakingRadiation.main.currentRadius > 1;
         }
 
+        /**
+         * @return true if the whole surface is irradiated
+         */
         public static bool isSurfaceRadiationActive()
         {
             return isRadiationActive() && getRadiationDepth() > 1;
         }
 
+        /**
+         * @return true if location is inside ship's radiation radius.
+         */
         public static bool isInShipsRadiation(UnityEngine.Transform transform)
         {
             return isRadiationActive() && (transform.position - LeakingRadiation.main.transform.position).magnitude <= LeakingRadiation.main.currentRadius;
         }
 
+        /**
+         * @return true if location is irradiated
+         */
         public static bool isInAnyRadiation(UnityEngine.Transform transform)
         {
             if (!isRadiationActive())
@@ -67,6 +79,9 @@ namespace DeathRun
             return (transform.position - LeakingRadiation.main.transform.position).magnitude <= LeakingRadiation.main.currentRadius;
         }
 
+        /**
+         * @return true if location is both (a) irradiated and (b) on the surface
+         */
         public static bool isInSurfaceRadiation(UnityEngine.Transform transform)
         {
             if (!isRadiationActive())

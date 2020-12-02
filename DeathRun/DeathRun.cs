@@ -35,45 +35,12 @@ namespace DeathRun
 
         public static GameObject N2HUD { get; set; }
 
-        public static bool podAnchored = false;
-        public static bool podSinking  = false;
         public static bool podGravity  = true;
-
-        public static bool surfaceAlwaysPoisoned = true;
-
-        public static bool specialtyTanks = true;
-        public static bool nitrogenEnabled = true;
-        public static bool decompressionVehicles = false;
-
-        public static string startName = "None";
 
         public static bool craftingSemaphore = false;
         public static bool chargingSemaphore = false;
         public static bool filterSemaphore   = false;
         public static bool scannerSemaphore  = false;
-
-        //private static readonly string configPath = @"./QMods/DeathRun/config.json";
-
-        private static void LoadConfig()
-        {
-            //config = new RadiationConfig();
-            return;
-
-            //if (!File.Exists(configPath))
-            //{
-            //    config = new RadiationConfig();
-            //    return;
-            //}
-            //
-            //var json = File.ReadAllText(configPath);
-            //config = JsonConvert.DeserializeObject<RadiationConfig>(json);
-        }
-
-        public static void SaveConfig()
-        {
-            //var json = JsonConvert.SerializeObject(config, Formatting.Indented);
-            //File.WriteAllText(configPath, json);
-        }
 
         internal static Config config { get; } = OptionsPanelHandler.Main.RegisterModOptions<Config>();
 
@@ -87,22 +54,14 @@ namespace DeathRun
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
-                DeathRunOptions savedSettings = new DeathRunOptions();
-                OptionsPanelHandler.RegisterModOptions(savedSettings);
-
-                nitrogenEnabled = savedSettings.nitroEnabled;
-                decompressionVehicles = savedSettings.decompressionVehicles;
-                NitroDamagePatcher.Lethality(savedSettings.nitroLethal);
-                NitroDamagePatcher.AdjustScaler(savedSettings.damageScaler);
-                NitroDamagePatcher.SetDecomVeh(decompressionVehicles);
-                BreathPatcher.EnableCrush(savedSettings.crushEnabled);
-
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();
-                if(specialtyTanks)
+                if (DeathRun.config.enableSpecialtyTanks)
+                {
                     O2TanksCore.PatchTanks();
+                }
 
                 Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
 

@@ -21,7 +21,7 @@ namespace DeathRun.Patchers
         public static bool warnedNotBreathable = false;
         public static float warningTime = 0;
 
-        private static bool isSurfaceAirPoisoned ()
+        public static bool isSurfaceAirPoisoned ()
         {
             if (Config.BREATHABLE.Equals(DeathRun.config.surfaceAir)) return false;
             if (Config.POISONED.Equals(DeathRun.config.surfaceAir)) return true;
@@ -144,6 +144,58 @@ namespace DeathRun.Patchers
 
             // Set their breath to the lowest value, 3 seconds is better than 9999 seconds
             __result = Math.Min(3f, __result);
+        }
+    }
+
+    /**
+     * "Swim to Surface" message obviously inappropriate when surface air is poisoned, plus it always seemed "odd" at 300m anyway.
+     */
+    [HarmonyPatch(typeof(uGUI_PopupMessage))]
+    [HarmonyPatch("SetText")]
+    internal class SwimToSurfacePatcher
+    {
+        static HintSwimToSurface hinter = null;
+
+        public static void setHinter (HintSwimToSurface hinter)
+        {
+            SwimToSurfacePatcher.hinter = hinter;
+        }
+
+        [HarmonyPrefix]
+        public static bool Prefix(ref string message)
+        {
+            if (Language.main.Get("SwimToSurface").Equals(message))
+            {
+                if (PatchBreathing.isSurfaceAirPoisoned() || (Ocean.main.GetDepthOf(Player.main.gameObject) > 100))
+                {
+                    message = "Out of Air!";
+                    if (hinter != null)
+                    {
+                        hinter.messageHash = message.GetHashCode(); // This is so the hinter will clear the message eventually
+                    }
+                } else
+                {
+                    if (hinter != null)
+                    {
+                        hinter.messageHash = hinter.message.GetHashCode(); // Put hinter back to its own hashcode.
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(HintSwimToSurface))]
+    [HarmonyPatch("OnLanguageChanged")]
+    internal class HintSwimPatcher
+    {
+        /**
+         * This just grabs the handle to the HintSwimToSurface object "so we can fuck with it later"
+         */
+        [HarmonyPostfix]
+        public static void PostFix (HintSwimToSurface __instance)
+        {
+            SwimToSurfacePatcher.setHinter(__instance);
         }
     }
 }

@@ -14,33 +14,41 @@ using UnityEngine;
 
 namespace DeathRun.Patchers
 {
+    public class StartSpot
+    {
+        public float x, y, z;
+        public string message;
+
+        public StartSpot()
+        {
+            x = 0;
+            y = 0;
+            z = 0;
+            message = "";
+        }
+
+        public StartSpot(float x, float y, float z, string message)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.message = message;
+        }
+
+        public StartSpot(float x, float z, string message)
+        {
+            y = 0;
+
+            this.x = x;
+            this.z = z;
+            this.message = message;
+        }
+    }
+
     [HarmonyPatch(typeof(RandomStart))]
     [HarmonyPatch("GetRandomStartPoint")]
     internal class RandomStartPatcher
     {
-        public class StartSpot
-        {
-            public float x, y, z;
-            public string message;
-
-            public StartSpot (float x, float y, float z, string message)
-            {
-                this.x = x;
-                this.y = y;
-                this.z = z;
-                this.message = message;
-            }
-
-            public StartSpot(float x, float z, string message)
-            {
-                y = 0;
-
-                this.x = x;
-                this.z = z;
-                this.message = message;
-            }
-        }
-
         public static List<StartSpot> spots = new List<StartSpot>()
         {
             // These start the pod underwater so that it can get to places with "overhead environments"
@@ -92,12 +100,11 @@ namespace DeathRun.Patchers
                 }
             }
 
-            DeathRun.podAnchored = false;
-            DeathRun.podSinking = false;
+            DeathRun.saveData.podSave.podAnchored = false;
+            DeathRun.saveData.podSave.podSinking = false;
+            DeathRun.saveData.startSave = spot; 
+
             DeathRun.podGravity = true;
-
-
-            DeathRun.startName = spot.message;
 
             ErrorMessage.AddMessage("\"" + spot.message + "\"");
 

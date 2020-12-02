@@ -14,6 +14,7 @@ using Common;
 
 namespace DeathRun
 {
+    using global::DeathRun.Patchers;
     using UnityEngine;
 
     public class DeathRunUtils
@@ -35,18 +36,23 @@ namespace DeathRun
      */
     public class DeathRunSaveData
     {
-        public int exampleData { get; set; }
-        public string exampleString { get; set; }
+        public NitroSaveData nitroSave { get; set; } // Nitrogen/Bends save data
+        public PodSaveData podSave { get; set; }     // Escape Pod save data
+        public StartSpot startSave { get; set; }     // Escape Pod start spot save data
 
         public DeathRunSaveData()
         {
+            nitroSave = new NitroSaveData();
+            podSave   = new PodSaveData();
+            startSave = new StartSpot();
+
             setDefaults();
         }
 
         public void setDefaults()
         {
-            exampleData = 1;
-            exampleString = "Default";
+            //exampleData = 1;
+            //exampleString = "Default";
         }
 
         public void Save()

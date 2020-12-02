@@ -40,7 +40,7 @@ namespace DeathRun.Patchers
         {
             if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
             {
-                amount /= 4;
+                amount /= 3;
             }
             else if (Config.HARD.Equals(DeathRun.config.powerCosts))
             {
@@ -55,11 +55,11 @@ namespace DeathRun.Patchers
             {
                 if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
                 {
-                    amount *= 5;
+                    amount *= 3;
                 }
                 else if (Config.HARD.Equals(DeathRun.config.powerCosts))
                 {
-                    amount *= 3;
+                    amount *= 2;
                 }
             }
         }

@@ -1,7 +1,10 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * Adapted from libraryaddict's Radiation Challenge mod -- used w/ permission.
+ * Goals for this configuration screen:
+ * (1) Very clear recommended settings (e.g. DeathRun Means DeathRun!) 
+ * (2) Mod designed around the recommended settings
+ * (3) Very clear names for settings/effects - no "wall of numbers"
  */
 
 using System;
@@ -49,6 +52,11 @@ namespace DeathRun
         public const string EXPLOSION_DEATHRUN = "Death Run (100m)";
         public const string EXPLOSION_HARD     = "Hard (50m)";
 
+        public const string TIME_RANDOM = "RANDOM";
+        public const string TIME_SHORT  = "Short (45 min)";
+        public const string TIME_MEDIUM = "Medium (60 min)";
+        public const string TIME_LONG   = "Long (90 min)";
+
         [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY })]
         public string damageTaken = INSANITY;
 
@@ -64,8 +72,11 @@ namespace DeathRun
         [Choice("Personal Diving Depth", new string[] { DEATHRUN, HARD, NORMAL })]
         public string personalCrushDepth = DEATHRUN;
 
-        [Choice("Ship Explosion", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
+        [Choice("Explosion Depth", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
         public string explosionDepth = EXPLOSION_DEATHRUN;
+
+        [Choice("Explosion Time", new string[] { TIME_RANDOM, TIME_SHORT, TIME_MEDIUM, TIME_LONG })]
+        public string explosionTime = TIME_RANDOM;
 
         [Choice("Power Costs", new string[] { DEATHRUN, HARD, NORMAL })]
         public string powerCosts = DEATHRUN;
@@ -81,7 +92,7 @@ namespace DeathRun
 
         //FIXME - ideally this should use the values from RandomStartPatcher's "spots" List, but if I did that I wouldn't be able to
         //use this easy-to-use "[Choice(...)]" annotation, so I've just hacked this horrible thing in (where the strings need to correspond
-        //precisely with the ones in the other list). If some kind soul knowledgeable in the Ways Of SMLHelper were to push a PR that did this,
+        //precisely with the ones in the other list). If some kind soul, Knowledgeable in the Ways Of SMLHelper, were to push a PR that did this,
         //I would gratefully merge it.
         [Choice("Start Location", new string[] { RANDOM,
             "Bullseye",

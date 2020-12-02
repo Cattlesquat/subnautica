@@ -26,31 +26,42 @@ namespace DeathRun.Patchers
     using UnityStandardAssets.ImageEffects;
     using FMOD.Studio;
 
+    /**
+     * Data that is saved/restored with saved games is here (DeathRun.saveData.nitroSave)
+     */
+    public class NitroSaveData
+    {
+        public int oldTicks { get; set; }
+        public int tookDamageTicks { get; set; }
+        public int ascentWarning { get; set; }
+        public float ascentRate { get; set; }
+
+        public NitroSaveData()
+        {
+            setDefaults();
+        }
+
+        public void setDefaults()
+        {
+            oldTicks = 0;
+            tookDamageTicks = 0;
+            ascentWarning = 0;
+            ascentRate = 0;
+        }
+    }
+
+
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("Update")]
     internal class NitroDamagePatcher
     {
-        private static bool lethal = true;
+        private static bool lethal = true;                 // true means bends can be lethal
+        private static bool decompressionVehicles = false; // if true, getting into a vehicle incurs the bends
+
         private static bool cachedActive = false;
         private static bool cachedAnimating = false;
-        //private static bool wasSwimming = false;
-        private static int tookDamageTicks = 0;
-        private static bool decompressionVehicles = false;
+        private static int  cachedTicks = 0;
 
-        private static float damageScaler = 1f;
-        private static float rpgScaler = 1f;
-
-        private static float ascentRate = 0f;
-
-        //private static float lastAscent;
-
-        private static int ascentWarning = 0;
-
-        private static int oldTicks = 0;
-        private static int cachedTicks = 0;
-
-        //private static float lastNum = 0;
-        
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
@@ -67,9 +78,9 @@ namespace DeathRun.Patchers
             //
             if (!Config.NORMAL.Equals(DeathRun.config.nitrogenBends) && Time.timeScale > 0f)
             {                
-                int  ticks = (int)(Time.time * 2);
-                bool tick  = (ticks != oldTicks) && (oldTicks > 0);
-                oldTicks = ticks;
+                int  ticks = (int)(DayNightCycle.main.timePassedAsFloat * 2);
+                bool tick  = (ticks != DeathRun.saveData.nitroSave.oldTicks) && (DeathRun.saveData.nitroSave.oldTicks > 0);
+                DeathRun.saveData.nitroSave.oldTicks = ticks;
 
                 Inventory main = Inventory.main;
                 TechType bodySlot = Inventory.main.equipment.GetTechTypeInSlot("Body");
@@ -84,7 +95,7 @@ namespace DeathRun.Patchers
                                    Player.main.GetVehicle() is Exosuit;
 
                 float ascent = __instance.GetComponent<Rigidbody>().velocity.y;  // Player's current positive Y velocity is the ascent rate (fastest seems somewhat above 6)
-                ascentRate = ((ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second                
+                DeathRun.saveData.nitroSave.ascentRate = ((DeathRun.saveData.nitroSave.ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second                
 
                 //
                 // NITROGEN - Main Nitrogen adjustment calculations - run twice a second.
@@ -174,19 +185,19 @@ namespace DeathRun.Patchers
                     {
                         if (UnityEngine.Random.value < (isSwimming ? 0.0125f : 0.025f))
                         {
-                            if ((tookDamageTicks == 0) || (ticks - tookDamageTicks > 10))
+                            if ((DeathRun.saveData.nitroSave.tookDamageTicks == 0) || (ticks - DeathRun.saveData.nitroSave.tookDamageTicks > 10))
                             {
                                 DecoDamage(ref __instance, depth);
-                                tookDamageTicks = ticks;
+                                DeathRun.saveData.nitroSave.tookDamageTicks = ticks;
                             }
                         }
                     }
                 }
                 else
                 {
-                    if ((__instance.nitrogenLevel <= 90) || ((depth <= 1) && (ascentRate < 4) && (__instance.safeNitrogenDepth < 10f)) || ((depth >= __instance.safeNitrogenDepth + 10) && isSwimming))
+                    if ((__instance.nitrogenLevel <= 90) || ((depth <= 1) && (DeathRun.saveData.nitroSave.ascentRate < 4) && (__instance.safeNitrogenDepth < 10f)) || ((depth >= __instance.safeNitrogenDepth + 10) && isSwimming))
                     {
-                        tookDamageTicks = 0;
+                        DeathRun.saveData.nitroSave.tookDamageTicks = 0;
                     }
                 }
 
@@ -195,23 +206,23 @@ namespace DeathRun.Patchers
                 //
                 if (isSwimming)
                 {
-                    if (ascentRate > 2)
+                    if (DeathRun.saveData.nitroSave.ascentRate > 2)
                     {
-                        if (ascentRate > 4)
+                        if (DeathRun.saveData.nitroSave.ascentRate > 4)
                         {
-                            ascentWarning++;
-                            if (ascentWarning == 1)
+                            DeathRun.saveData.nitroSave.ascentWarning++;
+                            if (DeathRun.saveData.nitroSave.ascentWarning == 1)
                             {
                                 DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
                                 ErrorMessage.AddMessage("Ascending too quickly!");
                             }
-                            else if (ascentRate >= 5)
+                            else if (DeathRun.saveData.nitroSave.ascentRate >= 5)
                             {
                                 if (__instance.nitrogenLevel < 100)
                                 {
-                                    if (ascentWarning % 2 == 0)
+                                    if (DeathRun.saveData.nitroSave.ascentWarning % 2 == 0)
                                     {
-                                        if (((ascentWarning % 4) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
+                                        if (((DeathRun.saveData.nitroSave.ascentWarning % 4) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
                                         {
                                             __instance.nitrogenLevel++;
                                         }
@@ -219,7 +230,7 @@ namespace DeathRun.Patchers
                                 }
                                 else
                                 {
-                                    if (ascentWarning >= 60) // After about 2 seconds of too fast
+                                    if (DeathRun.saveData.nitroSave.ascentWarning >= 60) // After about 2 seconds of too fast
                                     {
                                         int tickrate;
                                         if (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
@@ -230,7 +241,7 @@ namespace DeathRun.Patchers
                                             tickrate = 20;
                                         }
 
-                                        if (ascentWarning % tickrate == 0)
+                                        if (DeathRun.saveData.nitroSave.ascentWarning % tickrate == 0)
                                         {
                                             if (__instance.safeNitrogenDepth < depth * 1.25f)
                                             {
@@ -239,7 +250,7 @@ namespace DeathRun.Patchers
                                         }
                                     }
 
-                                    if ((ascentWarning % 120) == 0)
+                                    if ((DeathRun.saveData.nitroSave.ascentWarning % 120) == 0)
                                     {
                                         ErrorMessage.AddMessage("Ascending too quickly!");
                                         DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
@@ -251,23 +262,20 @@ namespace DeathRun.Patchers
                     else
                     {
                         // if returned to slow speed then increase our buffer
-                        if (ascentWarning > 0)
+                        if (DeathRun.saveData.nitroSave.ascentWarning > 0)
                         {
-                            ascentWarning--;
+                            DeathRun.saveData.nitroSave.ascentWarning--;
                         }
 
                         // Once we've basically stopped, can do a text warning again if we get too fast
-                        if (ascentRate <= 0.5f)
+                        if (DeathRun.saveData.nitroSave.ascentRate <= 0.5f)
                         {
-                            ascentWarning = 0;
+                            DeathRun.saveData.nitroSave.ascentWarning = 0;
                         }
                     }
                 }
 
-                //wasSwimming = isSwimming;
-                //lastAscent = ascentRate;
-
-                HUDController(__instance, (ascentRate >= 5) && (ascentWarning >= 30));
+                HUDController(__instance, (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
             }
 
             return false;
@@ -319,26 +327,6 @@ namespace DeathRun.Patchers
             return isInSub;
         }
 
-        public static void Lethality(bool isLethal)
-        {
-            lethal = isLethal;
-        }
-
-        public static void AdjustScaler(float val)
-        {
-            damageScaler = val;
-        }
-
-        public static void SetDecomVeh(bool val)
-        {
-            decompressionVehicles = val;
-        }
-
-        public static void AdjustRPGScaler(float val)
-        {
-            rpgScaler = val; // For RPG Mod
-        }
-
         /**
          * HUDController - HUD now uses its stages in order to give a gradual feedback:
          * 
@@ -361,10 +349,10 @@ namespace DeathRun.Patchers
                 BendsHUDController.SetActive(true, (nitrogenInstance.nitrogenLevel >= 100) && (nitrogenInstance.safeNitrogenDepth >= 10f));
 
                 // If we're just starting N2 accumulation, and haven't had a warning in at least a minute, display the "intro to nitrogen" message
-                if (!cachedActive && ((cachedTicks == 0) || (oldTicks - cachedTicks > 120)))
+                if (!cachedActive && ((cachedTicks == 0) || (DeathRun.saveData.nitroSave.oldTicks - cachedTicks > 120)))
                 {
                     ErrorMessage.AddMessage("The deeper you go, the faster nitrogen accumulates in your bloodstream!");
-                    cachedTicks = oldTicks;
+                    cachedTicks = DeathRun.saveData.nitroSave.oldTicks;
                 }
 
                 // If any nitrogen at all, turn on the display
@@ -399,12 +387,14 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            __instance.nitrogenEnabled = true; //DeathRun.nitrogenEnabled;
+            __instance.nitrogenEnabled = true; 
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
             
-            if (DeathRun.specialtyTanks)
+            if (DeathRun.config.enableSpecialtyTanks)
+            {
                 Player.main.gameObject.AddComponent<SpecialtyTanks>();
+            }
         }
     }
 

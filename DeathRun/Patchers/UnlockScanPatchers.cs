@@ -36,7 +36,7 @@ namespace DeathRun.Patchers
                     ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 3 to database");
                 }
             }
-            if (entryData.key == TechType.LavaLarva && DeathRun.specialtyTanks)
+            if (entryData.key == TechType.LavaLarva && DeathRun.config.enableSpecialtyTanks)
             {
                 if (!KnownTech.Contains(O2TanksCore.ChemosynthesisTankID))
                 {

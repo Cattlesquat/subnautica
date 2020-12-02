@@ -13,8 +13,8 @@ namespace DeathRun.Patchers
     /**
      * Okay this runs ALMOST the same code as the original, but searches a much wider radius and doubles the aggression level
      * 
-     * Main.aggressionMultiplier -- how much more aggressive than baseline creatures should be
-     * Main.aggressionRadius     -- how much wider a target area than baseline creatures should search for targets
+     * DeathRun.aggressionMultiplier -- how much more aggressive than baseline creatures should be
+     * DeathRun.aggressionRadius     -- how much wider a target area than baseline creatures should search for targets
      */
     [HarmonyPatch(typeof(MoveTowardsTarget))]
     [HarmonyPatch("UpdateCurrentTarget")]
