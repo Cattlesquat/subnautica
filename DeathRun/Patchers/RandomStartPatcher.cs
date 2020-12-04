@@ -49,6 +49,7 @@ namespace DeathRun.Patchers
     [HarmonyPatch("GetRandomStartPoint")]
     internal class RandomStartPatcher
     {
+        // Adjust our starting spots to "more challenging places" (I personally picked these out in the Seamoth)
         public static List<StartSpot> spots = new List<StartSpot>()
         {
             // These start the pod underwater so that it can get to places with "overhead environments"
@@ -100,11 +101,10 @@ namespace DeathRun.Patchers
                 }
             }
 
-            DeathRun.saveData.podSave.podAnchored = false;
-            DeathRun.saveData.podSave.podSinking = false;
-            DeathRun.saveData.startSave = spot; 
-
-            DeathRun.podGravity = true;
+            DeathRun.saveData.podSave.podGravity  = true;  // Pod should sink
+            DeathRun.saveData.podSave.podSinking  = false; // ... but isn't sinking yet
+            DeathRun.saveData.podSave.podAnchored = false; // ... and hasn't come to rest on the bottom
+            DeathRun.saveData.startSave           = spot;  // Here's where we started
 
             ErrorMessage.AddMessage("\"" + spot.message + "\"");
 

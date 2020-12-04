@@ -65,9 +65,22 @@ namespace DeathRun.Patchers
         }
 
         [HarmonyPrefix]
-        public static void ConsumeEnergyBase(ref IPowerInterface powerInterface, ref float amount)
+        public static bool ConsumeEnergyBase(ref IPowerInterface powerInterface, ref float amount, bool __result)
         {
             ConsumeEnergy(powerInterface, ref amount);
+
+            // In vanilla if you try to use 5 power from your Fabricator but you only have 4 power, then you not only
+            // fail but also lose your 4 power. That was already a little bit irritating, but it becomes grotesque and
+            // feels unfair when power requirements are e.g. 15. This next block prevents the not-actually-enough power
+            // from being lost, merely doesn't produce the item.
+            if (DeathRun.craftingSemaphore && (powerInterface.GetPower() < amount))
+            {
+                ErrorMessage.AddMessage("Not Enough Power");
+                __result = false;
+                return false;
+            } 
+
+            return true;
         }
 
         [HarmonyPrefix]

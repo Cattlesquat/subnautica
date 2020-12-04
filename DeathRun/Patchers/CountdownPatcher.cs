@@ -13,6 +13,26 @@ namespace DeathRun.Patchers
     using System;
     using UWE;
 
+    /**
+     * Our time monitor is saved with the saved game, to maintain message continuity across saves.
+     */
+    public class CountdownSaveData
+    {
+        public global::Utils.ScalarMonitor timeMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
+
+        public CountdownSaveData()
+        {
+            setDefaults();
+        }
+
+        public void setDefaults()
+        {
+            timeMonitor.Update(0);
+            timeMonitor.Update(0);
+        }
+    }
+
+
     [HarmonyPatch(typeof(CrashedShipExploder))]
     [HarmonyPatch("SetExplodeTime")]
     internal class ExplodeTime_Patch
@@ -46,7 +66,7 @@ namespace DeathRun.Patchers
     [HarmonyPatch("UpdateInterface")]
     internal class Countdown_Patch
     {
-        static bool showingShip = false;
+        static bool showingShip = false;        
 
         /**
          * Returns true if we're currently showing the Sunbeam Arrival countdown
@@ -67,13 +87,14 @@ namespace DeathRun.Patchers
             float timeToStartWarning = CrashedShipExploder.main.GetTimeToStartWarning();
             float timeToStartCountdown = CrashedShipExploder.main.GetTimeToStartCountdown();
             float timeNow = CrashedShipExploder.main.timeMonitor.Get();
+            DeathRun.saveData.countSave.timeMonitor.Update(timeNow);
 
             int deep;
-            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explosionDepth))
+            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explodeDepth))
             {
                 deep = 100;
             }
-            else if (Config.EXPLOSION_HARD.Equals(DeathRun.config.explosionDepth))
+            else if (Config.EXPLOSION_HARD.Equals(DeathRun.config.explodeDepth))
             {
                 deep = 50;
             } 
@@ -82,20 +103,23 @@ namespace DeathRun.Patchers
                 deep = 0;
             }
 
+
+            //if (this.timeMonitor.JustWentAbove(this.timeToStartCountdown + 27f))
+
             if (deep > 0) { 
                 // At time of second Aurora warning
-                if (CrashedShipExploder.main.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f))) { 
+                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f))) { 
                     ErrorMessage.AddMessage("WARNING: Explosion will produce shockwave over " + deep + "m deep!");
                 }
 
                 // At time of third Aurora warning
-                if (CrashedShipExploder.main.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f)))
+                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f)))
                 {
                     ErrorMessage.AddMessage("Prepare to evacuate at least " + deep + "m deep, preferably inside!");
                 }
 
                 // At time of final countdown
-                if (CrashedShipExploder.main.timeMonitor.JustWentAbove(timeToStartCountdown))
+                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(timeToStartCountdown))
                 {
                     ErrorMessage.AddMessage("Seek safe depth immediately! Preferably inside!");
                 }
@@ -116,7 +140,7 @@ namespace DeathRun.Patchers
             }
             if (deep > 0)
             {
-                if (CrashedShipExploder.main.timeMonitor.JustWentAbove(timeToStartCountdown + 100f))
+                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(timeToStartCountdown + 100f))
                 {
                     ErrorMessage.AddMessage("Radiation will gradually permeate the sea, as deep as " + deep + "m.");
                 }
@@ -131,9 +155,10 @@ namespace DeathRun.Patchers
 
             // This is the time of the very first warning about the Aurora
             if (timeNow >= Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.2f) && // Time of first Aurora warning
-                (timeNow < timeToStartCountdown + 23f))                                  // Actual explosion time (24 sec after countdown)
+                (timeNow < timeToStartCountdown + 24f))                                  // Actual explosion time (24 sec after countdown)
             {
-                float timeLeft = (timeToStartCountdown + 23f) - timeNow;
+                float timeLeft = (timeToStartCountdown + 24f) - timeNow;
+                if (timeLeft < 0) timeLeft *= -1;
                 showShip(ref __instance);
                 updateShip(ref __instance, timeLeft);
             } else

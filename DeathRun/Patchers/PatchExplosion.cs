@@ -19,6 +19,11 @@ namespace DeathRun.Patchers
     {        
         /**
          * Damage or kill the player if above a certain depth
+         * 
+         * Presently this is called at the moment Aurora explodes. That's not *terrible* (and it does coincide with
+         * the SOUND), but it bothers me that the "visual shockwave" doesn't get there until later. We could in theory
+         * intercept the player's WorldForces component, but that would both require a complex transpiler patch AND 
+         * would disjoin the effect from the sound. So for now I have left this synched with the sound.
          */
         [HarmonyPostfix]
         public static void CreateExplosiveForce() // Should only be called when Aurora explodes
@@ -31,11 +36,11 @@ namespace DeathRun.Patchers
             }
 
             float damage;
-            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explosionDepth))
+            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explodeDepth))
             {
                 damage = 500f;
             }
-            else if (Config.EXPLOSION_HARD.Equals(DeathRun.config.explosionDepth))
+            else if (Config.EXPLOSION_HARD.Equals(DeathRun.config.explodeDepth))
             {
                 damage = 300f;
             }

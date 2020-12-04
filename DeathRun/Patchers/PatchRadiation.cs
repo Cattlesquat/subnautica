@@ -72,6 +72,16 @@ namespace DeathRun.Patchers
                 {
                     num -= num2 * 0.23f;
                 }
+
+                if (Player.main.IsInBase())
+                {
+                    num = num / 4;
+                }
+                else if (Player.main.IsInSubmarine())
+                {
+                    num = num / 2;
+                }
+
                 num = Mathf.Clamp01(num);
                 Player.main.SetRadiationAmount(num);
             }

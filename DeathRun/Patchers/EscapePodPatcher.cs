@@ -21,12 +21,13 @@ namespace DeathRun.Patchers
      */
     public class PodSaveData
     {
-        public Trans podTransform { get; set; } = new Trans();
-        public Trans podPrev { get; set; } = new Trans();
-        public bool podAnchored { get; set; }
-        public bool podSinking { get; set; }
-        public float lastDepth { get; set; }
-        public int prevSecs { get; set; }
+        public Trans podTransform { get; set; } = new Trans(); // Pod's correct transform
+        public Trans podPrev { get; set; } = new Trans();      // Pod's previous transform
+        public bool podAnchored { get; set; } // True if pod has reached "final resting position" on bottom and shouldn't move again
+        public bool podSinking { get; set; }  // True if "pod sinking" has initiated (after cinematics, etc)
+        public bool podGravity { get; set; }  // True if pod *should* sink (as opposed to float on surface)
+        public float lastDepth { get; set; }  // Most recent depth of pod
+        public int prevSecs { get; set; }     // Previous integer "secs" time.
 
         public PodSaveData()
         {
@@ -35,6 +36,7 @@ namespace DeathRun.Patchers
 
         public void setDefaults()
         {
+            podGravity = true;
             podAnchored = false;
             podSinking = false;
             lastDepth = 0;
@@ -81,24 +83,14 @@ namespace DeathRun.Patchers
             {
                 frozen = false;
 
-                // This checks if we're holding on the "press any key to continue" screen
-                if (Player.main != null)
-                {
-                    Survival surv = Player.main.GetComponent<Survival>();
-                    if ((surv != null) && surv.freezeStats)
-                    {
-                        return true;
-                    }
-                }
-
-                // Checks if opening animation is running
-                if ((__instance.IsPlayingIntroCinematic() && __instance.IsNewBorn()))
+                // This checks if we're holding on the "press any key to continue" screen or intro cinematic
+                if (DeathRunUtils.isIntroStillGoing())
                 {
                     return true;
                 }
 
                 // Otherwise, "turn on gravity" for the pod
-                if (DeathRun.podGravity)
+                if (DeathRun.saveData.podSave.podGravity)
                 {
                     DeathRun.saveData.podSave.podSinking = true;
                     wf.underwaterGravity = 9.81f;
@@ -120,7 +112,7 @@ namespace DeathRun.Patchers
             }
 
             // Give player some early feedback the lifepod is sinking
-            if (DeathRun.podGravity && (depth > 6) && (DeathRun.saveData.podSave.lastDepth < 6))
+            if (DeathRun.saveData.podSave.podGravity && (depth > 6) && (DeathRun.saveData.podSave.lastDepth < 6))
             {
                 ErrorMessage.AddMessage("The Life Pod is sinking!");
                 DeathRunUtils.CenterMessage("The Life Pod is sinking!", 6);
@@ -160,7 +152,7 @@ namespace DeathRun.Patchers
                             angle = 120;
                         } else
                         {
-                            angle = 160;
+                            angle = 135;
                         }
                         __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
                         DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
@@ -188,13 +180,37 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
-            if (DeathRun.saveData.podSave.podAnchored || !DeathRun.podGravity)
+            if (DeathRun.saveData.podSave.podAnchored || !DeathRun.saveData.podSave.podGravity)
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
             else if (frozen)
             {
                 DeathRun.saveData.podSave.podTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
+            }
+        }
+
+        /**
+         * When loading game, put escape pod back in any weird position, and restore its anchor.
+         */
+        public static void JustLoadedGame()
+        {
+            WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
+            float depth = Ocean.main.GetDepthOf(EscapePod.main.gameObject);
+
+            if (DeathRun.saveData.podSave.podSinking)
+            {
+                wf.aboveWaterGravity = 9.81f;
+            }
+
+            if (DeathRun.saveData.podSave.podAnchored)
+            {
+                DeathRun.saveData.podSave.podTransform.copyTo(EscapePod.main.transform);
+                EscapePod.main.rigidbodyComponent.isKinematic = true;
+                wf.underwaterGravity = 0.0f;
+            } else
+            {
+                wf.underwaterGravity = 9.81f;
             }
         }
     }
@@ -208,6 +224,8 @@ namespace DeathRun.Patchers
         {
             // This adds a listener to the Escape Pod's game object, entirely for the purpose of letting the whole mod know
             // when the player is saving/loading the game so that we will save and load our part.
+
+            Common.SeraLogger.Message(DeathRun.modName, "Escape Pod Awake");
             DeathRun.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
         }
     }

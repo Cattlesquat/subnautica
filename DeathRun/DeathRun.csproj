@@ -84,9 +84,15 @@
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,7 @@
     <Compile Include="Patchers\BreathPatcher.cs" />
     <Compile Include="Patchers\CountdownPatcher.cs" />
     <Compile Include="Patchers\DamagePatcher.cs" />
+    <Compile Include="Patchers\PlayerPatcher.cs" />
     <Compile Include="Patchers\MoveToTargetPatcher.cs" />
     <Compile Include="Patchers\PatchExplosion.cs" />
     <Compile Include="Patchers\PatchBreathing.cs" />

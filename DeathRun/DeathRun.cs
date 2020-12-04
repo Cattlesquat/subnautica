@@ -26,6 +26,7 @@ namespace DeathRun
         public const string modName = "[DeathRun]";
         public const string SaveFile = modID + "_" + "SavedGame.json";
 
+        // DeathRun's saved games are handled in DeathRunUtils
         public static DeathRunSaveData saveData = new DeathRunSaveData();
         public static DeathRunSaveListener saveListener; 
 
@@ -35,8 +36,9 @@ namespace DeathRun
 
         public static GameObject N2HUD { get; set; }
 
-        public static bool podGravity  = true;
+        //public static bool podGravity  = true;
 
+        // These semaphore relate to "flavors" of energy consumption
         public static bool craftingSemaphore = false;
         public static bool chargingSemaphore = false;
         public static bool filterSemaphore   = false;

@@ -14,7 +14,8 @@
  *   c - Introduction message when nitrogen first starts to accumulate
  *   d - Messages when taking Bends damage, to make clear what's happening.
  *   
- * I haven't tried to make this a "scuba diving simulator" by any means, but definitely am reaching for some "SCUBA verisimilitude" while adding challenge to the game.
+ * I haven't tried to make this a "scuba diving simulator" by any means (for the same reason Unknown Worlds didn't, I'm sure!), 
+ * but definitely am reaching for some "SCUBA verisimilitude" from my own diving experience, while adding extra challenge to the game.
  */
 namespace DeathRun.Patchers
 {
@@ -378,6 +379,7 @@ namespace DeathRun.Patchers
                 cachedAnimating = false;
             }
         }
+
     }
 
     [HarmonyPatch(typeof(NitrogenLevel))]

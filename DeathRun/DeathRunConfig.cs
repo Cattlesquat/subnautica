@@ -34,6 +34,8 @@ namespace DeathRun
         public const string LOVETAPS = "Love Taps (x2)";
         public const string COWARDLY = "Noob (x1)";
 
+        public const string UNPATCHED = "UNPATCHED";
+
         public const string DEATHRUN   = "Death Run";
         public const string HARD       = "Hard";
         public const string NORMAL     = "Easy";
@@ -72,8 +74,8 @@ namespace DeathRun
         [Choice("Personal Diving Depth", new string[] { DEATHRUN, HARD, NORMAL })]
         public string personalCrushDepth = DEATHRUN;
 
-        [Choice("Explosion Depth", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
-        public string explosionDepth = EXPLOSION_DEATHRUN;
+        [Choice("Depth of Explosion", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
+        public string explodeDepth = EXPLOSION_DEATHRUN;
 
         [Choice("Explosion Time", new string[] { TIME_RANDOM, TIME_SHORT, TIME_MEDIUM, TIME_LONG })]
         public string explosionTime = TIME_RANDOM;
