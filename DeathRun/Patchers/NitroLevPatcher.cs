@@ -33,14 +33,13 @@ namespace DeathRun.Patchers
      */
     public class NitroSaveData
     {
-        public int oldTicks { get; set; }
-        public int tookDamageTicks { get; set; }
-        public int ascentWarning { get; set; }
-        public float ascentRate { get; set; }
-        public float safeDepth { get; set; }
-        public float pipeTime { get; set; }
-        public float bubbleTime { get; set; }
-        public bool atPipe { get; set; }
+        public float safeDepth { get; set; }      // Safe depth for Nitrogen/Bends. Replaces the one in game code that isn't saved w/ saved game.
+        public int oldTicks { get; set; }         // Ticks marker for our half-second tick pulse
+        public int tookDamageTicks { get; set; }  // Marks tick of last time we took damage
+        public int ascentWarning { get; set; }    // Marks tick of when an Ascent Rate warning was given
+        public float ascentRate { get; set; }     // Current ascent rate
+        public float pipeTime { get; set; }       // Time last got air from a pipe
+        public bool atPipe { get; set; }          // True if currently considered "breathing from a pipe"
 
         public NitroSaveData()
         {
@@ -55,7 +54,6 @@ namespace DeathRun.Patchers
             ascentRate = 0;
             atPipe = false;
             pipeTime = 0;
-            bubbleTime = 0;
             safeDepth = 0;
         }
     }
@@ -298,13 +296,6 @@ namespace DeathRun.Patchers
                 }
 
                 HUDController(__instance, (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
-            }
-
-            // This helps us tell if the player is breathing from a pipe.             
-            OxygenManager oxy = Player.main.gameObject.GetComponent<OxygenManager>();
-            if (oxy != null)
-            {
-                //DeathRun.saveData.nitroSave.bubbleTime = DayNightCycle.main.timePassedAsFloat;
             }
 
             return false;
