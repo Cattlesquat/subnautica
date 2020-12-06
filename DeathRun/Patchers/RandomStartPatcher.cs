@@ -53,14 +53,14 @@ namespace DeathRun.Patchers
         public static List<StartSpot> spots = new List<StartSpot>()
         {
             // These start the pod underwater so that it can get to places with "overhead environments"
-            new StartSpot (-27.0f, -77.6f, 494.9f, "Bullseye"),
+            new StartSpot (-28.6f, -75.6f, 466.9f, "Bullseye"),  //-27.0, -77.6, 494.9
             new StartSpot (-86.3f, -62f, 454.7f, "Cul-de-Sac"),
             new StartSpot (-86.0f, -20f, -114.2f, "Rolled In"),
             new StartSpot (-661f, -100.0f, 237f, "Hundred Below"), 
 
             // These start the pod on the surface and it sinks
             new StartSpot (33.4f, -692.2f, "Very Remote"),
-            new StartSpot (-229.0f, -659.4f, "Uh Oh"),
+            new StartSpot (-232.1f, -662.7f, "Uh Oh"),         // -229.0f, -659.4f
             new StartSpot (-694.4f, 397.6f, "Won't Be Easy"),
             new StartSpot (-658.8f, 398.7f, "Dramatic View!"), // On a tree mushroom! Hard but doable...
             new StartSpot (-530.0f, 377.1f, "Quite Deep"),     // Quite deep, but wasn't too hard.
@@ -90,6 +90,8 @@ namespace DeathRun.Patchers
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
             int picker = UnityEngine.Random.Range(0, spots.Count);
+
+            picker = 5;
             StartSpot spot = spots[picker];
 
             // If a specific spot was specified in the config, use that instead.

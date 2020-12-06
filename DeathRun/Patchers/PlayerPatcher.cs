@@ -20,6 +20,8 @@ namespace DeathRun.Patchers
     public class PlayerSaveData
     {
         public float startedGame { get; set; }
+        public float timeOfDeath { get; set; }
+        public float spanAtDeath { get; set; }
         public float currentLife { get; set; }
         public float allLives { get; set; }
         public int numDeaths { get; set; }
@@ -34,6 +36,8 @@ namespace DeathRun.Patchers
         public void setDefaults()
         {
             startedGame = 0;
+            timeOfDeath = 0;
+            spanAtDeath = 0;
             currentLife = 0;
             allLives = 0;
             numDeaths = 0;
@@ -60,6 +64,21 @@ namespace DeathRun.Patchers
             string updated = original + " Also cleans nitrogen from the bloodstream to prevent 'The Bends'.";
 
             LanguageHandler.Main.SetTechTypeTooltip(TechType.FirstAidKit, updated);
+
+            // Pipe! 
+            original = Language.main.Get("Tooltip_Pipe");
+            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            LanguageHandler.Main.SetTechTypeTooltip(TechType.Pipe, updated);
+
+            // Floating Air Pump
+            original = Language.main.Get("Tooltip_PipeSurfaceFloater");
+            updated = original + " Renders surface air breathable. Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            LanguageHandler.Main.SetTechTypeTooltip(TechType.PipeSurfaceFloater, updated);
+
+            // Base Air Pump
+            original = Language.main.Get("Tooltip_PipeSurfaceFloater");
+            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            LanguageHandler.Main.SetTechTypeTooltip(TechType.BasePipeConnector, updated);
 
             // Reinforced Dive Suit - personal depth limit
             original = Language.main.Get("Tooltip_ReinforcedDiveSuit");
@@ -144,6 +163,12 @@ namespace DeathRun.Patchers
             {
                 DeathRun.saveData.playerSave.killOpening = true;
             }
+
+            // Respawn messages
+            if ((DeathRun.saveData.playerSave.timeOfDeath > 0) && ((DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.timeOfDeath < 200))) 
+            {
+                doRespawnMessages();
+            }
         }
 
 
@@ -152,6 +177,30 @@ namespace DeathRun.Patchers
             if (DeathRun.saveData.playerSave.timeMonitor.JustWentAbove(DeathRun.saveData.playerSave.startedGame + delta))
             {
                 DeathRunUtils.CenterMessage(message, 5);
+            }
+        }
+
+
+
+        private static void doRespawnMessages()
+        {
+            if (DeathRun.saveData.playerSave.numDeaths > 1)
+            {
+                if (DeathRun.saveData.playerSave.timeMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 15))
+                {
+                    TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.spanAtDeath);
+                    string text;
+                    if (DeathRun.saveData.playerSave.numDeaths == 2)
+                    {
+                        text = "Both Lives: ";
+                    } 
+                    else
+                    {
+                        text = "All " + DeathRun.saveData.playerSave.numDeaths + " Lives: ";
+                    }
+                    text +=  DeathRunUtils.sayTime(timeSpan2);
+                    DeathRunUtils.CenterMessage(text, 10);
+                }
             }
         }
 
@@ -165,9 +214,9 @@ namespace DeathRun.Patchers
                     "Welcome to Death Run",
                     "Subnautica 'Roguelike' Difficulty Mod",
                     "How long can YOU Survive?",
-                    "Mod by Brian Reynolds (aka Cattlesquat)",
+                    "Mod by Cattlesquat",
                     "With Special Thanks To",
-                    "UNKNOWN WORLDS!",
+                    "Unknown Worlds Entertainment!",
                     "Seraphim Risen (Nitrogen Mod)",
                     "oldark (Escape Pod Unleashed)",
                     "libraryAddict (Radiation Challenge)",
@@ -193,10 +242,13 @@ namespace DeathRun.Patchers
     [HarmonyPatch("OnKill")]
     internal class PlayerKillPatcher
     {
-        [HarmonyPostfix]
-        public static void Postfix()
+        [HarmonyPrefix]
+        public static void Prefix()
         {
             DeathRun.saveData.playerSave.numDeaths++;
+
+            DeathRun.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
+            DeathRun.saveData.playerSave.spanAtDeath = DeathRun.saveData.playerSave.allLives;
 
             TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.currentLife);
 
@@ -210,9 +262,22 @@ namespace DeathRun.Patchers
             text += DeathRunUtils.sayTime(timeSpan);
 
             DeathRunUtils.CenterMessage(text, 10);
-            ErrorMessage.AddMessage(text);            
+            SeraLogger.Message(DeathRun.modName, text);
+            //ErrorMessage.AddMessage(text);            
 
             DeathRun.saveData.playerSave.killOpening = true;            
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_HardcoreGameOver))]
+    [HarmonyPatch("OnSelect")]
+    internal class HardcoreDeathPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix(uGUI_HardcoreGameOver __instance)
+        {
+            // Use the time-of-death message we will have just queued as our "Game Over" message.
+            __instance.text.text = DeathRunUtils.centerMessages[0].textText.text + " Game Over.";
         }
     }
 }

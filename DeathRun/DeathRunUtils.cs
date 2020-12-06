@@ -20,30 +20,88 @@ namespace DeathRun
 
     public class DeathRunUtils
     {
-        static GameObject textObject = null;
-        static ContentSizeFitter textFitter = null;
-        static Text textText = null;
-        static uGUI_TextFade textFade = null;
+        public static CenterText[] centerMessages = new CenterText[] {
+            new CenterText(0, 250f),
+            new CenterText(1, 300f)
+        };
+
+        public class CenterText
+        {
+            int id { get; set; } = 0;
+            float y { get; set; } = 250f;
+            ContentSizeFitter textFitter { get; set; } = null;
+            public GameObject textObject { get; set; } = null;
+            public Text textText { get; set; } = null;
+            public uGUI_TextFade textFade { get; set; } = null;
+
+            public CenterText(int set_id, float set_y)
+            {
+                id = set_id;
+                y = set_y;
+            }
+
+            public void ShowMessage(String s, float seconds)
+            {
+                if (textFade == null)
+                {
+                    InitializeText();
+                }
+
+                textFade.SetText(s);
+                textFade.SetState(true);
+                textFade.FadeOut(seconds, null);
+            }
+
+            private void InitializeText()
+            {
+                // Make our own text object
+                textObject = new GameObject("DeathRunText" + id);
+                textText = textObject.AddComponent<Text>();          // The text itself
+                textFade = textObject.AddComponent<uGUI_TextFade>(); // The uGUI's helpful automatic fade component
+
+                // This makes the text box fit the text (rather than the other way around)
+                textFitter = textObject.AddComponent<ContentSizeFitter>();
+                textFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                textFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                // This clones the in game "Press Any Button To Begin" message's font size, style, etc.
+                textText.font = uGUI.main.intro.mainText.text.font;
+                textText.fontSize = uGUI.main.intro.mainText.text.fontSize;
+                textText.alignment = uGUI.main.intro.mainText.text.alignment;
+                textText.material = uGUI.main.intro.mainText.text.material;
+                textText.color = uGUI.main.intro.mainText.text.color;
+
+                // This puts the text OVER the black "you are dead" screen, so it will still show for a death message
+                var go = uGUI.main.overlays.overlays[0].graphic;
+                textObject.transform.SetParent(go.transform, false); // Parents our text to the black overlay
+                textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work
+                textObject.layer += 100;                             // Set to a higher layer than the black overlay
+
+                // Sets our text's location on screen
+                textObject.transform.localPosition = new Vector3(0f, y, 0f);
+
+                // Turns our text item on
+                textObject.SetActive(true);
+            }
+        }
+
 
         /**
          *  CenterMessage - hijacks the "intro" text item (the "press any key to begin" message) to display general "large text messages".
          */
         public static void CenterMessage(String s, float seconds)
         {
-            if (textFade == null)
-            {
-                InitializeText();
-            }
-
-            textFade.SetText(s);
-            textFade.SetState(true);
-            textFade.FadeOut(seconds, null);
-
-            //uGUI.main.intro.mainText.SetText(s);
-            //uGUI.main.intro.mainText.transform.localPosition = new Vector3(0f, 250f, 0f);
-            //uGUI.main.intro.mainText.SetState(true);
-            //uGUI.main.intro.mainText.FadeOut(seconds, null);
+            CenterMessage(s, seconds, 0);
         }
+
+        /**
+         *  CenterMessage - hijacks the "intro" text item (the "press any key to begin" message) to display general "large text messages".
+         */
+        public static void CenterMessage(String s, float seconds, int index)
+        {
+            centerMessages[index].ShowMessage(s, seconds);
+        }
+
 
         /**
          *  isIntroStillGoing() -- returns true if we're still on "press any key to continue" or during intro cinematic
@@ -103,34 +161,6 @@ namespace DeathRun
         }
 
 
-        static private void InitializeText ()
-        {
-            // Make our own text object
-            textObject = new GameObject("DeathRunText");
-            textText = textObject.AddComponent<Text>();
-            textFade = textObject.AddComponent<uGUI_TextFade>();
-
-            textFitter = textObject.AddComponent<ContentSizeFitter>();
-            textFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-            textFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            // This clones the in game "Press Any Button To Begin" message
-            textText.font = uGUI.main.intro.mainText.text.font;
-            textText.fontSize = uGUI.main.intro.mainText.text.fontSize;
-            textText.alignment = uGUI.main.intro.mainText.text.alignment;
-            textText.material = uGUI.main.intro.mainText.text.material;
-            textText.color = uGUI.main.intro.mainText.text.color;
-
-            // This puts the text OVER the "you are dead" screen, so it will still show for a death message
-            var go = uGUI_PlayerDeath.main.blackOverlay;
-            textObject.transform.SetParent(go.transform, false);
-            textObject.layer++;
-
-            // Location on screen
-            textObject.transform.localPosition = new Vector3(0f, 250f, 0f);
-
-            textObject.SetActive(true);
-        }
     }
 
     /**
@@ -167,11 +197,8 @@ namespace DeathRun
         {
             string saveDirectory = SaveUtils.GetCurrentSaveDataDir();
 
-            SeraLogger.Message(DeathRun.modName, "Save DeathRun " + saveDirectory);
-
             try
             {
-                SeraLogger.Message(DeathRun.modName, "settings");
                 var settings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -179,17 +206,12 @@ namespace DeathRun
                     //PreserveReferencesHandling = PreserveReferencesHandling.Objects
                 };
 
-                SeraLogger.Message(DeathRun.modName, "serialize");
                 var saveDataJson = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
 
-                SeraLogger.Message(DeathRun.modName, "directory");
                 if (!Directory.Exists(saveDirectory))
                 {
                     Directory.CreateDirectory(saveDirectory);
                 }
-
-                SeraLogger.Message(DeathRun.modName, "Save DeathRun: " + Path.Combine(saveDirectory, DeathRun.SaveFile));
-                SeraLogger.Message(DeathRun.modName, saveDataJson);
 
                 File.WriteAllText(Path.Combine(saveDirectory, DeathRun.SaveFile), saveDataJson);
             }
@@ -203,8 +225,6 @@ namespace DeathRun
         public void Load() 
         {
             var path = Path.Combine(SaveUtils.GetCurrentSaveDataDir(), DeathRun.SaveFile);
-
-            SeraLogger.Message(DeathRun.modName, "Load DeathRun");
 
             if (!File.Exists(path))
             {
@@ -232,10 +252,6 @@ namespace DeathRun
 
                 // Special escape-pod re-adjustments
                 EscapePod_FixedUpdate_Patch.JustLoadedGame();
-
-                SeraLogger.Message(DeathRun.modName, "Last Depth = " + DeathRun.saveData.podSave.lastDepth);
-                SeraLogger.Message(DeathRun.modName, "Pod Anchored = " + DeathRun.saveData.podSave.podAnchored);
-                SeraLogger.Message(DeathRun.modName, "Pod Sinking = " + DeathRun.saveData.podSave.podSinking);
             }
             catch (Exception e)
             {
@@ -256,13 +272,14 @@ namespace DeathRun
     {
         public void OnProtoDeserialize(ProtobufSerializer serializer)
         {
-            SeraLogger.Message(DeathRun.modName, "Load Listener");
             DeathRun.saveData.Load();
+
+            NitrogenLevel nitro = Player.main.gameObject.GetComponent<NitrogenLevel>();
+            nitro.safeNitrogenDepth = DeathRun.saveData.nitroSave.safeDepth;
         }
 
         public void OnProtoSerialize(ProtobufSerializer serializer)
         {
-            SeraLogger.Message(DeathRun.modName, "Save Listener");
             DeathRun.saveData.Save();
         }
     }

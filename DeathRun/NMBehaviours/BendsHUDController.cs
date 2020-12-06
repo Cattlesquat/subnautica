@@ -67,6 +67,15 @@ namespace DeathRun.NMBehaviours
             if ((n2percent >= 100) && (safeDepth >= 10))
             {
                 main.n2Depth.text = safeDepth + "m";
+
+                if (!Player.main.IsSwimming())
+                {
+                    main.n2Depth.text += " *";
+                }
+                else if (DeathRun.saveData.nitroSave.atPipe)
+                {
+                    main.n2Depth.text += " P*";
+                }
             }
             else
             {

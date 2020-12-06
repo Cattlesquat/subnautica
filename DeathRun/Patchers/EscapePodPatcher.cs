@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using HarmonyLib;
 using UnityEngine;
 
@@ -54,8 +55,31 @@ namespace DeathRun.Patchers
         {
             __instance.transform.position = position;
             __instance.anchorPosition = position;
-            __instance.RespawnPlayer();   
+            __instance.RespawnPlayer();
+
             return false;                 
+        }
+    }
+
+
+    /**
+     * RespawnPlayer -- recharge the Escape Pod power supply when player dies (since we now tend to deplete it quickly).
+     */
+    [HarmonyPatch(typeof(EscapePod))]
+    [HarmonyPatch("RespawnPlayer")]
+    internal class EscapePod_RespawnPlayer_Patch
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            RegeneratePowerSource[] cells = EscapePod.main.gameObject.GetAllComponentsInChildren<RegeneratePowerSource>();
+            if (cells != null)
+            {
+                foreach (RegeneratePowerSource cell in cells)
+                {
+                    cell.powerSource.ModifyPower(cell.powerSource.GetMaxPower() - cell.powerSource.GetPower(), out _);
+                }
+            }
         }
     }
 
@@ -138,23 +162,49 @@ namespace DeathRun.Patchers
                         DeathRun.saveData.podSave.podAnchored = true;
                         float random = UnityEngine.Random.value;
                         float angle;
-                        if (random < .20f)
+                        float up = 2;
+
+                        if (random < .10f)
                         {
                             angle = 30;
-                        } else if (random < .40f)
+                        } else if (random < .20f)
                         {
                             angle = 45;
-                        } else if (random < .60f)
+                        } else if (random < .30f)
                         {
                             angle = 60;
-                        } else if (random < .80f)
+                        } else if (random < .40f)
                         {
                             angle = 120;
-                        } else
+                        } else if (random < .50f)
                         {
                             angle = 135;
+                        } else if (random < .60f)
+                        {
+                            angle = 150;
+                        } else if (random < .70f)
+                        {
+                            angle = 170;
+                        } else if (random < .80f)
+                        {
+                            angle = 300;
+                        } else if (random < .90f)
+                        {
+                            angle = 315;
+                        } else
+                        {
+                            angle = 330;
                         }
+                        
+                        __instance.transform.Translate(0, up, 0);
+
+                        if (Player.main.IsInside())
+                        {
+                            Player.main.transform.Translate(0, up, 0);
+                        }
+
                         __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
+
                         DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
                     }
                 }
@@ -225,7 +275,6 @@ namespace DeathRun.Patchers
             // This adds a listener to the Escape Pod's game object, entirely for the purpose of letting the whole mod know
             // when the player is saving/loading the game so that we will save and load our part.
 
-            Common.SeraLogger.Message(DeathRun.modName, "Escape Pod Awake");
             DeathRun.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
         }
     }

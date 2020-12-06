@@ -36,6 +36,10 @@ namespace DeathRun.Patchers
         public int tookDamageTicks { get; set; }
         public int ascentWarning { get; set; }
         public float ascentRate { get; set; }
+        public float safeDepth { get; set; }
+        public float pipeTime { get; set; }
+        public float bubbleTime { get; set; }
+        public bool atPipe { get; set; }
 
         public NitroSaveData()
         {
@@ -48,6 +52,10 @@ namespace DeathRun.Patchers
             tookDamageTicks = 0;
             ascentWarning = 0;
             ascentRate = 0;
+            atPipe = false;
+            pipeTime = 0;
+            bubbleTime = 0;
+            safeDepth = 0;
         }
     }
 
@@ -138,17 +146,38 @@ namespace DeathRun.Patchers
                         baselineSafe = (depth < 0) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
                     }
 
+                    // Better dissipation when we're breathing through a pipe, or in a vehicle/base
+                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming)
+                    {
+                        if (baselineSafe - (depth / 4) <= __instance.safeNitrogenDepth) { 
+                            baselineSafe = baselineSafe - (depth / 4);
+                        }
+
+                        if (DeathRun.saveData.nitroSave.atPipe)
+                        {
+                            float now = DayNightCycle.main.timePassedAsFloat;
+                            if ((now > DeathRun.saveData.nitroSave.pipeTime + 1) && (now > DeathRun.saveData.nitroSave.pipeTime + 1))
+                            {
+                                DeathRun.saveData.nitroSave.atPipe = false;
+                            }
+                        }
+                    }
+
                     if ((baselineSafe < __instance.safeNitrogenDepth) || (__instance.safeNitrogenDepth < 10))
                     {
                         modifier = 1 / modifier; // If we're dissipating N2, don't have our high quality suit slow it down
-                        if (__instance.safeNitrogenDepth < 100)
-                        {
-                            num = 0.05f;
-                        }
-                        else
-                        {
-                            num = 0.075f; // Intentionally more forgiving when deeper
-                        }
+
+                        // Intentionally more forgiving when deeper
+                        num = 0.05f + (0.01f * (int)(__instance.safeNitrogenDepth / 100));
+
+                        //if (__instance.safeNitrogenDepth < 100)
+                        //{
+                        //    num = 0.05f;
+                        //}
+                        //else
+                        //{
+                        //    num = 0.075f; 
+                        //}
                     }
 
                     __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, baselineSafe, num * __instance.kBreathScalar * modifier);
@@ -162,7 +191,7 @@ namespace DeathRun.Patchers
                     } 
                     else
                     {
-                        rate = (depth <= 1) ? 4 : 2;
+                        rate = (depth <= 1) ? 4 : (DeathRun.saveData.nitroSave.atPipe || !isSwimming) ? 3 : 2;
                     }
 
                     __instance.nitrogenLevel = UWE.Utils.Slerp(__instance.nitrogenLevel, target, rate * modifier);
@@ -175,6 +204,8 @@ namespace DeathRun.Patchers
                             __instance.safeNitrogenDepth = 10.01f;
                         }
                     }
+
+                    DeathRun.saveData.nitroSave.safeDepth = __instance.safeNitrogenDepth;
                 }
 
                 //
@@ -247,6 +278,7 @@ namespace DeathRun.Patchers
                                             if (__instance.safeNitrogenDepth < depth * 1.25f)
                                             {
                                                 __instance.safeNitrogenDepth += 1;
+                                                DeathRun.saveData.nitroSave.safeDepth = __instance.safeNitrogenDepth;
                                             }
                                         }
                                     }
@@ -277,6 +309,13 @@ namespace DeathRun.Patchers
                 }
 
                 HUDController(__instance, (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
+            }
+
+            // This helps us tell if the player is breathing from a pipe.             
+            OxygenManager oxy = Player.main.gameObject.GetComponent<OxygenManager>();
+            if (oxy != null)
+            {
+                //DeathRun.saveData.nitroSave.bubbleTime = DayNightCycle.main.timePassedAsFloat;
             }
 
             return false;
@@ -392,7 +431,8 @@ namespace DeathRun.Patchers
             __instance.nitrogenEnabled = true; 
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
-            
+            DeathRun.saveData.nitroSave.safeDepth = 0f;
+
             if (DeathRun.config.enableSpecialtyTanks)
             {
                 Player.main.gameObject.AddComponent<SpecialtyTanks>();
@@ -409,6 +449,43 @@ namespace DeathRun.Patchers
         {
             __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
+            DeathRun.saveData.nitroSave.safeDepth = 0f;
         }
     }
+
+
+    [HarmonyPatch(typeof(OxygenArea))]
+    [HarmonyPatch("OnTriggerStay")]
+    internal class PipePatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix (Collider other)
+        {
+            if (other.gameObject.FindAncestor<Player>() == Utils.GetLocalPlayerComp())
+            {
+                DeathRun.saveData.nitroSave.atPipe = true;
+                DeathRun.saveData.nitroSave.pipeTime = DayNightCycle.main.timePassedAsFloat;
+            }
+
+            return true;
+        }
+    }
+
+    //[HarmonyPatch(typeof(Bubble))]
+    //[HarmonyPatch("OnCollisionEnter")]
+    //internal class BubblePatcher
+    //{
+    //    [HarmonyPrefix]
+    //    public static bool Prefix(ref Bubble __instance, Collision collisionInfo)
+    //    {
+    //        if (__instance.hasPopped || ((Time.time < __instance.dontPopTime) && collisionInfo.gameObject.layer != LayerMask.NameToLayer("Player")))
+    //        {
+    //            return true;
+    //        }
+    //        if ((Player.main == null) || (collisionInfo.gameObject != Player.main.gameObject)) return true;
+    //        DeathRun.saveData.nitroSave.atPipe = true;
+    //        DeathRun.saveData.nitroSave.bubbleTime = DayNightCycle.main.timePassedAsFloat;
+    //        return true;
+    //    }
+    //}
 }

@@ -31,6 +31,8 @@ namespace DeathRun.Patchers
                     {
                         nitrogenLevel.safeNitrogenDepth /= 2;
 
+                        DeathRun.saveData.nitroSave.safeDepth = nitrogenLevel.safeNitrogenDepth;
+
                         if (Time.time - ticksNotice > 60)
                         {
                             ticksNotice = Time.time;
