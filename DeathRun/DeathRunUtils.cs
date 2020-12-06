@@ -273,9 +273,6 @@ namespace DeathRun
         public void OnProtoDeserialize(ProtobufSerializer serializer)
         {
             DeathRun.saveData.Load();
-
-            NitrogenLevel nitro = Player.main.gameObject.GetComponent<NitrogenLevel>();
-            nitro.safeNitrogenDepth = DeathRun.saveData.nitroSave.safeDepth;
         }
 
         public void OnProtoSerialize(ProtobufSerializer serializer)

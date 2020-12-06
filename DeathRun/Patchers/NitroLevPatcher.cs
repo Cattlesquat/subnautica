@@ -13,6 +13,7 @@
  *   b - Warning for "ascending too fast", before the velocity penalty kicks in
  *   c - Introduction message when nitrogen first starts to accumulate
  *   d - Messages when taking Bends damage, to make clear what's happening.
+ * 6 - Moved "safeNitrogenDepth" into my save/load serialized class, because the game's one doesn't seem to save/restore from saved game files.
  *   
  * I haven't tried to make this a "scuba diving simulator" by any means (for the same reason Unknown Worlds didn't, I'm sure!), 
  * but definitely am reaching for some "SCUBA verisimilitude" from my own diving experience, while adding extra challenge to the game.
@@ -149,7 +150,7 @@ namespace DeathRun.Patchers
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base
                     if (DeathRun.saveData.nitroSave.atPipe || !isSwimming)
                     {
-                        if (baselineSafe - (depth / 4) <= __instance.safeNitrogenDepth) { 
+                        if (baselineSafe - (depth / 4) <= DeathRun.saveData.nitroSave.safeDepth) { 
                             baselineSafe = baselineSafe - (depth / 4);
                         }
 
@@ -163,27 +164,18 @@ namespace DeathRun.Patchers
                         }
                     }
 
-                    if ((baselineSafe < __instance.safeNitrogenDepth) || (__instance.safeNitrogenDepth < 10))
+                    if ((baselineSafe < DeathRun.saveData.nitroSave.safeDepth) || (DeathRun.saveData.nitroSave.safeDepth < 10))
                     {
                         modifier = 1 / modifier; // If we're dissipating N2, don't have our high quality suit slow it down
 
                         // Intentionally more forgiving when deeper
-                        num = 0.05f + (0.01f * (int)(__instance.safeNitrogenDepth / 100));
-
-                        //if (__instance.safeNitrogenDepth < 100)
-                        //{
-                        //    num = 0.05f;
-                        //}
-                        //else
-                        //{
-                        //    num = 0.075f; 
-                        //}
+                        num = 0.05f + (0.01f * (int)(DeathRun.saveData.nitroSave.safeDepth / 100));
                     }
 
-                    __instance.safeNitrogenDepth = UWE.Utils.Slerp(__instance.safeNitrogenDepth, baselineSafe, num * __instance.kBreathScalar * modifier);
+                    DeathRun.saveData.nitroSave.safeDepth = UWE.Utils.Slerp(DeathRun.saveData.nitroSave.safeDepth, baselineSafe, num * __instance.kBreathScalar * modifier);
 
                     // This little % buffer helps introduce the concept of N2 (both initially and as a positive feedback reminder)
-                    float target = ((depth < 10) && (__instance.safeNitrogenDepth <= 10f)) ? 0 : 100;
+                    float target = ((depth < 10) && (DeathRun.saveData.nitroSave.safeDepth <= 10f)) ? 0 : 100;
                     float rate;
                     if (target > 0)
                     {
@@ -199,19 +191,17 @@ namespace DeathRun.Patchers
 
                     if (__instance.nitrogenLevel >= 100)
                     {
-                        if (__instance.safeNitrogenDepth <= 10)
+                        if (DeathRun.saveData.nitroSave.safeDepth <= 10)
                         {
-                            __instance.safeNitrogenDepth = 10.01f;
+                            DeathRun.saveData.nitroSave.safeDepth = 10.01f;
                         }
                     }
-
-                    DeathRun.saveData.nitroSave.safeDepth = __instance.safeNitrogenDepth;
                 }
 
                 //
                 // DAMAGE - Check if we need to take damage
                 //
-                if ((__instance.nitrogenLevel >= 100) && (__instance.safeNitrogenDepth >= 10f) && ((int)depth < (int)__instance.safeNitrogenDepth))
+                if ((__instance.nitrogenLevel >= 100) && (DeathRun.saveData.nitroSave.safeDepth >= 10f) && ((int)depth < (int)DeathRun.saveData.nitroSave.safeDepth))
                 {                    
                     if ((!isInVehicle && !isInBase) || !decompressionVehicles)
                     {
@@ -227,7 +217,7 @@ namespace DeathRun.Patchers
                 }
                 else
                 {
-                    if ((__instance.nitrogenLevel <= 90) || ((depth <= 1) && (DeathRun.saveData.nitroSave.ascentRate < 4) && (__instance.safeNitrogenDepth < 10f)) || ((depth >= __instance.safeNitrogenDepth + 10) && isSwimming))
+                    if ((__instance.nitrogenLevel <= 90) || ((depth <= 1) && (DeathRun.saveData.nitroSave.ascentRate < 4) && (DeathRun.saveData.nitroSave.safeDepth < 10f)) || ((depth >= DeathRun.saveData.nitroSave.safeDepth + 10) && isSwimming))
                     {
                         DeathRun.saveData.nitroSave.tookDamageTicks = 0;
                     }
@@ -275,10 +265,9 @@ namespace DeathRun.Patchers
 
                                         if (DeathRun.saveData.nitroSave.ascentWarning % tickrate == 0)
                                         {
-                                            if (__instance.safeNitrogenDepth < depth * 1.25f)
+                                            if (DeathRun.saveData.nitroSave.safeDepth < depth * 1.25f)
                                             {
-                                                __instance.safeNitrogenDepth += 1;
-                                                DeathRun.saveData.nitroSave.safeDepth = __instance.safeNitrogenDepth;
+                                                DeathRun.saveData.nitroSave.safeDepth += 1;                                                
                                             }
                                         }
                                     }
@@ -331,7 +320,7 @@ namespace DeathRun.Patchers
 
             float damageBase = (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends)) ? 20f : 10f;
 
-            float damage = damageBase + UnityEngine.Random.value * damageBase + (__instance.safeNitrogenDepth - depthOf);
+            float damage = damageBase + UnityEngine.Random.value * damageBase + (DeathRun.saveData.nitroSave.safeDepth - depthOf);
 
             if (damage >= component.health)
             {
@@ -358,7 +347,7 @@ namespace DeathRun.Patchers
 
             component.TakeDamage(damage, default, DamageType.Starve, null);
 
-            __instance.safeNitrogenDepth = Mathf.Clamp(__instance.safeNitrogenDepth * 3 / 4, depthOf > 10 ? depthOf : 10, __instance.safeNitrogenDepth);
+            DeathRun.saveData.nitroSave.safeDepth = Mathf.Clamp(DeathRun.saveData.nitroSave.safeDepth * 3 / 4, depthOf > 10 ? depthOf : 10, DeathRun.saveData.nitroSave.safeDepth);
         }
 
         private static bool DecompressionSub(Player main)
@@ -379,14 +368,14 @@ namespace DeathRun.Patchers
         {
             if (cachedActive)
             {
-                BendsHUDController.SetDepth(Mathf.RoundToInt(nitrogenInstance.safeNitrogenDepth), nitrogenInstance.nitrogenLevel);
+                BendsHUDController.SetDepth(Mathf.RoundToInt(DeathRun.saveData.nitroSave.safeDepth), nitrogenInstance.nitrogenLevel);
             }
 
             float depthOf = Ocean.main.GetDepthOf(Player.main.gameObject);
 
             if (nitrogenInstance.nitrogenLevel >= 1)
             {
-                BendsHUDController.SetActive(true, (nitrogenInstance.nitrogenLevel >= 100) && (nitrogenInstance.safeNitrogenDepth >= 10f));
+                BendsHUDController.SetActive(true, (nitrogenInstance.nitrogenLevel >= 100) && (DeathRun.saveData.nitroSave.safeDepth >= 10f));
 
                 // If we're just starting N2 accumulation, and haven't had a warning in at least a minute, display the "intro to nitrogen" message
                 if (!cachedActive && ((cachedTicks == 0) || (DeathRun.saveData.nitroSave.oldTicks - cachedTicks > 120)))
@@ -406,7 +395,7 @@ namespace DeathRun.Patchers
             }
 
             // Flashing Red is when we're about to take damage -- either violating Safe Depth or else in "dangerously fast ascent".
-            bool uhoh = ((depthOf < nitrogenInstance.safeNitrogenDepth) || forceFlash) && (nitrogenInstance.safeNitrogenDepth >= 10f) && (nitrogenInstance.nitrogenLevel >= 100);
+            bool uhoh = ((depthOf < DeathRun.saveData.nitroSave.safeDepth) || forceFlash) && (DeathRun.saveData.nitroSave.safeDepth >= 10f) && (nitrogenInstance.nitrogenLevel >= 100);
             if (uhoh && !cachedAnimating)
             {
                 BendsHUDController.SetFlashing(true);
@@ -429,7 +418,6 @@ namespace DeathRun.Patchers
         public static void Postfix(ref NitrogenLevel __instance)
         {
             __instance.nitrogenEnabled = true; 
-            __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
             DeathRun.saveData.nitroSave.safeDepth = 0f;
 
@@ -447,7 +435,6 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(ref NitrogenLevel __instance)
         {
-            __instance.safeNitrogenDepth = 0f;
             __instance.nitrogenLevel = 0f;
             DeathRun.saveData.nitroSave.safeDepth = 0f;
         }

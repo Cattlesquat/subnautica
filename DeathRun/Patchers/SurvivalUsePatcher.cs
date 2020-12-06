@@ -27,11 +27,9 @@ namespace DeathRun.Patchers
                 {
                     NitrogenLevel nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
 
-                    if (nitrogenLevel.safeNitrogenDepth > 10f)
+                    if (DeathRun.saveData.nitroSave.safeDepth > 10f)
                     {
-                        nitrogenLevel.safeNitrogenDepth /= 2;
-
-                        DeathRun.saveData.nitroSave.safeDepth = nitrogenLevel.safeNitrogenDepth;
+                        DeathRun.saveData.nitroSave.safeDepth /= 2;
 
                         if (Time.time - ticksNotice > 60)
                         {
@@ -39,9 +37,9 @@ namespace DeathRun.Patchers
                             ErrorMessage.AddMessage("First Aid Kit helps purge Nitrogen from your bloodstream.");
                         }
 
-                        if (nitrogenLevel.safeNitrogenDepth < 10f)
+                        if (DeathRun.saveData.nitroSave.safeDepth < 10f)
                         {
-                            nitrogenLevel.nitrogenLevel = nitrogenLevel.safeNitrogenDepth * 10;
+                            nitrogenLevel.nitrogenLevel = DeathRun.saveData.nitroSave.safeDepth * 10;
                         }
                     } else
                     {
