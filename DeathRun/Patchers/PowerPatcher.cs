@@ -11,6 +11,7 @@
  * I had to reorganize a bunch of stuff in order to make the new features possible/flexible.
  */
 
+using Common;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -247,5 +248,22 @@ namespace DeathRun.Patchers
         {
             DeathRun.chargingSemaphore = false; // Lowers our charging semaphore after consuming energy at a charger
         }
+
+
+        /**
+         * The regenerating "Solar Cells" in the Escape Pod use an irritating infinite loop IEnumerator, so this is a
+         * "pass-through postfix" to double the rate of energy recharge once the secondary systems are repaired.
+         */
+        //[HarmonyPostfix]
+        //public static void RegeneratePowerStart(RegeneratePowerSource __instance)
+        //{
+        //    if (!EscapePod.main.damageEffectsShowing)
+        //    {
+        //        if (__instance.powerSource.GetPower() < __instance.regenerationThreshhold)
+        //        {
+        //            __instance.powerSource.SetPower(Mathf.Min(__instance.regenerationThreshhold, __instance.powerSource.GetPower() + __instance.regenerationAmount));
+        //        }
+        //    }
+        //}
     }
 }

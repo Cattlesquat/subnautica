@@ -164,7 +164,13 @@ namespace DeathRun
 
                     harmony.Patch(AccessTools.Method(typeof(Charger), "Update"), null, 
                         new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyChargingPostfix")), null);
-                //}
+
+
+
+                    //harmony.Patch(AccessTools.Method(typeof(RegeneratePowerSource), "Start"), null,
+                    //    new HarmonyMethod(typeof(PowerPatcher).GetMethod("RegeneratePowerStart")), null);
+
+
 
                 //SeraLogger.Message(modName, "Disable Fabricator Food");
                 //if (config.disableFabricatorFood)

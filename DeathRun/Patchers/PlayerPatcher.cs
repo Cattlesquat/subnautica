@@ -72,7 +72,6 @@ namespace DeathRun.Patchers
     [HarmonyPatch("Awake")]
     internal class PlayerAwakePatcher
     {
-
         [HarmonyPostfix]
         public static void Postfix()
         {
@@ -139,6 +138,22 @@ namespace DeathRun.Patchers
                 LanguageHandler.Main.SetTechTypeTooltip(TechType.Builder, updated);
             }
 
+            // Update Escape pod "status screen text" for new situation
+            // ... pre-secondary-system fix
+            original = Language.main.Get("IntroEscapePod3Content");
+            updated = original.Replace("DEPLOYED", "FAILED");
+            updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
+            LanguageHandler.SetLanguageLine("IntroEscapePod3Content", updated);
+
+            // Update Escape pod "status screen text" for new situation
+            // ... post-secondary-system fix
+            original = Language.main.Get("IntroEscapePod4Content");
+            updated = original.Replace("DEPLOYED", "FAILED");
+            updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
+            updated = updated.Replace("Oxygen / nitrogen atmosphere", "Atmosphere: requires filtration");
+            LanguageHandler.SetLanguageLine("IntroEscapePod4Content", updated);
+
+            // Forces the language handler to restart with our updates
             Language.main.SetCurrentLanguage(Language.main.GetCurrentLanguage());
         }
     }

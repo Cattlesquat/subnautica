@@ -241,6 +241,32 @@ namespace DeathRun.Patchers
         }
 
         /**
+         * Sets the interval at which the each of the Escape Pod's power cells regenerate an energy. Vanilla is 20.
+         */
+        public static void setRegenerateInterval(float secs)
+        {
+            RegeneratePowerSource[] cells = EscapePod.main.gameObject.GetAllComponentsInChildren<RegeneratePowerSource>();
+            if (cells != null)
+            {
+                foreach (RegeneratePowerSource cell in cells)
+                {
+                    cell.regenerationInterval = secs;
+                }
+            }
+        }
+
+        public static void CheckSolarCellRate ()
+        {
+            if (EscapePod.main.damageEffectsShowing)
+            {
+                setRegenerateInterval(20);
+            } else
+            {
+                setRegenerateInterval(10);
+            }
+        }
+
+        /**
          * When loading game, put escape pod back in any weird position, and restore its anchor.
          */
         public static void JustLoadedGame()
@@ -261,6 +287,50 @@ namespace DeathRun.Patchers
             } else
             {
                 wf.underwaterGravity = 9.81f;
+            }
+
+            if (EscapePod.main.liveMixin.GetHealthFraction() < 0.99f)
+            {
+                SeraLogger.Message(DeathRun.modName, "Loading Damaged Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
+                EscapePod.main.damageEffectsShowing = false;
+                EscapePod.main.ShowDamagedEffects();
+                EscapePod.main.lightingController.SnapToState(2);
+                uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod3Header"), new Color32(243, 201, 63, byte.MaxValue), 2f);
+                uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod3Content"), new Color32(233, 63, 27, byte.MaxValue));
+                uGUI_EscapePod.main.SetPower(Language.main.Get("IntroEscapePod3Power"), new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue));
+                EscapePod.main.introCinematic.interpolationTimeOut = 0f;
+            } else
+            {
+                SeraLogger.Message(DeathRun.modName, "Loading Repaired Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
+                EscapePod.main.lightingController.SnapToState(0);
+                uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32(159, 243, 63, byte.MaxValue), -1f);
+                uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod4Content"), new Color32(159, 243, 63, byte.MaxValue));
+                uGUI_EscapePod.main.SetPower(Language.main.Get("IntroEscapePod4Power"), new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue));
+            }
+            EscapePod.main.UpdateDamagedEffects();
+            CheckSolarCellRate();
+        }
+    }
+
+    [HarmonyPatch(typeof(EscapePod))]
+    [HarmonyPatch("UpdateDamagedEffects")]
+    internal class EscapePod_UpdateDamagedEffects_Patch
+    {
+        static bool damaged = false;
+
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            damaged = EscapePod.main.damageEffectsShowing;
+            return true;
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (damaged != EscapePod.main.damageEffectsShowing)
+            {
+                EscapePod_FixedUpdate_Patch.CheckSolarCellRate();
             }
         }
     }
