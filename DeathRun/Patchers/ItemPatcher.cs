@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace DeathRun.Patchers
 {
-    public class PatchItems
+    public class ItemPatcher
     {
         /**
          * Checks if player is currently prevented from picking up food items on the island. 

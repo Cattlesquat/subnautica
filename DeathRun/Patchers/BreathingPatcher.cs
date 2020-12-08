@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace DeathRun.Patchers
 {
-    public class PatchBreathing
+    public class BreathingPatcher
     {
         public static bool warnedNotBreathable = false;
         public static float warningTime = 0;
@@ -166,7 +166,7 @@ namespace DeathRun.Patchers
         {
             if (Language.main.Get("SwimToSurface").Equals(message))
             {
-                if (PatchBreathing.isSurfaceAirPoisoned() || (Ocean.main.GetDepthOf(Player.main.gameObject) > 100))
+                if (BreathingPatcher.isSurfaceAirPoisoned() || (Ocean.main.GetDepthOf(Player.main.gameObject) > 100))
                 {
                     message = "Out of Air!";
                     if (hinter != null)

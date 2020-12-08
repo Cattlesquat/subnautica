@@ -227,9 +227,4 @@ namespace DeathRun.Patchers
             showingShip = false;
         }
     }
-
-
-
-
-
 }

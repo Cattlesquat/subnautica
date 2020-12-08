@@ -73,22 +73,22 @@ namespace DeathRun
                 SeraLogger.Message(modName, "Explosion Depth");
 
                 harmony.Patch(typeof(CrashedShipExploder).GetMethod("CreateExplosiveForce", BindingFlags.NonPublic | BindingFlags.Instance),
-                     null, new HarmonyMethod(typeof(PatchExplosion).GetMethod("CreateExplosiveForce")));
+                     null, new HarmonyMethod(typeof(ExplosionPatcher).GetMethod("CreateExplosiveForce")));
 
                 SeraLogger.Message(modName, "Surface Air Poisoning");
                 //if (config.poisonedAir)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(Player), "CanBreathe"),
-                        new HarmonyMethod(typeof(PatchBreathing).GetMethod("CanBreathe")), null);
+                        new HarmonyMethod(typeof(BreathingPatcher).GetMethod("CanBreathe")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(Player), "GetBreathPeriod"), null,
-                        new HarmonyMethod(typeof(PatchBreathing).GetMethod("GetBreathPeriod")));
+                        new HarmonyMethod(typeof(BreathingPatcher).GetMethod("GetBreathPeriod")));
 
                     harmony.Patch(AccessTools.Method(typeof(OxygenManager), "AddOxygenAtSurface"),
-                        new HarmonyMethod(typeof(PatchBreathing).GetMethod("AddOxygenAtSurface")), null);
+                        new HarmonyMethod(typeof(BreathingPatcher).GetMethod("AddOxygenAtSurface")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(WaterAmbience), "PlayReachSurfaceSound"),
-                        new HarmonyMethod(typeof(PatchBreathing).GetMethod("PlayReachSurfaceSound")), null);
+                        new HarmonyMethod(typeof(BreathingPatcher).GetMethod("PlayReachSurfaceSound")), null);
 
                     //harmony.Patch(AccessTools.Method(typeof(PipeSurfaceFloater), "GetProvidesOxygen"),
                     //    new HarmonyMethod(typeof(PatchBreathing).GetMethod("GetProvidesOxygen")), null);
@@ -98,10 +98,10 @@ namespace DeathRun
                 //if (config.radiationWarning)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(uGUI_RadiationWarning), "IsRadiated"),
-                        new HarmonyMethod(typeof(PatchRadiation).GetMethod("IsRadiated")), null);
+                        new HarmonyMethod(typeof(RadiationPatcher).GetMethod("IsRadiated")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(uGUI_RadiationWarning), "Update"),
-                        new HarmonyMethod(typeof(PatchRadiation).GetMethod("Update")), null);
+                        new HarmonyMethod(typeof(RadiationPatcher).GetMethod("Update")), null);
 
                     //harmony.Patch(AccessTools.Method(typeof(uGUI_DepthCompass), "UpdateDepth"),
                     //    new HarmonyMethod(typeof(PatchRadiation).GetMethod("UpdateDepth")), null);
@@ -112,58 +112,58 @@ namespace DeathRun
                 //if (config.radiativeDepth > 0)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(RadiatePlayerInRange), "Radiate"),
-                        new HarmonyMethod(typeof(PatchRadiation).GetMethod("Radiate")), null);
+                        new HarmonyMethod(typeof(RadiationPatcher).GetMethod("Radiate")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(DamagePlayerInRadius), "DoDamage"),
-                        new HarmonyMethod(typeof(PatchRadiation).GetMethod("DoDamage")), null);
+                        new HarmonyMethod(typeof(RadiationPatcher).GetMethod("DoDamage")), null);
                 //}
 
                 SeraLogger.Message(modName, "Power Consumption");
 
                 //if (!Config.NORMAL.Equals(DeathRun.config.powerCosts)) { 
                 harmony.Patch(AccessTools.Method(typeof(PowerSystem), "AddEnergy"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("AddEnergyBase")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyBase")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(EnergyMixin), "AddEnergy"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("AddEnergyTool")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyTool")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(Vehicle), "AddEnergy", new Type[] { typeof(float) }),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("AddEnergyVehicle")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyVehicle")), null);
 
 
                     harmony.Patch(AccessTools.Method(typeof(PowerSystem), "ConsumeEnergy"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyBase")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyBase")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(EnergyMixin), "ConsumeEnergy"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyTool")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyTool")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(Vehicle), "ConsumeEnergy", new Type[] { typeof(float) }),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyVehicle")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyVehicle")), null);
 
 
                     harmony.Patch(AccessTools.Method(typeof(CrafterLogic), "ConsumeEnergy"), 
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyFabricatorPrefix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyFabricatorPrefix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(CrafterLogic), "ConsumeEnergy"), null,
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyFabricatorPostfix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyFabricatorPostfix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(FiltrationMachine), "UpdateFiltering"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyFiltrationPrefix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyFiltrationPrefix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(FiltrationMachine), "UpdateFiltering"), null, 
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyFiltrationPostfix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyFiltrationPostfix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(MapRoomFunctionality), "UpdateScanning"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyScanningPrefix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyScanningPrefix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(MapRoomFunctionality), "UpdateScanning"), null, 
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyScanningPostfix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyScanningPostfix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(Charger), "Update"),
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyChargingPrefix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyChargingPrefix")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(Charger), "Update"), null, 
-                        new HarmonyMethod(typeof(PatchPower).GetMethod("ConsumeEnergyChargingPostfix")), null);
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("ConsumeEnergyChargingPostfix")), null);
                 //}
 
                 //SeraLogger.Message(modName, "Disable Fabricator Food");
@@ -177,19 +177,19 @@ namespace DeathRun
 
                 // Disable the hover hand, and disable ability to click
                 harmony.Patch(AccessTools.Method(typeof(PickPrefab), "OnHandHover"),
-                    new HarmonyMethod(typeof(PatchItems).GetMethod("HandleItemPickup")), null);
+                    new HarmonyMethod(typeof(ItemPatcher).GetMethod("HandleItemPickup")), null);
                 harmony.Patch(AccessTools.Method(typeof(PickPrefab), "OnHandClick"),
-                    new HarmonyMethod(typeof(PatchItems).GetMethod("HandleItemPickup")), null);
+                    new HarmonyMethod(typeof(ItemPatcher).GetMethod("HandleItemPickup")), null);
 
                 harmony.Patch(AccessTools.Method(typeof(RepulsionCannon), "ShootObject"),
-                    new HarmonyMethod(typeof(PatchItems).GetMethod("ShootObject")), null);
+                    new HarmonyMethod(typeof(ItemPatcher).GetMethod("ShootObject")), null);
 
                 harmony.Patch(AccessTools.Method(typeof(PropulsionCannon), "ValidateObject"),
-                    new HarmonyMethod(typeof(PatchItems).GetMethod("ValidateObject")), null);
+                    new HarmonyMethod(typeof(ItemPatcher).GetMethod("ValidateObject")), null);
 
                 // Don't let player smash the resources for seeds
                 harmony.Patch(typeof(Knife).GetMethod("GiveResourceOnDamage", BindingFlags.NonPublic | BindingFlags.Instance),
-                    new HarmonyMethod(typeof(PatchItems).GetMethod("GiveResourceOnDamage")), null);
+                    new HarmonyMethod(typeof(ItemPatcher).GetMethod("GiveResourceOnDamage")), null);
 
 
                 SeraLogger.Message(modName, "Vehicle Costs");

@@ -17,7 +17,7 @@ using UnityEngine.UI;
 
 namespace DeathRun.Patchers
 {
-    public class PatchRadiation
+    public class RadiationPatcher
     {
         private static bool radiated;
 

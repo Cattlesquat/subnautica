@@ -16,7 +16,7 @@ using System.Text;
 
 namespace DeathRun.Patchers
 {
-    public class PatchPower
+    public class PowerPatcher
     {
         private static UnityEngine.Transform GetTransform(IPowerInterface powerInterface)
         {
@@ -75,7 +75,7 @@ namespace DeathRun.Patchers
             // from being lost, merely doesn't produce the item.
             if (DeathRun.craftingSemaphore && (powerInterface.GetPower() < amount))
             {
-                ErrorMessage.AddMessage("Not Enough Power");
+                ErrorMessage.AddMessage("Not Enough Power"); 
                 __result = false;
                 return false;
             } 

@@ -15,7 +15,7 @@ using System.Text;
 
 namespace DeathRun.Patchers
 {
-    public class PatchExplosion
+    public class ExplosionPatcher
     {        
         /**
          * Damage or kill the player if above a certain depth
