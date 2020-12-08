@@ -22,7 +22,7 @@ namespace DeathRun
     {
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(0, 250f),
-            new CenterText(1, 300f)
+            new CenterText(1, 210f)
         };
 
         public class CenterText
@@ -159,8 +159,6 @@ namespace DeathRun
 
             return result;
         }
-
-
     }
 
     /**
@@ -196,6 +194,9 @@ namespace DeathRun
         public void Save()
         {
             string saveDirectory = SaveUtils.GetCurrentSaveDataDir();
+
+            DeathRun.saveData.countSave.AboutToSaveGame();
+            DeathRun.saveData.playerSave.AboutToSaveGame();
 
             try
             {
@@ -250,8 +251,30 @@ namespace DeathRun
 
                 DeathRun.saveData = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
 
+                DeathRun.saveData.countSave.JustLoadedGame();
+                DeathRun.saveData.playerSave.JustLoadedGame();
+
+                //SeraLogger.Message(DeathRun.modName, "FROM SAVE1 countcurr=" + DeathRun.saveData.countSave.currTime + "   countprev="+DeathRun.saveData.countSave.prevTime);
+                //SeraLogger.Message(DeathRun.modName, "FROM SAVE2 countcurr=" + DeathRun.countdownMonitor.currValue + "   countprev=" + DeathRun.countdownMonitor.prevValue);
+
+                //SeraLogger.Message(DeathRun.modName, "FROM SAVE3 playercurr=" + DeathRun.saveData.playerSave.currTime + "   playerprev=" + DeathRun.saveData.playerSave.prevTime);
+                //SeraLogger.Message(DeathRun.modName, "FROM SAVE4 playercurr=" + DeathRun.playerMonitor.currValue + "   playerprev=" + DeathRun.playerMonitor.prevValue);
+
+                //SeraLogger.Message(DeathRun.modName, " NumDeaths:" + DeathRun.saveData.playerSave.numDeaths);
+                //SeraLogger.Message(DeathRun.modName, " StartedGame:" + DeathRun.saveData.playerSave.startedGame);
+                //SeraLogger.Message(DeathRun.modName, " SpanAtDeath:" + DeathRun.saveData.playerSave.spanAtDeath);
+                //SeraLogger.Message(DeathRun.modName, " TimeOfDeath:" + DeathRun.saveData.playerSave.timeOfDeath);
+
+
                 // Special escape-pod re-adjustments
                 EscapePod_FixedUpdate_Patch.JustLoadedGame();
+
+                //string text = "Player: " + DeathRun.saveData.playerSave.timeMonitor.currValue + " / " + DeathRun.saveData.playerSave.timeMonitor.prevValue;
+                //ErrorMessage.AddMessage(text);
+                //SeraLogger.Message(DeathRun.modName, text);
+                //       text = "Count: " + DeathRun.saveData.countSave.timeMonitor.currValue + " / " + DeathRun.saveData.countSave.timeMonitor.prevValue;
+                //ErrorMessage.AddMessage(text);
+                //SeraLogger.Message(DeathRun.modName, text);
             }
             catch (Exception e)
             {

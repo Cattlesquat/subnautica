@@ -14,9 +14,9 @@ namespace DeathRun.Patchers
     using System;
     using UnityEngine.UI;
 
-    /**
- * Data that is saved/restored with saved games is here (DeathRun.saveData.nitroSave)
- */
+     /**
+     * Data that is saved/restored with saved games is here (DeathRun.saveData.playerSave)
+     */
     public class PlayerSaveData
     {
         public float startedGame { get; set; }
@@ -26,11 +26,25 @@ namespace DeathRun.Patchers
         public float allLives { get; set; }
         public int numDeaths { get; set; }
         public bool killOpening { get; set; }
-        public global::Utils.ScalarMonitor timeMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
+        public float currTime { get; set; }
+        public float prevTime { get; set; }
+
 
         public PlayerSaveData()
         {
             setDefaults();
+        }
+
+        public void AboutToSaveGame()
+        {
+            currTime = DeathRun.playerMonitor.currValue; // TimeMonitor doesn't seem to serialize well, so we do this.
+            prevTime = DeathRun.playerMonitor.prevValue;
+        }
+
+        public void JustLoadedGame()
+        {
+            DeathRun.playerMonitor.currValue = currTime; // TimeMonitor doesn't seem to serialize well, so we do this.
+            DeathRun.playerMonitor.prevValue = prevTime;
         }
 
         public void setDefaults()
@@ -42,13 +56,18 @@ namespace DeathRun.Patchers
             allLives = 0;
             numDeaths = 0;
             killOpening = false;
-            timeMonitor.Update(0);
-            timeMonitor.Update(0);
+            currTime = 0;
+            prevTime = 0;
+            //JustLoadedGame();
         }
     }
 
 
 
+    /**
+     * Player.Awake -- our patch changes the "tooltip" entries for existing items, in order to enhance them with our own
+     * mod-related tooltip info.
+     */
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("Awake")]
     internal class PlayerAwakePatcher
@@ -67,7 +86,7 @@ namespace DeathRun.Patchers
 
             // Pipe! 
             original = Language.main.Get("Tooltip_Pipe");
-            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. Thus, 'Safe Depth' will decrease more quickly when breathing at a pipe.";
             LanguageHandler.Main.SetTechTypeTooltip(TechType.Pipe, updated);
 
             // Floating Air Pump
@@ -132,6 +151,9 @@ namespace DeathRun.Patchers
     {
         static List<string> messages = null;
 
+        /**
+         * Player.Update -- Handles time-based messages (module intro messages, and death respawn messages)
+         */
         [HarmonyPostfix]
         public static void Postfix()
         {
@@ -144,12 +166,12 @@ namespace DeathRun.Patchers
             if (DeathRun.saveData.playerSave.startedGame == 0)
             {
                 DeathRun.saveData.playerSave.startedGame = DayNightCycle.main.timePassedAsFloat;
-                DeathRun.saveData.playerSave.timeMonitor.Update(DayNightCycle.main.timePassedAsFloat);
+                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
                 return;
             }
 
-            DeathRun.saveData.playerSave.timeMonitor.Update(DayNightCycle.main.timePassedAsFloat);
-            float interval = DeathRun.saveData.playerSave.timeMonitor.currValue - DeathRun.saveData.playerSave.timeMonitor.prevValue;
+            DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
+            float interval = DeathRun.playerMonitor.currValue - DeathRun.playerMonitor.prevValue;
 
             // Update our "time alive"
             DeathRun.saveData.playerSave.currentLife += interval;
@@ -174,19 +196,20 @@ namespace DeathRun.Patchers
 
         private static void timedMessage(string message, float delta)
         {
-            if (DeathRun.saveData.playerSave.timeMonitor.JustWentAbove(DeathRun.saveData.playerSave.startedGame + delta))
+            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.startedGame + delta))
             {
                 DeathRunUtils.CenterMessage(message, 5);
             }
         }
 
 
-
         private static void doRespawnMessages()
         {
-            if (DeathRun.saveData.playerSave.numDeaths > 1)
+            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 15))
             {
-                if (DeathRun.saveData.playerSave.timeMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 15))
+                ErrorMessage.AddMessage(DeathRunUtils.centerMessages[0].textText.text);
+
+                if (DeathRun.saveData.playerSave.numDeaths > 1)
                 {
                     TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.spanAtDeath);
                     string text;
@@ -201,6 +224,22 @@ namespace DeathRun.Patchers
                     text +=  DeathRunUtils.sayTime(timeSpan2);
                     DeathRunUtils.CenterMessage(text, 10);
                 }
+            }
+
+            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 25))
+            {
+                TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.spanAtDeath);
+                string text;
+                if (DeathRun.saveData.playerSave.numDeaths == 2)
+                {
+                    text = "Both Lives: ";
+                }
+                else
+                {
+                    text = "All " + DeathRun.saveData.playerSave.numDeaths + " Lives: ";
+                }
+                text += DeathRunUtils.sayTime(timeSpan2);
+                ErrorMessage.AddMessage(text);
             }
         }
 
@@ -222,6 +261,7 @@ namespace DeathRun.Patchers
                     "libraryAddict (Radiation Challenge)",
                     "PrimeSonic (SML Helper, coding advice)",
                     "MrPurple6411 (SML Helper, coding advice)",
+                    "AndreaDev3d (Unity help & advice)",
                     "Your Start Location: \"" + DeathRun.saveData.startSave.message + "\"",
                     "GOOD LUCK..."
                 };
@@ -233,7 +273,6 @@ namespace DeathRun.Patchers
                 timedMessage(message, time);
                 time += 8;
             }
-
         }
     }
 
@@ -242,6 +281,9 @@ namespace DeathRun.Patchers
     [HarmonyPatch("OnKill")]
     internal class PlayerKillPatcher
     {
+        /**
+         * Player.OnKill -- Display our "Time of Death" message to make it feel a bit more roguelike :)
+         */
         [HarmonyPrefix]
         public static void Prefix()
         {
@@ -273,11 +315,44 @@ namespace DeathRun.Patchers
     [HarmonyPatch("OnSelect")]
     internal class HardcoreDeathPatcher
     {
+        /**
+         * This makes sure the player sees the "Time of Death" when Permadeath is active.
+         */
         [HarmonyPostfix]
         public static void Postfix(uGUI_HardcoreGameOver __instance)
         {
             // Use the time-of-death message we will have just queued as our "Game Over" message.
             __instance.text.text = DeathRunUtils.centerMessages[0].textText.text + " Game Over.";
+        }
+    }
+
+
+    [HarmonyPatch(typeof(LaunchRocket))]
+    [HarmonyPatch("StartEndCinematic")]
+    internal class LaunchRocketPatcher
+    {
+        /**
+         * This makes sure the player sees the "Victory" message showing length of run when the rocket launches
+         */
+        [HarmonyPrefix]
+        public static void Prefix(uGUI_HardcoreGameOver __instance)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.allLives);
+
+            string text = "Victory! In " + DeathRunUtils.sayTime(timeSpan) + " (" + (DeathRun.saveData.playerSave.numDeaths + 1) + " ";
+            if (DeathRun.saveData.playerSave.numDeaths == 0)
+            {
+                text += "life";
+            } else
+            {
+                text += "lives";
+            }
+
+            text += ")";
+
+            DeathRunUtils.CenterMessage(text, 10);
+            SeraLogger.Message(DeathRun.modName, text);
+            //ErrorMessage.AddMessage(text);            
         }
     }
 }

@@ -18,17 +18,31 @@ namespace DeathRun.Patchers
      */
     public class CountdownSaveData
     {
-        public global::Utils.ScalarMonitor timeMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
+        public float currTime { get; set; }
+        public float prevTime { get; set; }
 
         public CountdownSaveData()
         {
             setDefaults();
         }
 
+        public void AboutToSaveGame()
+        {
+            currTime = DeathRun.countdownMonitor.currValue; // TimeMonitor doesn't seem to serialize well, so we do this.
+            prevTime = DeathRun.countdownMonitor.prevValue;
+        }
+
+        public void JustLoadedGame()
+        {
+            DeathRun.countdownMonitor.currValue = currTime; // TimeMonitor doesn't seem to serialize well, so we do this.
+            DeathRun.countdownMonitor.prevValue = prevTime;
+        }
+
         public void setDefaults()
         {
-            timeMonitor.Update(0);
-            timeMonitor.Update(0);
+            currTime = 0;
+            prevTime = 0;
+            //JustLoadedGame();
         }
     }
 
@@ -86,8 +100,11 @@ namespace DeathRun.Patchers
             // These are the internal parameters for the Aurora story events (see AuroraWarnings for time thresholds)
             float timeToStartWarning = CrashedShipExploder.main.GetTimeToStartWarning();
             float timeToStartCountdown = CrashedShipExploder.main.GetTimeToStartCountdown();
-            float timeNow = CrashedShipExploder.main.timeMonitor.Get();
-            DeathRun.saveData.countSave.timeMonitor.Update(timeNow);
+            float timeNow = DayNightCycle.main.timePassedAsFloat;
+
+            //SeraLogger.Message(DeathRun.modName, "timeNow="+timeNow + "   countdown.curr=" + DeathRun.countdownMonitor.currValue + "   countdown.prev=" + DeathRun.countdownMonitor.prevValue);
+
+            DeathRun.countdownMonitor.Update(timeNow);
 
             int deep;
             if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explodeDepth))
@@ -103,24 +120,32 @@ namespace DeathRun.Patchers
                 deep = 0;
             }
 
+            //ErrorMessage.AddMessage("Now: " + timeNow + "   Warning: " + timeToStartWarning + "   Countdown: " + timeToStartCountdown + "   Deep: " + deep + "  Lerp0: " + Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f) + "  Lerp1: " + Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f) + "  Lerp2: " + Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f));
 
             //if (this.timeMonitor.JustWentAbove(this.timeToStartCountdown + 27f))
 
             if (deep > 0) { 
                 // At time of second Aurora warning
-                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f))) { 
+                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f))) {
+                    DeathRunUtils.CenterMessage("Explosion Shockwave Will Be", 5);
+                    DeathRunUtils.CenterMessage("Over " + deep + "m Deep!", 5, 1);
                     ErrorMessage.AddMessage("WARNING: Explosion will produce shockwave over " + deep + "m deep!");
                 }
 
                 // At time of third Aurora warning
-                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f)))
+                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f)))
                 {
+                    DeathRunUtils.CenterMessage("Prepare To Evacuate At Least", 5);
+                    DeathRunUtils.CenterMessage("" + deep + "m Deep. Preferably Inside.", 5, 1);
                     ErrorMessage.AddMessage("Prepare to evacuate at least " + deep + "m deep, preferably inside!");
                 }
 
                 // At time of final countdown
-                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(timeToStartCountdown))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown))
                 {
+                    DeathRunUtils.CenterMessage("Seek Safe Depth Immediately!", 5);
+                    DeathRunUtils.CenterMessage("Preferably Inside!", 5, 1);
+
                     ErrorMessage.AddMessage("Seek safe depth immediately! Preferably inside!");
                 }
             }
@@ -140,8 +165,10 @@ namespace DeathRun.Patchers
             }
             if (deep > 0)
             {
-                if (DeathRun.saveData.countSave.timeMonitor.JustWentAbove(timeToStartCountdown + 100f))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f))
                 {
+                    DeathRunUtils.CenterMessage("Radiation Will Gradually Permeate", 5);
+                    DeathRunUtils.CenterMessage("Ocean As Deep As " + deep + "m.", 5, 1);
                     ErrorMessage.AddMessage("Radiation will gradually permeate the sea, as deep as " + deep + "m.");
                 }
             }

@@ -36,6 +36,9 @@ namespace DeathRun
 
         public static GameObject N2HUD { get; set; }
 
+        public static global::Utils.ScalarMonitor countdownMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
+        public static global::Utils.ScalarMonitor playerMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
+
         //public static bool podGravity  = true;
 
         // These semaphore relate to "flavors" of energy consumption
@@ -96,6 +99,13 @@ namespace DeathRun
                 //{
                     harmony.Patch(AccessTools.Method(typeof(uGUI_RadiationWarning), "IsRadiated"),
                         new HarmonyMethod(typeof(PatchRadiation).GetMethod("IsRadiated")), null);
+
+                    harmony.Patch(AccessTools.Method(typeof(uGUI_RadiationWarning), "Update"),
+                        new HarmonyMethod(typeof(PatchRadiation).GetMethod("Update")), null);
+
+                    //harmony.Patch(AccessTools.Method(typeof(uGUI_DepthCompass), "UpdateDepth"),
+                    //    new HarmonyMethod(typeof(PatchRadiation).GetMethod("UpdateDepth")), null);
+
                 //}
 
                 SeraLogger.Message(modName, "Radiation Depth");
