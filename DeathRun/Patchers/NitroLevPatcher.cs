@@ -63,9 +63,6 @@ namespace DeathRun.Patchers
     [HarmonyPatch("Update")]
     internal class NitroDamagePatcher
     {
-        private static bool lethal = true;                 // true means bends can be lethal
-        private static bool decompressionVehicles = false; // if true, getting into a vehicle incurs the bends
-
         private static bool cachedActive = false;
         private static bool cachedAnimating = false;
         private static int  cachedTicks = 0;
@@ -201,7 +198,7 @@ namespace DeathRun.Patchers
                 //
                 if ((__instance.nitrogenLevel >= 100) && (DeathRun.saveData.nitroSave.safeDepth >= 10f) && ((int)depth < (int)DeathRun.saveData.nitroSave.safeDepth))
                 {                    
-                    if ((!isInVehicle && !isInBase) || !decompressionVehicles)
+                    if (!isInVehicle && !isInBase)
                     {
                         if (UnityEngine.Random.value < (isSwimming ? 0.0125f : 0.025f))
                         {
@@ -315,7 +312,7 @@ namespace DeathRun.Patchers
 
             if (damage >= component.health)
             {
-                if (!lethal || (component.health > 0.1f))
+                if (component.health > 0.1f)
                 {
                     damage = component.health - 0.05f;
                     if (damage <= 0)

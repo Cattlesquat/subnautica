@@ -253,6 +253,8 @@ namespace DeathRun.Patchers
         /**
          * The regenerating "Solar Cells" in the Escape Pod use an irritating infinite loop IEnumerator, so this is a
          * "pass-through postfix" to double the rate of energy recharge once the secondary systems are repaired.
+         * 
+         * ... Did this a different way (changed the regenerationThreshold at the appropriate time)
          */
         //[HarmonyPostfix]
         //public static void RegeneratePowerStart(RegeneratePowerSource __instance)

@@ -104,6 +104,16 @@ namespace DeathRun
 
 
         /**
+         *  When just loaded a game, don't restore some previous mid-screen giant message
+         */
+        public static void JustLoadedGame()
+        {
+            centerMessages[0].textText.text = "";
+            centerMessages[1].textText.text = "";
+        }
+
+
+        /**
          *  isIntroStillGoing() -- returns true if we're still on "press any key to continue" or during intro cinematic
          */
         public static bool isIntroStillGoing ()
@@ -268,6 +278,8 @@ namespace DeathRun
 
                 // Special escape-pod re-adjustments
                 EscapePod_FixedUpdate_Patch.JustLoadedGame();
+
+                DeathRunUtils.JustLoadedGame();
 
                 //string text = "Player: " + DeathRun.saveData.playerSave.timeMonitor.currValue + " / " + DeathRun.saveData.playerSave.timeMonitor.prevValue;
                 //ErrorMessage.AddMessage(text);

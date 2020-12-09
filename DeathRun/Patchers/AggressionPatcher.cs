@@ -1,7 +1,7 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * This patch ups the aggression level of creatures.
+ * This patch ups the aggression level of creatures, based on difficulty level setting.
  */
 namespace DeathRun.Patchers
 {
@@ -29,11 +29,21 @@ namespace DeathRun.Patchers
 
             if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
             {
-                maxSearchRings *= 3; //BR// Triple aggression search
+                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                {
+                    maxSearchRings *= 3; //BR// Triple aggression search after 40 minutes
+                }
+                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                {
+                    maxSearchRings *= 2; //BR// Double aggression search after 20 minutes
+                }                
             }
             else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
             {
-                maxSearchRings += 1;
+                if (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION)
+                {
+                    maxSearchRings += 1; //BR// One extra aggression ring after 20 minutes
+                }
             }
 
             IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, maxSearchRings);
@@ -110,7 +120,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) || (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)))
+            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) || (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) || (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION))
             {
                 __result = __instance.creature.GetCanSeeObject(target);
             }
@@ -153,11 +163,29 @@ namespace DeathRun.Patchers
                     {
                         if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
                         {
-                            sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
+                            if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                            {
+                                sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
+                            }
+                            else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                            {
+                                sqrMagnitude /= 4;
+                            }  
+                            else
+                            {
+                                sqrMagnitude /= 2;
+                            }
                         }
                         else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
                         {
-                            sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
+                            if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                            {
+                                sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
+                            }
+                            else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                            {
+                                sqrMagnitude /= 2;
+                            }
                         }
                     }
 
@@ -173,6 +201,69 @@ namespace DeathRun.Patchers
                 bestDist = Mathf.Sqrt(num);
             }
             ProfilingUtils.EndSample(null);
+        }
+    }
+
+    /**
+     * Okay this runs ALMOST the same code as the original, but searches a much wider radius and doubles the aggression level
+     * 
+     * DeathRun.aggressionMultiplier -- how much more aggressive than baseline creatures should be
+     * DeathRun.aggressionRadius     -- how much wider a target area than baseline creatures should search for targets
+     */
+    [HarmonyPatch(typeof(MoveTowardsTarget))]
+    [HarmonyPatch("UpdateCurrentTarget")]
+    internal class MoveTowardsTarget_UpdateCurrentTarget_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(MoveTowardsTarget __instance)
+        {
+            float aggressionMultiplier;
+            int aggressionRadius;
+
+            //BR// Adjust aggression levels
+            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+            {
+                if (DayNightCycle.main.timePassedAsFloat > DeathRun.FULL_AGGRESSION)
+                {
+                    aggressionMultiplier = 4;
+                    aggressionRadius = 6;
+                }
+                else if (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION)
+                {
+                    aggressionMultiplier = 2;
+                    aggressionRadius = 3;
+                } 
+                else
+                {
+                    return true;
+                }
+            }
+            else if (Config.HARD.Equals(DeathRun.config.creatureAggression) && (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION))
+            {
+                aggressionMultiplier = 2;
+                aggressionRadius = 3;
+            }
+            else
+            {
+                return true; // Just run normal method
+            }
+
+            ProfilingUtils.BeginSample("UpdateCurrentTarget");
+            if (EcoRegionManager.main != null && (Mathf.Approximately(__instance.requiredAggression, 0f) || __instance.creature.Aggression.Value * aggressionMultiplier >= __instance.requiredAggression))
+            {
+                IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, aggressionRadius);
+
+                if (ecoTarget != null)
+                {
+                    __instance.currentTarget = ecoTarget;
+                }
+                else
+                {
+                    __instance.currentTarget = null;
+                }
+            }
+            ProfilingUtils.EndSample(null);
+            return false;
         }
     }
 }

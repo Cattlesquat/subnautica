@@ -63,7 +63,7 @@ namespace DeathRun.Patchers
 
 
     /**
-     * RespawnPlayer -- recharge the Escape Pod power supply when player dies (since we now tend to deplete it quickly).
+     * RespawnPlayer -- recharge the Escape Pod power supply when player dies, but the amount depends on difficulty level settings.
      */
     [HarmonyPatch(typeof(EscapePod))]
     [HarmonyPatch("RespawnPlayer")]
@@ -72,12 +72,29 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
+            float restore;
+            if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+            {
+                restore = 5;   // Recharge each cell by 5 (total of 15)
+            } 
+            else if (Config.HARDCORE.Equals(DeathRun.config.powerCosts))
+            {
+                restore = 10;  // Recharge each cell by 10 (total of 30)
+            } 
+            else
+            {
+                restore = 25;  // Recharges each cell to full power
+            }
+
             RegeneratePowerSource[] cells = EscapePod.main.gameObject.GetAllComponentsInChildren<RegeneratePowerSource>();
             if (cells != null)
             {
                 foreach (RegeneratePowerSource cell in cells)
                 {
-                    cell.powerSource.ModifyPower(cell.powerSource.GetMaxPower() - cell.powerSource.GetPower(), out _);
+                    float chargeable = cell.powerSource.GetMaxPower() - cell.powerSource.GetPower();
+
+                    restore = Mathf.Clamp(restore, 0, chargeable);
+                    cell.powerSource.ModifyPower(restore, out _);
                 }
             }
         }

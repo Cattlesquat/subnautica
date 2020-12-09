@@ -50,6 +50,9 @@ namespace DeathRun
         public const string CAUSE_UNKNOWN = "Unknown";
         public const string CAUSE_UNKNOWN_CREATURE = "Unknown Creature";
 
+        public const float FULL_AGGRESSION = 2400; // 40 minutes
+        public const float MORE_AGGRESSION = 1200; // 20 minutes
+
         // Temporary storage for "cause of death"
         public static string cause = CAUSE_UNKNOWN;
         public static GameObject causeObject = null;

@@ -114,7 +114,6 @@
     <Compile Include="Patchers\CountdownPatcher.cs" />
     <Compile Include="Patchers\DamagePatcher.cs" />
     <Compile Include="Patchers\PlayerPatcher.cs" />
-    <Compile Include="Patchers\MoveToTargetPatcher.cs" />
     <Compile Include="Patchers\ExplosionPatcher.cs" />
     <Compile Include="Patchers\BreathingPatcher.cs" />
     <Compile Include="Patchers\DepthClassPatchers.cs" />
@@ -125,7 +124,7 @@
     <Compile Include="Patchers\PowerPatcher.cs" />
     <Compile Include="Patchers\RadiationPatcher.cs" />
     <Compile Include="Patchers\RandomStartPatcher.cs" />
-    <Compile Include="Patchers\SurvivalUsePatcher.cs" />
+    <Compile Include="Patchers\SurvivalPatcher.cs" />
     <Compile Include="Patchers\UnlockScanPatchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DeathRunConfig.cs" />

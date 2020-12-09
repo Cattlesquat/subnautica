@@ -65,6 +65,34 @@ namespace DeathRun.Patchers
     }
 
 
+    /**
+     * Player now respawns with less "free health" when killed.
+     * 
+     * Although we're patching "SuffocationReset" here, that's only because it's a convenient location that we know is called
+     * AFTER the player's health has been reset. 
+     */
+    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch("SuffocationReset")]
+    internal class PlayerRespawnPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Config.INSANITY.Equals(DeathRun.config.damageTaken))
+            {
+                Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .25f;
+            }
+            else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken))
+            {
+                Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .50f;
+            }
+            else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken))
+            {
+                Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .75f;
+            }
+        }
+    }
+
 
     /**
      * Player.Awake -- our patch changes the "tooltip" entries for existing items, in order to enhance them with our own
@@ -82,7 +110,6 @@ namespace DeathRun.Patchers
             // First aid kit -- Nitrogen effects
             string original = Language.main.Get("Tooltip_FirstAidKit");
             string updated = original + " Also cleans nitrogen from the bloodstream to prevent 'The Bends'.";
-
             LanguageHandler.Main.SetTechTypeTooltip(TechType.FirstAidKit, updated);
 
             // Pipe! 
@@ -92,13 +119,23 @@ namespace DeathRun.Patchers
 
             // Floating Air Pump
             original = Language.main.Get("Tooltip_PipeSurfaceFloater");
-            updated = original + " Renders surface air breathable. Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            updated = original + " Renders surface air BREATHABLE. Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
             LanguageHandler.Main.SetTechTypeTooltip(TechType.PipeSurfaceFloater, updated);
 
             // Base Air Pump
             original = Language.main.Get("Tooltip_PipeSurfaceFloater");
             updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
             LanguageHandler.Main.SetTechTypeTooltip(TechType.BasePipeConnector, updated);
+
+            // Boomerang
+            original = Language.main.Get("Tooltip_Boomerang");
+            updated = original + " Seems to have unusual nitrogen-filtering blood chemistry.";
+            LanguageHandler.Main.SetTechTypeTooltip(TechType.Boomerang, updated);
+
+            // Lava Boomerang
+            original = Language.main.Get("Tooltip_LavaBoomerang");
+            updated = original + " Seems to have unusual nitrogen-filtering blood chemistry.";
+            LanguageHandler.Main.SetTechTypeTooltip(TechType.LavaBoomerang, updated);
 
             // Reinforced Dive Suit - personal depth limit
             original = Language.main.Get("Tooltip_ReinforcedDiveSuit");
@@ -281,9 +318,12 @@ namespace DeathRun.Patchers
                     "libraryAddict (Radiation Challenge)",
                     "PrimeSonic (SML Helper, coding advice)",
                     "MrPurple6411 (SML Helper, coding advice)",
-                    "AndreaDev3d (Unity help & advice)",
+                    "AndreaDev3d (Unity help & advice)",                    
                     "Your Start Location: \"" + DeathRun.saveData.startSave.message + "\"",
-                    "GOOD LUCK..."
+                    "GOOD LUCK...",
+                    "",
+                    "",
+                    "For Tay and Ian"
                 };
             }
 
