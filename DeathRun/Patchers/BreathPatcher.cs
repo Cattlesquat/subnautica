@@ -76,6 +76,7 @@ namespace DeathRun.Patchers
         private static void DamagePlayer(float ouch)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
+            DeathRun.setCause("Crushed By Pressure");
             component.TakeDamage(UnityEngine.Random.value * ouch / 2 + ouch / 2, default, DamageType.Normal, null);
         }
     }

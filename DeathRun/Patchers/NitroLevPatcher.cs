@@ -336,6 +336,7 @@ namespace DeathRun.Patchers
                 DeathRunUtils.CenterMessage("You died of the bends!", 5);
             }
 
+            DeathRun.setCause("The Bends");
             component.TakeDamage(damage, default, DamageType.Starve, null);
 
             DeathRun.saveData.nitroSave.safeDepth = Mathf.Clamp(DeathRun.saveData.nitroSave.safeDepth * 3 / 4, depthOf > 10 ? depthOf : 10, DeathRun.saveData.nitroSave.safeDepth);

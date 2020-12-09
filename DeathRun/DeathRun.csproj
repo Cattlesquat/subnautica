@@ -110,6 +110,7 @@
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\AggressionPatcher.cs" />
     <Compile Include="Patchers\BreathPatcher.cs" />
+    <Compile Include="Patchers\CauseOfDeathPatcher.cs" />
     <Compile Include="Patchers\CountdownPatcher.cs" />
     <Compile Include="Patchers\DamagePatcher.cs" />
     <Compile Include="Patchers\PlayerPatcher.cs" />

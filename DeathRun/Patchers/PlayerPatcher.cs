@@ -28,6 +28,7 @@ namespace DeathRun.Patchers
         public bool killOpening { get; set; }
         public float currTime { get; set; }
         public float prevTime { get; set; }
+        public string causeOfDeath { get; set; }
 
 
         public PlayerSaveData()
@@ -58,6 +59,7 @@ namespace DeathRun.Patchers
             killOpening = false;
             currTime = 0;
             prevTime = 0;
+            causeOfDeath = "Unknown";
             //JustLoadedGame();
         }
     }
@@ -255,6 +257,9 @@ namespace DeathRun.Patchers
                 }
                 text += DeathRunUtils.sayTime(timeSpan2);
                 ErrorMessage.AddMessage(text);
+
+
+
             }
         }
 
@@ -300,8 +305,10 @@ namespace DeathRun.Patchers
          * Player.OnKill -- Display our "Time of Death" message to make it feel a bit more roguelike :)
          */
         [HarmonyPrefix]
-        public static void Prefix()
+        public static void Prefix(DamageType damageType)
         {
+            setCauseOfDeath(damageType);
+
             DeathRun.saveData.playerSave.numDeaths++;
 
             DeathRun.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
@@ -320,9 +327,91 @@ namespace DeathRun.Patchers
 
             DeathRunUtils.CenterMessage(text, 10);
             SeraLogger.Message(DeathRun.modName, text);
+
+            text = "Cause of Death: " + DeathRun.cause;
+            DeathRunUtils.CenterMessage(text, 10, 1);
+
             //ErrorMessage.AddMessage(text);            
 
             DeathRun.saveData.playerSave.killOpening = true;            
+        }
+
+        static void setCauseOfDeath (DamageType damageType)
+        {
+            switch (damageType)
+            {
+                case DamageType.Acid:
+                    DeathRun.setCause("Acid");
+                    break;
+
+                case DamageType.Collide:
+                    DeathRun.setCause("Collision");
+                    break;
+
+                case DamageType.Electrical:
+                    DeathRun.setCause("Electrocution");
+                    break;
+
+                case DamageType.Explosive:
+                    DeathRun.setCause("Explosion");
+                    break;
+
+                case DamageType.Fire:
+                    DeathRun.setCause("Burned to Death");
+                    break;
+
+                case DamageType.Heat:
+                    DeathRun.setCause("Extreme Heat");
+                    break;
+
+                case DamageType.Poison:
+                    DeathRun.setCause("Poison");
+                    break;
+
+                case DamageType.Pressure:
+                    DeathRun.setCause("Pressure");
+                    break;
+
+                case DamageType.Puncture:
+                    DeathRun.setCause("Puncture Wounds");
+                    break;
+
+                case DamageType.Radiation:
+                    DeathRun.setCause("Radiation");
+                    break;
+
+                case DamageType.Smoke:
+                    DeathRun.setCause("Smoke Asphyxiation");
+                    break;
+
+                //case DamageType.Starve:
+                //case DamageType.Normal:
+                default:
+                    if (DeathRun.CAUSE_UNKNOWN_CREATURE.Equals(DeathRun.cause))
+                    {
+                        if (DeathRun.causeObject != null)
+                        {
+                            SeraLogger.Message(DeathRun.modName, "Has an object: " + DeathRun.causeObject.name);
+                            GameObject go;
+                            TechType t = CraftData.GetTechType(DeathRun.causeObject, out go);
+                            SeraLogger.Message(DeathRun.modName, "  TechType: " + t + " " + t.AsString());
+                            
+                            //PrefabIdentifier prefab = go.transform.GetComponent<PrefabIdentifier>();
+                            //if (prefab != null)
+                            //{
+                            //    ErrorMessage.AddMessage("  Prefab: " + prefab.name + "   ClassId: " + prefab.ClassId);
+                            //    t = CraftData.entClassTechTable.GetOrDefault(prefab.ClassId, TechType.None);
+                            //    ErrorMessage.AddMessage("    TechType: " + t + " " + t.AsString());
+                            //}
+
+                            DeathRun.setCause(Language.main.Get(t.AsString(false)));
+
+                            SeraLogger.Message(DeathRun.modName, "Cause of Death: " + DeathRun.cause);
+                        }
+                    }
+                    break;
+
+            }
         }
     }
 

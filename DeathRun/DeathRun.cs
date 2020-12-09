@@ -47,6 +47,13 @@ namespace DeathRun
         public static bool filterSemaphore   = false;
         public static bool scannerSemaphore  = false;
 
+        public const string CAUSE_UNKNOWN = "Unknown";
+        public const string CAUSE_UNKNOWN_CREATURE = "Unknown Creature";
+
+        // Temporary storage for "cause of death"
+        public static string cause = CAUSE_UNKNOWN;
+        public static GameObject causeObject = null;
+
         internal static Config config { get; } = OptionsPanelHandler.Main.RegisterModOptions<Config>();
 
         public static void Patch()
@@ -458,5 +465,16 @@ namespace DeathRun
                 ErrorMessage.AddMessage("DeathRun - Failed to patch. See log for details.");
             }
         }
+
+        public static void setCause(string newCause)
+        {
+            cause = newCause;
+        }
+
+        public static void setCauseObject(GameObject newCause)
+        {
+            causeObject = newCause;
+        }
+
     }
 }
