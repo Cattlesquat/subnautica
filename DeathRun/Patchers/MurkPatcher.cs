@@ -35,9 +35,12 @@ namespace DeathRun.Patchers
             {
                 murkerizer = 2f;
             }
-            else
+            else if(Config.MURK_DARKEST.Equals(DeathRun.config.murkiness))
             {
                 murkerizer = 5f; // These people just want pain.
+            } else
+            {
+                murkerizer = .5f; // Noticeable clarity without totally screwing the view up
             }
             
             float d = t.murkiness * murkerizer / 100f;

@@ -41,6 +41,8 @@ namespace DeathRun
 
         //public static bool podGravity  = true;
 
+        public static bool murkinessDirty = false;
+
         // These semaphore relate to "flavors" of energy consumption
         public static bool craftingSemaphore = false;
         public static bool chargingSemaphore = false;

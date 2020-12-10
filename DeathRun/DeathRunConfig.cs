@@ -14,6 +14,7 @@ using System.Text;
 using SMLHelper.V2.Json;
 using SMLHelper.V2.Options.Attributes;
 using DeathRun.Patchers;
+using SMLHelper.V2.Options;
 
 namespace DeathRun
 {
@@ -63,6 +64,7 @@ namespace DeathRun
         public const string MURK_DARK    = "Dark";
         public const string MURK_DARKER  = "Darker";
         public const string MURK_DARKEST = "Darkest";
+        public const string MURK_CLEAR   = "Crazy Clear";
 
         [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY })]
         public string damageTaken = INSANITY;
@@ -133,7 +135,7 @@ namespace DeathRun
          })]
         public string startLocation = RANDOM;
 
-        [Choice("Water Murkiness (Optional)", new string[] { MURK_NORMAL, MURK_DARK, MURK_DARKER, MURK_DARKEST })]
+        [Choice("Water Murkiness (Optional)", new string[] { MURK_NORMAL, MURK_DARK, MURK_DARKER, MURK_DARKEST, MURK_CLEAR }), OnChange(nameof(ChangedMurkiness))]
         public string murkiness = MURK_NORMAL;
 
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
@@ -141,5 +143,11 @@ namespace DeathRun
 
         [Toggle("Allow Specialty Air Tanks")]
         public bool enableSpecialtyTanks = false;
+
+
+        private void ChangedMurkiness(ToggleChangedEventArgs e)
+        {
+            DeathRun.murkinessDirty = true;
+        }
     }
 }
