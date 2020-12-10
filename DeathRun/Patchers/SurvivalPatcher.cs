@@ -100,8 +100,6 @@ namespace DeathRun.Patchers
     [HarmonyPatch("Reset")]
     internal class SurvivalResetPatcher
     {
-        static float ticksNotice = 0;
-
         /**
          * After very beginning of the game, don't give a full food & water reset on death.
          */
@@ -110,8 +108,8 @@ namespace DeathRun.Patchers
         {
             if (DayNightCycle.main.timePassedAsFloat >= 5 * 60)
             {
-                __instance.food  = Mathf.Clamp(__instance.food * .9f,  10.5f, 90.5f);
-                __instance.water = Mathf.Clamp(__instance.water * .9f, 10.5f, 90.5f);
+                __instance.food  = Mathf.Clamp(__instance.food * .9f,  12f, 90.5f);
+                __instance.water = Mathf.Clamp(__instance.water * .9f, 12f, 90.5f);
                 return false;
             }
             return true;

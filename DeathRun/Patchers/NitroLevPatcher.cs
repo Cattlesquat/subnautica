@@ -67,6 +67,8 @@ namespace DeathRun.Patchers
         private static bool cachedAnimating = false;
         private static int  cachedTicks = 0;
 
+        private static string lastMurk = "";
+
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
@@ -190,6 +192,13 @@ namespace DeathRun.Patchers
                         {
                             DeathRun.saveData.nitroSave.safeDepth = 10.01f;
                         }
+                    }
+
+                    // This handles rebuilding the murkiness if it has changed in the last 5 seconds.
+                    if (((ticks % 10) == 0) && !lastMurk.Equals(DeathRun.config.murkiness)) 
+                    {
+                        WaterBiomeManager.main.Rebuild();
+                        lastMurk = DeathRun.config.murkiness;
                     }
                 }
 

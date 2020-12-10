@@ -62,6 +62,7 @@ namespace DeathRun
         public static void Patch()
         {
             SeraLogger.PatchStart(modName, "1.5.1");
+
             try
             {
                 Harmony harmony = new Harmony("cattlesquat.deathrun.mod");

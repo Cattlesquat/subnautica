@@ -59,6 +59,11 @@ namespace DeathRun
         public const string TIME_MEDIUM = "Medium (60 min)";
         public const string TIME_LONG   = "Long (90 min)";
 
+        public const string MURK_NORMAL  = "Normal";
+        public const string MURK_DARK    = "Dark";
+        public const string MURK_DARKER  = "Darker";
+        public const string MURK_DARKEST = "Darkest";
+
         [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY })]
         public string damageTaken = INSANITY;
 
@@ -128,7 +133,10 @@ namespace DeathRun
          })]
         public string startLocation = RANDOM;
 
-        [Choice("Allow Food From Island", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
+        [Choice("Water Murkiness (Optional)", new string[] { MURK_NORMAL, MURK_DARK, MURK_DARKER, MURK_DARKEST })]
+        public string murkiness = MURK_NORMAL;
+
+        [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
 
         [Toggle("Allow Specialty Air Tanks")]
