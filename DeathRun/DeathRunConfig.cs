@@ -145,7 +145,7 @@ namespace DeathRun
         public bool enableSpecialtyTanks = false;
 
 
-        private void ChangedMurkiness(ToggleChangedEventArgs e)
+        private void ChangedMurkiness(ChoiceChangedEventArgs e)
         {
             DeathRun.murkinessDirty = true;
         }
