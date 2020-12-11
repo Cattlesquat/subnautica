@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SaveData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <NitrogenEnabled>True</NitrogenEnabled>
-  <IsLethal>True</IsLethal>
-  <CrushEnabled>True</CrushEnabled>
-  <SpecialtyEnabled>True</SpecialtyEnabled>
-  <DecompressionVehiclesEnabled>True</DecompressionVehiclesEnabled>
-  <DamageScaler>10</DamageScaler>
-</SaveData>

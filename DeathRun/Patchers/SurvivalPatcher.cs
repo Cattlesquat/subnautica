@@ -106,7 +106,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ref Survival __instance)
         {
-            if (DayNightCycle.main.timePassedAsFloat >= 5 * 60)
+            if ((DeathRun.saveData.playerSave.startedGame > 0) && (DayNightCycle.main.timePassedAsFloat >= DeathRun.saveData.playerSave.startedGame + (5 * 60)))
             {
                 __instance.food  = Mathf.Clamp(__instance.food * .9f,  12f, 90.5f);
                 __instance.water = Mathf.Clamp(__instance.water * .9f, 12f, 90.5f);

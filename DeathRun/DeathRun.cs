@@ -59,11 +59,15 @@ namespace DeathRun
         public static string cause = CAUSE_UNKNOWN;
         public static GameObject causeObject = null;
 
+        // An even more annoying code-path where a cinematic has to finish running before the player dies
+        public static string cinematicCause = CAUSE_UNKNOWN;
+        public static GameObject cinematicCauseObject = null;
+
         internal static Config config { get; } = OptionsPanelHandler.Main.RegisterModOptions<Config>();
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.5.1");
+            SeraLogger.PatchStart(modName, "1.1.1");
 
             try
             {

@@ -22,7 +22,9 @@ namespace DeathRun
     {
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(0, 250f),
-            new CenterText(1, 210f)
+            new CenterText(1, 210f),
+            new CenterText(2, -210f),
+            new CenterText(3, -250f)
         };
 
         public class CenterText
@@ -108,8 +110,13 @@ namespace DeathRun
          */
         public static void JustLoadedGame()
         {
-            centerMessages[0].textText.text = "";
-            centerMessages[1].textText.text = "";
+            foreach (CenterText ct in centerMessages)
+            {
+                if (ct.textText)
+                {
+                    ct.textText.text = "";
+                }
+            }
         }
 
 

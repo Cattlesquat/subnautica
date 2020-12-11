@@ -89,9 +89,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
-            int picker = UnityEngine.Random.Range(0, spots.Count);
-
-            picker = 5;
+            int picker = UnityEngine.Random.Range(0, spots.Count);            
             StartSpot spot = spots[picker];
 
             // If a specific spot was specified in the config, use that instead.
@@ -108,7 +106,9 @@ namespace DeathRun.Patchers
             DeathRun.saveData.podSave.podAnchored = false; // ... and hasn't come to rest on the bottom
             DeathRun.saveData.startSave           = spot;  // Here's where we started
 
-            ErrorMessage.AddMessage("\"" + spot.message + "\"");
+            //ErrorMessage.AddMessage("\"" + spot.message + "\"");
+            DeathRunUtils.CenterMessage("DEATH RUN", 10, 2);
+            DeathRunUtils.CenterMessage("Start: \"" + spot.message + "\"", 10, 3);
 
             __result.x = spot.x;
             __result.y = spot.y;

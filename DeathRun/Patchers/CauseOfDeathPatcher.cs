@@ -4,7 +4,7 @@
  * To make this seem more like a "roguelike", I want to track "cause of death". Irritatingly, the engine makes this VERY
  * difficult because by the time something gets a "TakeDamage" it has no idea where the damage came from if it is just 
  * "DamageType.Normal" which is used for many kinds of damage. So these patches insert little prefixes to certain routines
- * that "might" cause damage, so that in case it proceeds to a kill of the player the cause is available.
+ * that "might" cause damage, so that in case it proceeds to a kill of the player the "most recent" cause is available.
  */
 namespace DeathRun.Patchers
 {
@@ -341,9 +341,6 @@ namespace DeathRun.Patchers
     }
 
 
-
-
-
     [HarmonyPatch(typeof(Survival))]
     [HarmonyPatch("UpdateHunger")]
     internal class SurvivalUpdateHungerPatch
@@ -358,6 +355,65 @@ namespace DeathRun.Patchers
             {
                 DeathRun.setCause("Starvation");
             }            
+            return true;
+        }
+    }
+
+
+    /**
+     * There are some player death "cinematic" sequences where it first decides to run a cut scene for an indeterminate number
+     * of frames and THEN kill the player, so this LiveMixin patch helps us detect *that* and save the active "cause of death"
+     * so that we won't have it get overwritten other things in the mean time.
+     */
+    [HarmonyPatch(typeof(LiveMixin))]
+    [HarmonyPatch("TakeDamage")]
+    internal class LiveMixinTakeDamagePatch
+    {
+        static private bool wasCinematic = false;
+
+        [HarmonyPrefix]
+        public static bool Prefix(LiveMixin __instance)
+        {
+            // So we can find out (in postfix) if player got put into "cinematic kill sequence" this frame.
+            if (__instance.player)
+            {
+                wasCinematic = __instance.cinematicModeActive;
+            }
+            return true;
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix(LiveMixin __instance)
+        {
+            if (__instance.player)
+            {
+                // If we just got put into "cinematic kill sequence", remember our kill object for future frames.
+                if (__instance.cinematicModeActive && !wasCinematic)
+                {
+                    DeathRun.cinematicCause       = DeathRun.cause;
+                    DeathRun.cinematicCauseObject = DeathRun.causeObject;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * And here we patch the end of the "cinematic sequence" to restore the proper "cinematic cause" before the
+     * possibility of the coup de grace being delivered.
+     */
+    [HarmonyPatch(typeof(LiveMixin))]
+    [HarmonyPatch("ManagedUpdate")]
+    internal class LiveMixinManagedUpdatePatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(LiveMixin __instance)
+        {
+            if (__instance.player && __instance.cinematicModeActive)
+            {
+                DeathRun.cause       = DeathRun.cinematicCause;
+                DeathRun.causeObject = DeathRun.cinematicCauseObject;
+            }
             return true;
         }
     }
