@@ -327,12 +327,14 @@ namespace DeathRun
         public Vector3 position { get; set; }
         public Quaternion rotation { get; set; }
         public Vector3 localScale { get; set; }
+        public bool initialized;
 
         public Trans(Vector3 newPosition, Quaternion newRotation, Vector3 newLocalScale)
         {
             position = newPosition;
             rotation = newRotation;
             localScale = newLocalScale;
+            initialized = true;
         }
 
         public Trans()
@@ -340,11 +342,18 @@ namespace DeathRun
             position = Vector3.zero;
             rotation = Quaternion.identity;
             localScale = Vector3.one;
+            initialized = false;
         }
 
         public Trans(Transform transform)
         {
             copyFrom(transform);
+            initialized = true;
+        }
+
+        public bool isInitialized()
+        {
+            return initialized;
         }
 
         public void copyFrom(Transform transform)
@@ -352,6 +361,7 @@ namespace DeathRun
             position = transform.position;
             rotation = transform.rotation;
             localScale = transform.localScale;
+            initialized = true;
         }
 
         public void copyFrom(Trans trans)
@@ -359,6 +369,7 @@ namespace DeathRun
             position = trans.position;
             rotation = trans.rotation;
             localScale = trans.localScale;
+            initialized = true;
         }
 
         public void copyTo(Transform transform)
@@ -373,6 +384,7 @@ namespace DeathRun
             trans.position = position;
             trans.rotation = rotation;
             trans.localScale = localScale;
+            trans.initialized = true;
         }
     }
 }

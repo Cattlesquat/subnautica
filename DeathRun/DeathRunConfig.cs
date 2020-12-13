@@ -141,6 +141,9 @@ namespace DeathRun
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
 
+        [Toggle("Don't Tip Escape Pod Over"), OnChange(nameof(ChangedTipOver))]
+        public bool podStayUpright = false;
+
         [Toggle("Allow Specialty Air Tanks")]
         public bool enableSpecialtyTanks = false;
 
@@ -148,6 +151,26 @@ namespace DeathRun
         private void ChangedMurkiness(ChoiceChangedEventArgs e)
         {
             DeathRun.murkinessDirty = true;
+        }
+
+        private void ChangedTipOver(ToggleChangedEventArgs e)
+        {
+            if (podStayUpright)
+            {
+                if (DeathRun.saveData.podSave.podStraight.isInitialized())
+                {
+                    DeathRun.saveData.podSave.podStraight.copyTo(DeathRun.saveData.podSave.podTransform);
+                    DeathRun.saveData.podSave.podStraight.copyTo(EscapePod.main.transform);
+                }
+            } 
+            else
+            {
+                if (DeathRun.saveData.podSave.podTipped.isInitialized())
+                {
+                    DeathRun.saveData.podSave.podTipped.copyTo(DeathRun.saveData.podSave.podTransform);
+                    DeathRun.saveData.podSave.podTipped.copyTo(EscapePod.main.transform);
+                }
+            }
         }
     }
 }

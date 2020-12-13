@@ -71,7 +71,7 @@ namespace DeathRun
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.1.3");
+            SeraLogger.PatchStart(modName, "1.2.1");
 
             try
             {

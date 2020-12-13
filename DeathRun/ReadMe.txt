@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.1.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.2.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -18,9 +18,15 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Power costs much steeper
 • Vehicles and the Habitat Builder much more expensive
 
+• 1.2 - The "Data Wall" in the Escape Pod has been updated
+• 1.2 - When you repair the secondary systems, you get a one-time infusion of pod energy
+• 1.2 - You can now configure the Escape Pod to stay "upright" if you want
+
 :: GENERAL OTHER STUFF ::
 • Option to make water murky
 • Option to make food from the island less available
+• Option to have Escape Pod stay upright
+• Option to pick specific starting location instead of randomizing
 
 REQUIRED MODS::
 - QMod Manager

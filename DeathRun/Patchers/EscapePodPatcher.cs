@@ -24,6 +24,8 @@ namespace DeathRun.Patchers
     {
         public Trans podTransform { get; set; } = new Trans(); // Pod's correct transform
         public Trans podPrev { get; set; } = new Trans();      // Pod's previous transform
+        public Trans podTipped { get; set; } = new Trans();    // Pod when tipped over
+        public Trans podStraight { get; set; } = new Trans();  // Pod when upright
         public bool podAnchored { get; set; } // True if pod has reached "final resting position" on bottom and shouldn't move again
         public bool podSinking { get; set; }  // True if "pod sinking" has initiated (after cinematics, etc)
         public bool podGravity { get; set; }  // True if pod *should* sink (as opposed to float on surface)
@@ -196,12 +198,15 @@ namespace DeathRun.Patchers
                         } else if (random < .50f)
                         {
                             angle = 135;
+                            up    = 3;
                         } else if (random < .60f)
                         {
                             angle = 150;
+                            up    = 4;
                         } else if (random < .70f)
                         {
                             angle = 170;
+                            up    = 4;
                         } else if (random < .80f)
                         {
                             angle = 300;
@@ -217,11 +222,23 @@ namespace DeathRun.Patchers
 
                         if (Player.main.IsInside())
                         {
-                            Player.main.transform.Translate(0, up, 0);
+                            Player.main.transform.Translate(0, 2, 0);
                         }
 
-                        __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
+                        // Make a copy of our "upright state"
+                        DeathRun.saveData.podSave.podStraight.copyFrom(__instance.transform);
 
+                        // Now tip the pod over and copy that
+                        __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
+                        DeathRun.saveData.podSave.podTipped.copyFrom(__instance.transform);
+
+                        // If we're supposed to (based on preferences) stay straight up, copy THAT back
+                        if (DeathRun.config.podStayUpright)
+                        {
+                            DeathRun.saveData.podSave.podStraight.copyTo(__instance.transform);
+                        }
+
+                        // Finally, store the stable transform we're supposed to use.
                         DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
                     }
                 }
@@ -329,6 +346,11 @@ namespace DeathRun.Patchers
         }
     }
 
+    /**
+     * In UpdateDamageEffects we handle two main things:
+     * (1) When the secondary systems are first repaired, we give the Escape Pod some extra power
+     * (2) We keep the Escape Pod's "status display" updated.
+     */
     [HarmonyPatch(typeof(EscapePod))]
     [HarmonyPatch("UpdateDamagedEffects")]
     internal class EscapePod_UpdateDamagedEffects_Patch
@@ -383,7 +405,14 @@ namespace DeathRun.Patchers
 
                     if (DeathRun.saveData.podSave.podAnchored)
                     {
-                        content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: " + (blinkOn ? "FAILED" : ""));
+                        if (DeathRun.config.podStayUpright)
+                        {
+                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
+                        } 
+                        else
+                        {
+                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: " + (blinkOn ? "FAILED" : ""));
+                        }                        
                     } 
                     else
                     {
@@ -411,6 +440,12 @@ namespace DeathRun.Patchers
                 else
                 {
                     string content = Language.main.Get("IntroEscapePod4Content");
+
+                    if (DeathRun.config.podStayUpright)
+                    {
+                        content = content.Replace("Inertial Stabilizers: FAILED", "Inertial Stabilizers: DEPLOYED");
+                    }
+
                     string bonus = "";
 
                     if (DeathRunUtils.isExplosionClockRunning())
