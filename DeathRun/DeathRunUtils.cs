@@ -258,8 +258,8 @@ namespace DeathRun
             }
             catch (Exception e)
             {
-                SeraLogger.GenericError(DeathRun.modName, e);
-                SeraLogger.Message(DeathRun.modName, "Failed");
+                CattleLogger.GenericError(e);
+                CattleLogger.Message("Failed");
             }
         }
 
@@ -269,7 +269,7 @@ namespace DeathRun
 
             if (!File.Exists(path))
             {
-                SeraLogger.Message(DeathRun.modName, "Death Run data not found - using defaults");
+                CattleLogger.Message("Death Run data not found - using defaults");
                 setDefaults();
                 return;
             }
@@ -302,9 +302,9 @@ namespace DeathRun
             }
             catch (Exception e)
             {
-                SeraLogger.GenericError(DeathRun.modName, e);
-                SeraLogger.Message(DeathRun.modName, "Death Run data not found - using defaults");
-                SeraLogger.Message(DeathRun.modName, e.StackTrace);
+                CattleLogger.GenericError(e);
+                CattleLogger.Message("Death Run data not found - using defaults");
+                CattleLogger.Message(e.StackTrace);
                 setDefaults();
             }
         }

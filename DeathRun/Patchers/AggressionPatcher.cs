@@ -127,7 +127,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
+            if ((((target != Player.main.gameObject) || Player.main.IsInside()) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
                 (Ocean.main.GetDepthOf(target) <= 0) ||                                     // Keeps reapers from eating us up on land
                 (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
                 (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
@@ -176,7 +176,7 @@ namespace DeathRun.Patchers
                 if (ecoTarget != null && !ecoTarget.Equals(null))
                 {
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
-                    if ((ecoTarget.GetGameObject() == Player.main.gameObject) || (ecoTarget.GetGameObject().GetComponent<Vehicle>()))
+                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside()) || (ecoTarget.GetGameObject().GetComponent<Vehicle>()))
                     {
                         if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
                         {

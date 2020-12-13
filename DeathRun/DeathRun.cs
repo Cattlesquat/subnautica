@@ -71,20 +71,21 @@ namespace DeathRun
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.2.1");
+            CattleLogger.setModName(modName);
+            CattleLogger.PatchStart("1.2.1");
 
             try
             {
                 Harmony harmony = new Harmony("cattlesquat.deathrun.mod");
 
-                SeraLogger.Message(modName, "Main Patch");
+                CattleLogger.Message("Main Patch");
 
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-                SeraLogger.Message(modName, "Items");
+                CattleLogger.Message("Items");
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();
@@ -95,12 +96,12 @@ namespace DeathRun
 
                 //Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
 
-                SeraLogger.Message(modName, "Explosion Depth");
+                CattleLogger.Message("Explosion Depth");
 
                 harmony.Patch(typeof(CrashedShipExploder).GetMethod("CreateExplosiveForce", BindingFlags.NonPublic | BindingFlags.Instance),
                      null, new HarmonyMethod(typeof(ExplosionPatcher).GetMethod("CreateExplosiveForce")));
 
-                SeraLogger.Message(modName, "Surface Air Poisoning");
+                CattleLogger.Message("Surface Air Poisoning");
                 //if (config.poisonedAir)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(Player), "CanBreathe"),
@@ -119,7 +120,7 @@ namespace DeathRun
                     //    new HarmonyMethod(typeof(PatchBreathing).GetMethod("GetProvidesOxygen")), null);
                 //}
 
-                SeraLogger.Message(modName, "Radiation Warning");
+                CattleLogger.Message("Radiation Warning");
                 //if (config.radiationWarning)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(uGUI_RadiationWarning), "IsRadiated"),
@@ -133,7 +134,7 @@ namespace DeathRun
 
                 //}
 
-                SeraLogger.Message(modName, "Radiation Depth");
+                CattleLogger.Message("Radiation Depth");
                 //if (config.radiativeDepth > 0)
                 //{
                     harmony.Patch(AccessTools.Method(typeof(RadiatePlayerInRange), "Radiate"),
@@ -143,7 +144,7 @@ namespace DeathRun
                         new HarmonyMethod(typeof(RadiationPatcher).GetMethod("DoDamage")), null);
                 //}
 
-                SeraLogger.Message(modName, "Power Consumption");
+                CattleLogger.Message("Power Consumption");
 
                 //if (!Config.NORMAL.Equals(DeathRun.config.powerCosts)) { 
                 harmony.Patch(AccessTools.Method(typeof(PowerSystem), "AddEnergy"),
@@ -197,14 +198,14 @@ namespace DeathRun
 
 
 
-                //SeraLogger.Message(modName, "Disable Fabricator Food");
+                //CattleLogger.Message("Disable Fabricator Food");
                 //if (config.disableFabricatorFood)
                 //{
                 //    harmony.Patch(AccessTools.Method(typeof(CrafterLogic), "IsCraftRecipeFulfilled"),
                 //        new HarmonyMethod(typeof(PatchItems).GetMethod("IsCraftRecipeFulfilled")), null);
                 //}
 
-                SeraLogger.Message(modName, "Food Pickup");
+                CattleLogger.Message("Food Pickup");
 
                 // Disable the hover hand, and disable ability to click
                 harmony.Patch(AccessTools.Method(typeof(PickPrefab), "OnHandHover"),
@@ -223,7 +224,7 @@ namespace DeathRun
                     new HarmonyMethod(typeof(ItemPatcher).GetMethod("GiveResourceOnDamage")), null);
 
 
-                SeraLogger.Message(modName, "Vehicle Costs");
+                CattleLogger.Message("Vehicle Costs");
 
                 Dictionary<TechType, TechData> techChanges = null;
 
@@ -467,7 +468,7 @@ namespace DeathRun
                     }
                 }
 
-                SeraLogger.Message(modName, "Habitat Builder Costs");
+                CattleLogger.Message("Habitat Builder Costs");
 
                 techChanges = null;
                 if (Config.DEATHRUN.Equals(DeathRun.config.builderCosts))
@@ -524,8 +525,7 @@ namespace DeathRun
             }
             catch (Exception ex)
             {
-                SeraLogger.PatchFailed(modName, ex);
-                ErrorMessage.AddMessage("DeathRun - Failed to patch. See log for details.");
+                CattleLogger.PatchFailed(ex);
             }
         }
 
