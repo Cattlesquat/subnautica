@@ -41,13 +41,17 @@ namespace DeathRun
 
         //public static bool podGravity  = true;
 
-        public static bool murkinessDirty = false;
+        public static bool murkinessDirty    = false;
+        public static bool encyclopediaAdded = false;
 
         // These semaphore relate to "flavors" of energy consumption
         public static bool craftingSemaphore = false;
         public static bool chargingSemaphore = false;
         public static bool filterSemaphore   = false;
         public static bool scannerSemaphore  = false;
+
+        // So that the explody fish stay hidden in ambush
+        public static bool crashFishSemaphore = false;
 
         public const string CAUSE_UNKNOWN = "Unknown";
         public const string CAUSE_UNKNOWN_CREATURE = "Unknown Creature";
@@ -67,16 +71,20 @@ namespace DeathRun
 
         public static void Patch()
         {
-            SeraLogger.PatchStart(modName, "1.1.1");
+            SeraLogger.PatchStart(modName, "1.1.3");
 
             try
             {
                 Harmony harmony = new Harmony("cattlesquat.deathrun.mod");
 
+                SeraLogger.Message(modName, "Main Patch");
+
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
 
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+                SeraLogger.Message(modName, "Items");
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();
@@ -85,7 +93,7 @@ namespace DeathRun
                     O2TanksCore.PatchTanks();
                 }
 
-                Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
+                //Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
 
                 SeraLogger.Message(modName, "Explosion Depth");
 
@@ -285,8 +293,22 @@ namespace DeathRun
                                     new Ingredient(TechType.HatchingEnzymes, 1)
                                 }
                             }
+                        },
+                        {
+                            TechType.Seaglide,
+                            new TechData
+                            {
+                                craftAmount = 1,
+                                Ingredients = new List<Ingredient>
+                                {
+                                    new Ingredient(TechType.Battery, 1),
+                                    new Ingredient(TechType.Lubricant, 1),
+                                    new Ingredient(TechType.CopperWire, 1),
+                                    new Ingredient(TechType.Titanium, 1),
+                                    new Ingredient(TechType.Lithium, 1),
+                                }
+                            }
                         }
-
                     };
                 }
                 else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts))
@@ -300,7 +322,7 @@ namespace DeathRun
                                 craftAmount = 1,
                                 Ingredients = new List<Ingredient>
                                 {
-                                    new Ingredient(TechType.TitaniumIngot, 1),
+                                    new Ingredient(TechType.PlasteelIngot, 1),
                                     new Ingredient(TechType.PowerCell, 1),
                                     new Ingredient(TechType.Glass, 2),
                                     new Ingredient(TechType.Lubricant, 1),
@@ -344,6 +366,21 @@ namespace DeathRun
                                     new Ingredient(TechType.Sulphur, 3),
                                     new Ingredient(TechType.UraniniteCrystal, 3),
                                     new Ingredient(TechType.AluminumOxide, 3) // aka Ruby
+                                }
+                            }
+                        },
+                        {
+                            TechType.Seaglide,
+                            new TechData
+                            {
+                                craftAmount = 1,
+                                Ingredients = new List<Ingredient>
+                                {
+                                    new Ingredient(TechType.Battery, 1),
+                                    new Ingredient(TechType.Lubricant, 2),
+                                    new Ingredient(TechType.CopperWire, 1),
+                                    new Ingredient(TechType.Titanium, 1),
+                                    new Ingredient(TechType.Gold, 2)
                                 }
                             }
                         }
@@ -402,7 +439,23 @@ namespace DeathRun
                                     new Ingredient(TechType.Sulphur, 2)
                                 }
                             }
+                        },
+                        {
+                        TechType.Seaglide,
+                            new TechData
+                            {
+                                craftAmount = 1,
+                                Ingredients = new List<Ingredient>
+                                {
+                                    new Ingredient(TechType.Battery, 1),
+                                    new Ingredient(TechType.Lubricant, 2),
+                                    new Ingredient(TechType.CopperWire, 1),
+                                    new Ingredient(TechType.Titanium, 2),
+                                    new Ingredient(TechType.Gold, 2)
+                                }
+                            }
                         }
+
                     };
                 }
 
@@ -432,7 +485,7 @@ namespace DeathRun
                                     new Ingredient(TechType.WiringKit, 2),
                                     new Ingredient(TechType.Battery, 1),
                                     new Ingredient(TechType.Lithium, 2),
-                                    new Ingredient(TechType.Magnetite, 2)
+                                    new Ingredient(TechType.Magnetite, 1)
                                 }
                             }
                         }
@@ -449,10 +502,10 @@ namespace DeathRun
                                 craftAmount = 1,
                                 Ingredients = new List<Ingredient>
                                 {
-                                    new Ingredient(TechType.ComputerChip, 1),
-                                    new Ingredient(TechType.WiringKit, 1),
+                                    new Ingredient(TechType.ComputerChip, 2),
+                                    new Ingredient(TechType.WiringKit, 2),
                                     new Ingredient(TechType.Battery, 1),
-                                    new Ingredient(TechType.Lithium, 2)
+                                    new Ingredient(TechType.Lithium, 1),
                                 }
                             }
                         }

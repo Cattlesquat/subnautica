@@ -2,7 +2,7 @@
   "Id": "DeathRun",
   "DisplayName": "DeathRun",
   "Author": "Cattlesquat",
-  "Version": "1.1.1",
+  "Version": "1.1.3",
   "Enable": true,
   "AssemblyName": "DeathRun.dll",
   "EntryMethod": "DeathRun.DeathRun.Patch",

@@ -29,6 +29,7 @@ namespace DeathRun.Patchers
         public float currTime { get; set; }
         public float prevTime { get; set; }
         public string causeOfDeath { get; set; }
+        public float crushDepth { get; set; }
 
 
         public PlayerSaveData()
@@ -60,7 +61,7 @@ namespace DeathRun.Patchers
             currTime = 0;
             prevTime = 0;
             causeOfDeath = "Unknown";
-            //JustLoadedGame();
+            crushDepth = 200f;
         }
     }
 
@@ -95,13 +96,115 @@ namespace DeathRun.Patchers
 
 
     /**
-     * Player.Awake -- our patch changes the "tooltip" entries for existing items, in order to enhance them with our own
+     * Player.Awake -- our patch changes the "tooltip" and "encyclopedia" entries for existing items, in order to enhance them with our own
      * mod-related tooltip info.
      */
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("Awake")]
     internal class PlayerAwakePatcher
     {
+        /**
+         * Encyclopedia entries need to go in the prefix, because SMLHelper's EncyclopediaHandler runs in a Player postfix too.
+         */
+        [HarmonyPrefix]
+        public static bool Prefix ()
+        {
+            PDAEncyclopedia.EntryData[] entryData = new PDAEncyclopedia.EntryData[] {
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "Nitrogen", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {                 
+                    key = "Atmosphere", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {                 
+                    key = "Radiation", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "Explosion", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "Aggression", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "CrushDepth", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "DeathRun", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "PowerCosts", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "LifePodSank", nodes = new string[] { "Death" }
+                }
+            };
+
+            foreach (PDAEncyclopedia.EntryData entry in entryData)
+            {
+                PDAEncyclopediaHandler.AddCustomEntry(entry);
+            }            
+
+            LanguageHandler.SetLanguageLine($"EncyPath_Death", $"A DEATH RUN Primer");
+
+            LanguageHandler.SetLanguageLine($"Ency_DeathRun", $"A Death Run Primer");
+            LanguageHandler.SetLanguageLine($"EncyDesc_DeathRun", "Think you're a jaded Planet 4546B veteran? Well then try a Death Run! You will need all the skills you've learned to handle the onslaught of aggressive creatures, increased damage, the unbreathable atmosphere, nitrogen and `the bends`, the engulfing radiation, the expensive fabrication costs, and many other hazards!\n\nDeath Run is less about winning than about HOW LONG you can survive! That's why we keep a convenient `Death Timer` running at all times. Good luck!");
+
+            LanguageHandler.SetLanguageLine($"Ency_Nitrogen", $"Nitrogen and 'The Bends'");
+            LanguageHandler.SetLanguageLine($"EncyDesc_Nitrogen", "The deeper you go, the higher your blood nitrogen level will be. In Death Run your 'safe depth' will tend to settle out at about 3/4 of your current depth, so you'll want to get close to that depth without going above it, and then wait for your safe depth to improve. You must also avoid ascending too *quickly* (i.e. you can no longer just hold down the ascent button at all times). First Aid kits and floating air pumps can help with making ascents -- eating certain kinds of native life may help as well. \n\nIn real life, `The Bends`, or decompression sickness, results from nitrogen bubbles forming in the bloodstream. The deeper a diver goes, the faster nitrogen accumulates in their bloodstream. If they ascend slowly and make appropriate 'deco stops' and 'safety stops', the nitrogen is removed as they exhale. But if they ascend too quickly, the nitrogen forms bubbles which can block important blood vessels and cause death. \n\n1. Ascend slowly\n2. Watch your `Safe Depth`.");
+
+            LanguageHandler.SetLanguageLine($"Ency_Atmosphere", $"Unbreathable Atmosphere");
+            LanguageHandler.SetLanguageLine($"EncyDesc_Atmosphere", "The atmosphere of Planet 4546B is not breathable without filtering. You can use a floating air pump with pipes to filter the air sufficiently that you can breathe it.\n\n1. Surface air unbreathable\n2. A floating air pump can filter it!\n");
+
+            LanguageHandler.SetLanguageLine($"Ency_Radiation", $"Extreme Radiation Danger");
+            LanguageHandler.SetLanguageLine($"EncyDesc_Radiation", "In the event of a quantum explosion in your vicinity, be advised that all surface locations will become irradiated and will require the use of radiation suits in order to safely travel on the surface. Likewise the surface of the ocean, down to a depth of up to 60 meters, will become irradiated -- at least until any local radiation leaks are repaired.\n\n1. Surface will become irradiated\n2. Radiation as deep as 60m.\n3. Bring a Radiation Suit!");
+
+            LanguageHandler.SetLanguageLine($"Ency_Explosion", $"Quantum Explosion Danger");
+            LanguageHandler.SetLanguageLine($"EncyDesc_Explosion", "Quantum Explosions have been known to produce shockwaves up to 100m below the ocean surface. In the event of a quantum explosion in your vicinity, seek shelter immediately: as deep as possible, and preferably inside a reinforced structure of some kind.\n\n1. Explosion shockwave to 100m\n2. Take shelter as deep as possible\n3. Preferably inside a structure.");
+
+            LanguageHandler.SetLanguageLine($"Ency_Aggression", $"Aggressive Creatures");
+            LanguageHandler.SetLanguageLine($"EncyDesc_Aggression", "The native life of Planet 4546B has been reported to be EXTREMELY AGGRESSIVE and HOSTILE. While exploring the local oceans, it is best not to `hover in one place` for too long.");
+
+            LanguageHandler.SetLanguageLine($"Ency_CrushDepth", $"Crush Depth");
+            LanguageHandler.SetLanguageLine($"EncyDesc_CrushDepth", "An unaided diver on Planet 4546B should venture no deeper than 200m without either an improved diving suit or submersible support. While many types of diving suit will extend this range, reinforced suits, and in particular the Reinforced Dive Suit Mark 3, offer the best protection.\n\n1. Personal safe depth 200m.\n2. Radiation or Stillsuit 500m.\n3. Reinforced Dive Suit 800m.\n4. Scan Very Deep Creatures");
+
+            LanguageHandler.SetLanguageLine($"Ency_PowerCosts", $"Increased Power Costs");
+            LanguageHandler.SetLanguageLine($"EncyDesc_PowerCosts", "The costs of fabrication (as well as battery charging, scanning, and water filtration) have gone up dramatically following the imposition of the Galactic Fair Robotic Labor Standards Act. You may find that fabricators cost as much as 15 Standard Imperial Power Units per use. Power likewise recharges rather slowly.\n\nIn radiated areas, power usage will be even greater, as much as five times what you'd normally expect.");
+
+            LanguageHandler.SetLanguageLine($"Ency_LifePodSank", $"Life Pod Flotation Failure");
+            LanguageHandler.SetLanguageLine($"EncyDesc_LifePodSank", "Your life pod's flotation function has failed. We are sorry for the inconvenience. A refund can be requested by returning the lifepod to the nearest Alterra regional office within 48 hours of the incident.");
+
+            string original;
+            string updated;
+
+            original = Language.main.Get("EncyDesc_Boomerang");
+            updated = original + " NITROGEN PURGATIVE EFFECTS.";
+            LanguageHandler.Main.SetLanguageLine("EncyDesc_Boomerang", updated);
+
+            original = Language.main.Get("EncyDesc_LavaBoomerang");
+            updated = original + " NITROGEN PURGATIVE EFFECTS.";
+            LanguageHandler.Main.SetLanguageLine("EncyDesc_LavaBoomerang", updated);
+
+            original = Language.main.Get("EncyDesc_Airpumps");
+            updated = original + "\n- FILTERS CONTAMINATED SURFACE AIR";
+            LanguageHandler.Main.SetLanguageLine("EncyDesc_Airpumps", updated);
+
+            original = Language.main.Get("EncyDesc_ReinforcedSuit");
+            updated = original.Replace("wearing this suit", "wearing this suit\n- Mark 2 and Mark 3 suits available\n- Scan DEEP life forms to make Mark 2 and Mark 3 suits available.");
+            LanguageHandler.Main.SetLanguageLine("EncyDesc_ReinforcedSuit", updated);
+
+            return true;
+        }
+
+
         [HarmonyPostfix]
         public static void Postfix()
         {
@@ -181,19 +284,23 @@ namespace DeathRun.Patchers
             // ... pre-secondary-system fix
             original = Language.main.Get("IntroEscapePod3Content");
             updated = original.Replace("DEPLOYED", "FAILED");
-            updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
+            //updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
             LanguageHandler.SetLanguageLine("IntroEscapePod3Content", updated);
 
             // Update Escape pod "status screen text" for new situation
             // ... post-secondary-system fix
+            LanguageHandler.SetLanguageLine("IntroEscapePod4Header", "CONDITION YELLOW");
             original = Language.main.Get("IntroEscapePod4Content");
             updated = original.Replace("DEPLOYED", "FAILED");
-            updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
-            updated = updated.Replace("Oxygen / nitrogen atmosphere", "Atmosphere: requires filtration");
+            updated = updated.Replace("Hull Integrity: OK", "Inertial Stabilizers: FAILED");
+            updated = updated.Replace("Uncharted ocean planet 4546B", "Planet 4546B: HOSTILE FAUNA");
+            updated = updated.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
             LanguageHandler.SetLanguageLine("IntroEscapePod4Content", updated);
 
             // Forces the language handler to restart with our updates
             Language.main.SetCurrentLanguage(Language.main.GetCurrentLanguage());
+
+            DeathRun.encyclopediaAdded = false; // Have not yet added the DeathRun encyclopedia entries
         }
     }
 
@@ -217,10 +324,24 @@ namespace DeathRun.Patchers
                 return;
             }
 
+            if (!DeathRun.encyclopediaAdded && (DeathRun.saveData.playerSave.startedGame > 0)) 
+            {
+                DeathRun.encyclopediaAdded = true;
+                PDAEncyclopedia.Add("DeathRun", false);
+                PDAEncyclopedia.Add("Aggression", false);
+                PDAEncyclopedia.Add("Atmosphere", false);
+                PDAEncyclopedia.Add("CrushDepth", false);
+                PDAEncyclopedia.Add("Explosion", false);
+                PDAEncyclopedia.Add("Nitrogen", false);
+                PDAEncyclopedia.Add("Radiation", false);
+                PDAEncyclopedia.Add("PowerCosts", false);
+                PDAEncyclopedia.Add("LifePodSank", false);
+            }
+
             if (DeathRun.saveData.playerSave.startedGame == 0)
             {
                 DeathRun.saveData.playerSave.startedGame = DayNightCycle.main.timePassedAsFloat;
-                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
+                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);                
                 return;
             }
 
@@ -294,9 +415,6 @@ namespace DeathRun.Patchers
                 }
                 text += DeathRunUtils.sayTime(timeSpan2);
                 ErrorMessage.AddMessage(text);
-
-
-
             }
         }
 

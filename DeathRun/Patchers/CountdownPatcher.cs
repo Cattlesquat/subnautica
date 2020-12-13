@@ -156,19 +156,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-
-            if (Config.RADIATION_DEATHRUN.Equals(DeathRun.config.radiationDepth))
-            {
-                deep = 60;
-            }
-            else if (Config.RADIATION_HARD.Equals(DeathRun.config.radiationDepth))
-            {
-                deep = 30;
-            }
-            else
-            {
-                deep = 0;
-            }
+            deep = (int)RadiationUtils.getRadiationMaxDepth();
             if (deep > 0)
             {
                 if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f))

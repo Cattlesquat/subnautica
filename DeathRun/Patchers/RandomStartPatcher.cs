@@ -76,12 +76,12 @@ namespace DeathRun.Patchers
             new StartSpot (-272.8f, 262.9f, "Buena Vista"),    // Good view! Interesting start.
             new StartSpot (-610.1f, 38.4f, "Big Wreck"),       
             new StartSpot (-296.6f, 227.1f, "Deep Wreck"),     
-            new StartSpot (131.8f, -399.8f, "Very Difficult!"),// Right by Delgasi cave. Very hard! But I was able to make oxygen tank, fins, scanner. Seems doable.
-            new StartSpot (-343.4f, -226.2f, "Deep Delgasi"),  
+            new StartSpot (131.8f, -399.8f, "Very Difficult!"),// Right by Degasi cave. Very hard! But I was able to make oxygen tank, fins, scanner. Seems doable.
+            new StartSpot (-343.4f, -226.2f, "Deep Degasi"),  
             new StartSpot (-803.5f, 252.7f, "Precipice!"),
             new StartSpot (105.2f, 254.4f, "Kelpy"),
             new StartSpot (97.7f, 626.2f, "Deep and Unusual"), // Deep and interesting
-            new StartSpot (201.1f, -360.6f, "Jellyshroom"),    // Near DelGasi
+            new StartSpot (201.1f, -360.6f, "Jellyshroom"),    // Near Degasi
             new StartSpot (23.1f, 112.4f, "Shallow Arch")      // Shallow on an arch
         };
 

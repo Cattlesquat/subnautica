@@ -41,7 +41,7 @@ namespace DeathRun.Patchers
                         }
                         if (UnityEngine.Random.value < 0.5f)
                         {
-                            float crushDepth = PlayerGetDepthClassPatcher.divingCrushDepth;
+                            float crushDepth = DeathRun.saveData.playerSave.crushDepth;
                             if (depthOf > crushDepth)
                             {
                                 float crush = depthOf - crushDepth;

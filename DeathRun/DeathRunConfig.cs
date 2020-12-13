@@ -126,7 +126,7 @@ namespace DeathRun
             "Big Wreck",
             "Deep Wreck",
             "Very Difficult!",
-            "Deep Delgasi",
+            "Deep Degasi",
             "Precipice!",
             "Kelpy",
             "Deep and Unusual",

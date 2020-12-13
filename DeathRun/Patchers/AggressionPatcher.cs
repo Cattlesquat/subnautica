@@ -27,7 +27,12 @@ namespace DeathRun.Patchers
         {
             int maxSearchRings = __instance.maxSearchRings;
 
-            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+            // Not the exploding fish, those are actually more dangerous hiding in ambush
+            if (CraftData.GetTechType(__instance.gameObject) == TechType.Crash)
+            {
+                DeathRun.crashFishSemaphore = true;
+            }
+            else if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
             {
                 if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
                 {
@@ -36,7 +41,7 @@ namespace DeathRun.Patchers
                 else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
                 {
                     maxSearchRings *= 2; //BR// Double aggression search after 20 minutes
-                }                
+                }
             }
             else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
             {
@@ -55,6 +60,8 @@ namespace DeathRun.Patchers
             {
                 __result = ecoTarget.GetGameObject();
             }
+
+            DeathRun.crashFishSemaphore = false;
         }
     }
 
@@ -120,7 +127,11 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) || (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) || (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION))
+            if (((target != Player.main.gameObject) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
+                (Ocean.main.GetDepthOf(target) <= 0) ||                                     // Keeps reapers from eating us up on land
+                (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
+                (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
+                (CraftData.GetTechType(__instance.gameObject) == TechType.Crash))           // Not the explody fish (more fun from ambush!)
             {
                 __result = __instance.creature.GetCanSeeObject(target);
             }
@@ -139,12 +150,18 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool PreFix(EcoTargetType type, Vector3 wsPos, EcoRegion.TargetFilter isTargetValid, ref float bestDist, ref IEcoTarget best)
         {
-            return false;
+            // Explody fish runs regular code - everybody else runs postfix
+            return DeathRun.crashFishSemaphore;            
         }
 
         [HarmonyPostfix]
         public static void PostFix(EcoRegion __instance, EcoTargetType type, Vector3 wsPos, EcoRegion.TargetFilter isTargetValid, ref float bestDist, ref IEcoTarget best)
         {
+            if (DeathRun.crashFishSemaphore)
+            {
+                return;
+            }
+
             ProfilingUtils.BeginSample("EcoRegion.FindNearestTarget");
             __instance.timeStamp = Time.time;
             System.Collections.Generic.HashSet<IEcoTarget> hashSet;
@@ -220,7 +237,12 @@ namespace DeathRun.Patchers
             float aggressionMultiplier;
             int aggressionRadius;
 
-            //BR// Adjust aggression levels
+            if (CraftData.GetTechType(__instance.gameObject) == TechType.Crash)
+            {
+                return true; // Explody ambush fish just runs normal method
+            }
+
+            //BR// Adjust aggression levels            
             if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
             {
                 if (DayNightCycle.main.timePassedAsFloat > DeathRun.FULL_AGGRESSION)

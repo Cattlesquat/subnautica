@@ -13,25 +13,35 @@ namespace DeathRun
     public class RadiationUtils
     {
         /**
-         * How deep into the ocean the radiation can penetrate (1 to X)
+         * How deep into the ocean the radiation can EVER penetrate (1 to X)
          */
+
+        public static float getRadiationMaxDepth()
+        {
+            if (Config.RADIATION_DEATHRUN.Equals(DeathRun.config.radiationDepth))
+            {
+                return 60;
+            }
+            else if (Config.RADIATION_HARD.Equals(DeathRun.config.radiationDepth))
+            {
+                return 30;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /**
+         * How deep into the ocean the radiation can currently penetrate (1 to X)
+        */
         public static float getRadiationDepth()
         {
             // A % of how strong the radiation is compared to max radiation
             float radiationStrengthPerc = LeakingRadiation.main.currentRadius / LeakingRadiation.main.kMaxRadius;
 
             // How deep the radiation can reach
-
-            if (Config.RADIATION_DEATHRUN.Equals(DeathRun.config.radiationDepth))
-            {
-                return 60 * radiationStrengthPerc;
-            }
-            else if (Config.RADIATION_HARD.Equals(DeathRun.config.radiationDepth))
-            {
-                return 60 * radiationStrengthPerc;
-            }
-
-            return 0;
+            return getRadiationMaxDepth() * radiationStrengthPerc;
         }
 
         /**

@@ -279,7 +279,7 @@ namespace DeathRun.Patchers
                 setRegenerateInterval(20);
             } else
             {
-                setRegenerateInterval(10);
+                setRegenerateInterval(15);
             }
         }
 
@@ -319,9 +319,9 @@ namespace DeathRun.Patchers
             } else
             {
                 SeraLogger.Message(DeathRun.modName, "Loading Repaired Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
-                EscapePod.main.lightingController.SnapToState(0);
-                uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32(159, 243, 63, byte.MaxValue), -1f);
-                uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod4Content"), new Color32(159, 243, 63, byte.MaxValue));
+                EscapePod.main.lightingController.SnapToState(0);   //159,243,63
+                uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32(243, 243, 63, byte.MaxValue), 2f);
+                uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod4Content"), new Color32(243, 243, 63, byte.MaxValue));
                 uGUI_EscapePod.main.SetPower(Language.main.Get("IntroEscapePod4Power"), new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue));
             }
             EscapePod.main.UpdateDamagedEffects();
@@ -334,6 +334,8 @@ namespace DeathRun.Patchers
     internal class EscapePod_UpdateDamagedEffects_Patch
     {
         static bool damaged = false;
+        static bool blinkOn = false;
+        static float lastBlink = 0;
 
         [HarmonyPrefix]
         public static bool Prefix()
@@ -348,6 +350,82 @@ namespace DeathRun.Patchers
             if (damaged != EscapePod.main.damageEffectsShowing)
             {
                 EscapePod_FixedUpdate_Patch.CheckSolarCellRate();
+
+                if (!EscapePod.main.damageEffectsShowing)
+                {
+                    // At repair, give a one-time "full recharge"
+                    RegeneratePowerSource[] cells = EscapePod.main.gameObject.GetAllComponentsInChildren<RegeneratePowerSource>();
+                    if (cells != null)
+                    {
+                        foreach (RegeneratePowerSource cell in cells)
+                        {
+                            float chargeable = cell.powerSource.GetMaxPower() - cell.powerSource.GetPower();
+                           
+                            cell.powerSource.ModifyPower(chargeable, out _);
+                        }
+                    }
+                }
+            } else {
+                if ((lastBlink == 0) || (lastBlink > Time.time))
+                {
+                    lastBlink = Time.time;
+                }
+                else if (Time.time >= lastBlink + 0.5)
+                {
+                    lastBlink = Time.time;
+                    blinkOn = !blinkOn;
+                }
+
+                if (damaged)
+                {
+                    string content = Language.main.Get("IntroEscapePod3Content");
+                    string bonus;
+
+                    if (DeathRun.saveData.podSave.podAnchored)
+                    {
+                        content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: " + (blinkOn ? "FAILED" : ""));
+                    } 
+                    else
+                    {
+                        if (!blinkOn)
+                        {
+                            content = content.Replace("Flotation Devices: FAILED", "Flotation Devices: ");
+                        }
+                    }
+
+                    bonus = "\n\n- Atmosphere: " + (blinkOn ? "NOT BREATHABLE" : "") + "\n- Recommend Air Pumps to Filter Oxygen";
+                        
+                    if (DeathRunUtils.isExplosionClockRunning())
+                    {
+                        bonus += "\n\n" + (blinkOn ? "- QUANTUM EXPLOSION WARNING" : "");
+                    }
+
+                    if (RadiationUtils.isRadiationActive())
+                    {
+                        bonus += "\n\n" + (blinkOn ? "- EXTREME RADIATION HAZARD" : "");
+                    }
+
+                    uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod3Header"), new Color32(243, 201, 63, byte.MaxValue), 2f);
+                    uGUI_EscapePod.main.SetContent(content + bonus, new Color32(233, 63, 27, byte.MaxValue));
+                }
+                else
+                {
+                    string content = Language.main.Get("IntroEscapePod4Content");
+                    string bonus = "";
+
+                    if (DeathRunUtils.isExplosionClockRunning())
+                    {
+                        bonus += "\n    - QUANTUM EXPLOSION WARNING";
+                    }
+
+                    if (RadiationUtils.isRadiationActive())
+                    {
+                        bonus += "\n    - EXTREME RADIATION HAZARD";
+                    }
+
+                    uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32((byte)(blinkOn ? 243 : 228), (byte)(blinkOn ? 243 : 228), 63, byte.MaxValue)); //, 2f);
+                    uGUI_EscapePod.main.SetContent(content + bonus, new Color32((byte)(blinkOn ? 243 : 228), (byte)(blinkOn ? 243 : 228), 63, byte.MaxValue));
+                }
             }
         }
     }

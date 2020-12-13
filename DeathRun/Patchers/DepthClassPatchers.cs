@@ -49,15 +49,13 @@ namespace DeathRun.Patchers
     [HarmonyPatch("GetDepthClass")]
     internal class PlayerGetDepthClassPatcher
     {
-        public static float divingCrushDepth = 200f;
-
         [HarmonyPostfix]
         public static void Postfix(ref Ocean.DepthClass __result)
         {
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
             __result = Ocean.DepthClass.Safe;
 
-            if (Player.main.IsSwimming() && depth >= divingCrushDepth)
+            if (Player.main.IsSwimming() && depth >= DeathRun.saveData.playerSave.crushDepth)
                 __result = Ocean.DepthClass.Crush;
         }
     }

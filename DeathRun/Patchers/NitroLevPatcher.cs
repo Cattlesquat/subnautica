@@ -239,7 +239,7 @@ namespace DeathRun.Patchers
                                 {
                                     if (DeathRun.saveData.nitroSave.ascentWarning % 2 == 0)
                                     {
-                                        if (((DeathRun.saveData.nitroSave.ascentWarning % 4) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
+                                        if (((DeathRun.saveData.nitroSave.ascentWarning % 8) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
                                         {
                                             __instance.nitrogenLevel++;
                                         }
@@ -270,7 +270,7 @@ namespace DeathRun.Patchers
                                     if ((DeathRun.saveData.nitroSave.ascentWarning % 120) == 0)
                                     {
                                         ErrorMessage.AddMessage("Ascending too quickly!");
-                                        DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
+                                        DeathRunUtils.CenterMessage("Ascending too quickly!", 5);
                                     }
                                 }
                             }
@@ -332,12 +332,13 @@ namespace DeathRun.Patchers
             {
                 ErrorMessage.AddMessage("You have the bends from ascending too quickly!");
                 DeathRunUtils.CenterMessage("You have the bends!", 4);
+                DeathRunUtils.CenterMessage("Slow your ascent!", 4, 1);
             }
-            else 
-            {
-                ErrorMessage.AddMessage("You died of the bends!");
-                DeathRunUtils.CenterMessage("You died of the bends!", 5);
-            }
+            //else 
+            //{
+            //    ErrorMessage.AddMessage("You died of the bends!");
+            //    DeathRunUtils.CenterMessage("You died of the bends!", 5);
+            //}
 
             DeathRun.setCause("The Bends");
             component.TakeDamage(damage, default, DamageType.Starve, null);

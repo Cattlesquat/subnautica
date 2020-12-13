@@ -99,12 +99,16 @@ namespace DeathRun.Patchers
             {
                 __instance.temperatureDamage.minDamageTemperature += 6f;
             }
-            PlayerGetDepthClassPatcher.divingCrushDepth = crushDepth;
 
-            if (crushDepth < 8000f)
-                ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");            
-            else if (crushDepth == 8000f)
-                ErrorMessage.AddMessage("Safe diving depth now unlimited.");
+            if (DeathRun.saveData.playerSave.crushDepth != crushDepth)
+            {
+                DeathRun.saveData.playerSave.crushDepth = crushDepth;
+
+                if (crushDepth < 8000f)
+                    ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");
+                else if (crushDepth == 8000f)
+                    ErrorMessage.AddMessage("Safe diving depth now unlimited.");
+            }
             
             return false;
         }
