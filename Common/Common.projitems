@@ -9,6 +9,6 @@
     <Import_RootNamespace>Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)SeraLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CattleLogger.cs" />
   </ItemGroup>
 </Project>

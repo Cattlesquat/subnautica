@@ -219,7 +219,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            SeraLogger.Message(DeathRun.modName, "Item descriptions");
+            CattleLogger.Message("Item descriptions");
 
             // First aid kit -- Nitrogen effects
             string original = Language.main.Get("Tooltip_FirstAidKit");
@@ -496,7 +496,7 @@ namespace DeathRun.Patchers
             text += DeathRunUtils.sayTime(timeSpan);
 
             DeathRunUtils.CenterMessage(text, 10);
-            SeraLogger.Message(DeathRun.modName, text);
+            CattleLogger.Message(text);
 
             text = "Cause of Death: " + DeathRun.cause;
             DeathRunUtils.CenterMessage(text, 10, 1);
@@ -566,7 +566,7 @@ namespace DeathRun.Patchers
                             
                             DeathRun.setCause(Language.main.Get(t.AsString(false)));
 
-                            SeraLogger.Message(DeathRun.modName, "Cause of Death: " + DeathRun.cause);
+                            CattleLogger.Message("Cause of Death: " + DeathRun.cause);
                         }
                     }
                     break;
@@ -669,7 +669,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            SeraLogger.Message(DeathRun.modName, "End of Prefix");
+            CattleLogger.Message("End of Prefix");
 
             return true;
         }
@@ -717,7 +717,7 @@ namespace DeathRun.Patchers
             text += ")";
 
             DeathRunUtils.CenterMessage(text, 10);
-            SeraLogger.Message(DeathRun.modName, text);
+            CattleLogger.Message(text);
             //ErrorMessage.AddMessage(text);            
         }
     }

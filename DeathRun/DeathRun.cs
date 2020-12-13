@@ -53,6 +53,9 @@ namespace DeathRun
         // So that the explody fish stay hidden in ambush
         public static bool crashFishSemaphore = false;
 
+        // Let player know if patch didn't complete
+        public static bool patchFailed = false;
+
         public const string CAUSE_UNKNOWN = "Unknown";
         public const string CAUSE_UNKNOWN_CREATURE = "Unknown Creature";
 
@@ -78,10 +81,17 @@ namespace DeathRun
             {
                 Harmony harmony = new Harmony("cattlesquat.deathrun.mod");
 
-                CattleLogger.Message("Main Patch");
+                CattleLogger.Message("Asset Bundle");
 
                 AssetBundle ab = AssetBundle.LoadFromFile(assetBundle);
                 N2HUD = ab.LoadAsset("NMHUD") as GameObject;
+
+                CattleLogger.Message("Warn-Failure Patch");
+
+                harmony.Patch(AccessTools.Method(typeof(IngameMenu), "Awake"),
+                    null, new HarmonyMethod(typeof(WarnFailurePatcher).GetMethod("Postfix")));
+
+                CattleLogger.Message("Main Patch");
 
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
@@ -526,6 +536,7 @@ namespace DeathRun
             catch (Exception ex)
             {
                 CattleLogger.PatchFailed(ex);
+                patchFailed = true;
             }
         }
 
@@ -538,6 +549,20 @@ namespace DeathRun
         {
             causeObject = newCause;
         }
-
     }
+
+
+    internal class WarnFailurePatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (DeathRun.patchFailed)
+            {
+                CattleLogger.Message("Got here");
+                ErrorMessage.AddMessage("PATCH FAILED - Death Run patch failed to complete. See errorlog (Logoutput.Log) for details.");
+            }
+        }
+    }
+
 }

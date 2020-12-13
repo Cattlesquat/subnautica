@@ -325,7 +325,7 @@ namespace DeathRun.Patchers
 
             if (EscapePod.main.liveMixin.GetHealthFraction() < 0.99f)
             {
-                SeraLogger.Message(DeathRun.modName, "Loading Damaged Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
+                CattleLogger.Message("Loading Damaged Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
                 EscapePod.main.damageEffectsShowing = false;
                 EscapePod.main.ShowDamagedEffects();
                 EscapePod.main.lightingController.SnapToState(2);
@@ -335,7 +335,7 @@ namespace DeathRun.Patchers
                 EscapePod.main.introCinematic.interpolationTimeOut = 0f;
             } else
             {
-                SeraLogger.Message(DeathRun.modName, "Loading Repaired Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
+                CattleLogger.Message("Loading Repaired Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
                 EscapePod.main.lightingController.SnapToState(0);   //159,243,63
                 uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32(243, 243, 63, byte.MaxValue), 2f);
                 uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod4Content"), new Color32(243, 243, 63, byte.MaxValue));
