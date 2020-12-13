@@ -37,6 +37,8 @@ namespace DeathRun
 
         public const string UNPATCHED = "UNPATCHED";
 
+        public const string EXORBITANT = "WORSE than Death Run!";
+
         public const string DEATHRUN   = "Death Run";
         public const string HARD       = "Hard";
         public const string NORMAL     = "Easy";
@@ -89,6 +91,9 @@ namespace DeathRun
 
         [Choice("Power Costs", new string[] { DEATHRUN, HARD, NORMAL })]
         public string powerCosts = DEATHRUN;
+
+        [Choice("Power to Exit Vehicles", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL })]
+        public string powerExitVehicles = DEATHRUN;
 
         [Choice("Vehicle Costs", new string[] { NO_VEHICLES, DEATH_VEHICLES, HARD_VEHICLES, NORMAL })]
         public string vehicleCosts = DEATH_VEHICLES;

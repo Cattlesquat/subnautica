@@ -156,6 +156,16 @@ namespace DeathRun
             return ((timeNow >= Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.2f)) && (timeNow <= timeToStartCountdown + 24f));
         }
 
+
+        /**
+         * Returns the "friendly name" of a Subnautica game object
+         */
+        public static string getFriendlyName (GameObject go)
+        {
+            TechType t = CraftData.GetTechType(go, out go);
+            return Language.main.Get(t.AsString(false));
+        }
+
         public static string sayTime(TimeSpan time)
         {
             string result = "";

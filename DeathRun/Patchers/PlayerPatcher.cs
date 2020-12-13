@@ -30,6 +30,8 @@ namespace DeathRun.Patchers
         public float prevTime { get; set; }
         public string causeOfDeath { get; set; }
         public float crushDepth { get; set; }
+        public bool toldSeamothCosts { get; set; }
+        public bool toldExosuitCosts { get; set; }
 
 
         public PlayerSaveData()
@@ -62,6 +64,8 @@ namespace DeathRun.Patchers
             prevTime = 0;
             causeOfDeath = "Unknown";
             crushDepth = 200f;
+            toldSeamothCosts = false;
+            toldExosuitCosts = false;
         }
     }
 
@@ -145,6 +149,10 @@ namespace DeathRun.Patchers
                 new PDAEncyclopedia.EntryData
                 {
                     key = "LifePodSank", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "ExitVehicles", nodes = new string[] { "Death" }
                 }
             };
 
@@ -181,6 +189,9 @@ namespace DeathRun.Patchers
 
             LanguageHandler.SetLanguageLine($"Ency_LifePodSank", $"Life Pod Flotation Failure");
             LanguageHandler.SetLanguageLine($"EncyDesc_LifePodSank", "Your life pod's flotation function has failed. We are sorry for the inconvenience. A refund can be requested by returning the lifepod to the nearest Alterra regional office within 48 hours of the incident.");
+
+            LanguageHandler.SetLanguageLine($"Ency_ExitVehicles", $"Vehicle Decompression");
+            LanguageHandler.SetLanguageLine($"EncyDesc_ExitVehicles", "The Seamoth and Prawn Suit provide decompression assistance for their pilots, preventing decompression sickness (`The Bends`) while they are being used. This does however result in a significant power cell drain whenever the pilot exits the vehicle at depth -- the deeper the exit, the higher the cost. Debarking at a Moon Bay or directly into a Cyclops does not incur this cost. The Cyclops itself has a more sophisticated decompression airlock system and can always be debarked from without any energy drain.");
 
             string original;
             string updated;
@@ -336,6 +347,7 @@ namespace DeathRun.Patchers
                 PDAEncyclopedia.Add("Radiation", false);
                 PDAEncyclopedia.Add("PowerCosts", false);
                 PDAEncyclopedia.Add("LifePodSank", false);
+                PDAEncyclopedia.Add("ExitVehicles", false);
             }
 
             if (DeathRun.saveData.playerSave.startedGame == 0)
@@ -549,19 +561,9 @@ namespace DeathRun.Patchers
                     {
                         if (DeathRun.causeObject != null)
                         {
-                            SeraLogger.Message(DeathRun.modName, "Has an object: " + DeathRun.causeObject.name);
                             GameObject go;
                             TechType t = CraftData.GetTechType(DeathRun.causeObject, out go);
-                            SeraLogger.Message(DeathRun.modName, "  TechType: " + t + " " + t.AsString());
                             
-                            //PrefabIdentifier prefab = go.transform.GetComponent<PrefabIdentifier>();
-                            //if (prefab != null)
-                            //{
-                            //    ErrorMessage.AddMessage("  Prefab: " + prefab.name + "   ClassId: " + prefab.ClassId);
-                            //    t = CraftData.entClassTechTable.GetOrDefault(prefab.ClassId, TechType.None);
-                            //    ErrorMessage.AddMessage("    TechType: " + t + " " + t.AsString());
-                            //}
-
                             DeathRun.setCause(Language.main.Get(t.AsString(false)));
 
                             SeraLogger.Message(DeathRun.modName, "Cause of Death: " + DeathRun.cause);
@@ -572,6 +574,108 @@ namespace DeathRun.Patchers
             }
         }
     }
+
+
+    /**
+     * TryEject - when player is getting out of the Seamoth or Prawn, we want to charge some (difficulty-level-based) extra energy.
+     */
+    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch("TryEject")]
+    internal class EjectionPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix (Player __instance)
+        {
+            if (__instance.isPiloting && __instance.CanEject())
+            {
+                Vehicle vehicle = __instance.GetVehicle();
+
+                if ((vehicle == null) || !(vehicle.gameObject.transform.position.y < vehicle.worldForces.waterDepth + 2f) || vehicle.precursorOutOfWater)
+                {
+                    return true;
+                }
+
+                float divisor;
+                if (Config.DEATHRUN.Equals(DeathRun.config.powerExitVehicles))
+                {
+                    divisor = 1;
+                }
+                else if (Config.HARD.Equals(DeathRun.config.powerExitVehicles))
+                {
+                    divisor = 2;
+                } 
+                else if (Config.EXORBITANT.Equals(DeathRun.config.powerExitVehicles))
+                {
+                    divisor = 0.25f;
+                }
+                else
+                {
+                    return true;
+                }
+
+                float factor;
+                if (vehicle is SeaMoth)
+                {
+                    factor = 10;                        
+                } 
+                else if (vehicle is Exosuit)
+                {
+                    factor = 20;
+                }
+                else
+                {
+                    return true;                        
+                }
+
+                int energyCost;
+                float depth = Ocean.main.GetDepthOf(vehicle.gameObject);
+
+                if (factor > 0)
+                {
+                    energyCost = (int) ( depth / (factor * divisor));
+                    if (energyCost > 0)
+                    {
+                        energyCost += (int) (10 / divisor);
+                    }
+                } 
+                else
+                {
+                    return true;
+                }
+
+
+                if (energyCost > 0)
+                {
+                    vehicle.energyInterface.ConsumeEnergy(energyCost);
+                    string name = DeathRunUtils.getFriendlyName(vehicle.gameObject);
+
+                    ErrorMessage.AddMessage(name + " power cell drained of " + energyCost + " energy for exit at depth " + (int)depth + "m.");
+
+                    if ((vehicle is SeaMoth) && !DeathRun.saveData.playerSave.toldSeamothCosts)
+                    {
+                        DeathRun.saveData.playerSave.toldSeamothCosts = true;
+
+                        DeathRunUtils.CenterMessage("Exiting the Seamoth underwater causes battery drain.", 10);
+                        DeathRunUtils.CenterMessage("Exit at surface or Moon Bay for optimum power use.", 10, 1);                                               
+                    }
+
+                    if ((vehicle is Exosuit) && !DeathRun.saveData.playerSave.toldExosuitCosts)
+                    {
+                        DeathRun.saveData.playerSave.toldExosuitCosts = true;
+
+                        DeathRunUtils.CenterMessage("Although more efficient than the Seamoth, the Prawn suit", 10);
+                        DeathRunUtils.CenterMessage("does draw power when exited at depth.", 10, 1);
+                    }
+                }
+            }
+
+            SeraLogger.Message(DeathRun.modName, "End of Prefix");
+
+            return true;
+        }
+    }
+
+
 
     [HarmonyPatch(typeof(uGUI_HardcoreGameOver))]
     [HarmonyPatch("OnSelect")]
