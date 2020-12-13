@@ -1,9 +1,15 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * * Much of the Nitrogen & Bends code from Seraphim Risen's NitrogenMod (just rebalanced and w/ more UI feedback)
+ * * Much of the Nitrogen & Bends code from Seraphim Risen's NitrogenMod (but entirely new main algorithm and w/ more UI feedback)
  * * Radiation Mod material from libraryaddict, used with permission. 
- * * Escape Pod unleashed material from oldark, w/ fixes provided to make pod gravity work reliably.
+ * * Escape Pod Unleashed material from oldark, w/ fixes provided to make pod gravity work reliably.
+ * * Substantial increase in damage taken
+ * * More aggressive creatures
+ * * "Cause of Death" and "Time of Death" reporting
+ * * Higher energy costs, especially to fabricate
+ * * More warnings about explosion, radiation, etc.
+ * * Murky water option
  */
 namespace DeathRun
 {

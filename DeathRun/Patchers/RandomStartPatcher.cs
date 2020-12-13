@@ -67,7 +67,7 @@ namespace DeathRun.Patchers
             new StartSpot (104.5f, -317.4f, "TOO close...?"),  // Hopefully not too close to Aurora!
             new StartSpot (151.8f, 592.9f, "Disorienting"),    // Deep and kelpy. Disorienting! Hard to find shallows.
             new StartSpot (98.7f, 717.7f, "Kelp Forest"),      // Moderate kelp forest start.
-            new StartSpot (-503.0f, -377.1f, "Grassy Plains"), // In the grassy plains -- a different flavor of start, long way from kelp
+            new StartSpot (-503.0f, -377.1f, "Barren: Very Hard"), // In the grassy plains -- a different flavor of start, long way from kelp
             new StartSpot (-527.9f, 30.5f, "Far From Kelp"),   // Crag near grass - getting to kelp a challenge
             new StartSpot (151.2f, -429.5f, "Crag"),           // Another crag near grass.
             new StartSpot (-301.5f, -65.5f, "Stinger Cave"),   

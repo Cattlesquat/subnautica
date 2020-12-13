@@ -121,7 +121,7 @@ namespace DeathRun
             "TOO close...?",
             "Disorienting",
             "Kelp Forest",
-            "Grassy Plains",
+            "Barren: Very Hard",
             "Far From Kelp",
             "Crag",
             "Stinger Cave",

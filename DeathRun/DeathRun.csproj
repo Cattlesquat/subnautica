@@ -176,13 +176,19 @@
     <Content Include="Assets\TankTabIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ReadMe.txt" />
+    <Content Include="ReadMe.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)DeathRun.dll "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
-copy $(TargetDir)mod.json "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"</PostBuildEvent>
+copy $(TargetDir)mod.json "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
+copy $(TargetDir)ReadMe.txt "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
+
+
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Microsoft.Common.targets.
