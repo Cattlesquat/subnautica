@@ -101,6 +101,8 @@ namespace DeathRun.Patchers
                                    Player.main.GetVehicle() is SeaMoth ||
                                    Player.main.GetVehicle() is Exosuit;
 
+                bool isSeaglide = (Player.main.motorMode == Player.MotorMode.Seaglide);
+
                 float ascent = __instance.GetComponent<Rigidbody>().velocity.y;  // Player's current positive Y velocity is the ascent rate (fastest seems somewhat above 6)
                 DeathRun.saveData.nitroSave.ascentRate = ((DeathRun.saveData.nitroSave.ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second                
 
@@ -144,8 +146,8 @@ namespace DeathRun.Patchers
                         baselineSafe = (depth < 0) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
                     }
 
-                    // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide
-                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || Player.main.motorMode == Player.MotorMode.Seaglide)
+                    // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
+                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather)) 
                     {
                         if (baselineSafe - (depth / 4) <= DeathRun.saveData.nitroSave.safeDepth) { 
                             baselineSafe = baselineSafe - (depth / 4);
@@ -172,7 +174,18 @@ namespace DeathRun.Patchers
                     DeathRun.saveData.nitroSave.safeDepth = UWE.Utils.Slerp(DeathRun.saveData.nitroSave.safeDepth, baselineSafe, num * __instance.kBreathScalar * modifier);
 
                     // This little % buffer helps introduce the concept of N2 (both initially and as a positive feedback reminder)
-                    float target = ((depth < 10) && (DeathRun.saveData.nitroSave.safeDepth <= 10f)) ? 0 : 100;
+                    float target;
+                    if ((DeathRun.saveData.nitroSave.safeDepth > 10f) || (depth >= 20)) {
+                        target = 100;
+                    }
+                    else if (depth <= 10)
+                    {
+                        target = 0;
+                    } else
+                    {
+                        target = (depth - 10) * 10; // Transition zone between 10m and 20m
+                    }
+
                     float rate;
                     if (target > 0)
                     {
@@ -247,7 +260,7 @@ namespace DeathRun.Patchers
                 //
                 if (isSwimming)
                 {
-                    if (DeathRun.saveData.nitroSave.ascentRate > 2)
+                    if (DeathRun.saveData.nitroSave.ascentRate > (isSeaglide ? 3 : 2))
                     {
                         if (DeathRun.saveData.nitroSave.ascentRate > 4)
                         {
@@ -257,11 +270,11 @@ namespace DeathRun.Patchers
                                 DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
                                 ErrorMessage.AddMessage("Ascending too quickly!");
                             }
-                            else if (DeathRun.saveData.nitroSave.ascentRate >= 5)
+                            else if (DeathRun.saveData.nitroSave.ascentRate >= (isSeaglide ? 5.5 : 5))
                             {
                                 if (__instance.nitrogenLevel < 100)
                                 {
-                                    if (DeathRun.saveData.nitroSave.ascentWarning % 2 == 0)
+                                    if ((DeathRun.saveData.nitroSave.ascentWarning % (isSeaglide ? 4 : 2)) == 0)
                                     {
                                         if (((DeathRun.saveData.nitroSave.ascentWarning % 8) == 0) || Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
                                         {
@@ -271,7 +284,7 @@ namespace DeathRun.Patchers
                                 }
                                 else
                                 {
-                                    if (DeathRun.saveData.nitroSave.ascentWarning >= 60) // After about 2 seconds of too fast
+                                    if (DeathRun.saveData.nitroSave.ascentWarning >= (isSeaglide ? 90 : 60)) // After about 2 seconds of too fast
                                     {
                                         int tickrate;
                                         if (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
@@ -281,6 +294,8 @@ namespace DeathRun.Patchers
                                         {
                                             tickrate = 20;
                                         }
+
+                                        if (isSeaglide) tickrate = tickrate * 3 / 2;
 
                                         if (DeathRun.saveData.nitroSave.ascentWarning % tickrate == 0)
                                         {

@@ -242,12 +242,13 @@ namespace DeathRun
                     new HarmonyMethod(typeof(ItemPatcher).GetMethod("GiveResourceOnDamage")), null);
 
 
-                CattleLogger.Message("Vehicle Costs");
+                CattleLogger.Message("Vehicle Costs: " + DeathRun.config.vehicleCosts);
 
                 Dictionary<TechType, TechData> techChanges = null;
 
                 if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
-                {                    
+                {
+                    CattleLogger.Message("No Vehicles");
                     techChanges = new Dictionary<TechType, TechData>
                     {
                         {
@@ -332,6 +333,7 @@ namespace DeathRun
                 }
                 else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts))
                 {
+                    CattleLogger.Message("Death Vehicles");
                     techChanges = new Dictionary<TechType, TechData>
                     {
                         {
@@ -365,7 +367,7 @@ namespace DeathRun
                                     new Ingredient(TechType.Lubricant, 1),
                                     new Ingredient(TechType.AdvancedWiringKit, 1),
                                     new Ingredient(TechType.Lead, 3),
-                                    new Ingredient(TechType.Nickel, 3),
+                                    new Ingredient(TechType.Nickel, 2),
                                     new Ingredient(TechType.Kyanite, 2)
                                 }
                             }
@@ -398,7 +400,7 @@ namespace DeathRun
                                     new Ingredient(TechType.Battery, 1),
                                     new Ingredient(TechType.Lubricant, 2),
                                     new Ingredient(TechType.CopperWire, 1),
-                                    new Ingredient(TechType.Titanium, 1),
+                                    new Ingredient(TechType.Lead, 2),
                                     new Ingredient(TechType.Gold, 2)
                                 }
                             }
@@ -407,6 +409,7 @@ namespace DeathRun
                 }
                 else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
                 {
+                    CattleLogger.Message("Hard Vehicles");
                     techChanges = new Dictionary<TechType, TechData>
                     {
                         {
@@ -469,8 +472,8 @@ namespace DeathRun
                                     new Ingredient(TechType.Battery, 1),
                                     new Ingredient(TechType.Lubricant, 2),
                                     new Ingredient(TechType.CopperWire, 1),
-                                    new Ingredient(TechType.Titanium, 2),
-                                    new Ingredient(TechType.Gold, 2)
+                                    new Ingredient(TechType.Lead, 1),
+                                    new Ingredient(TechType.Gold, 1)
                                 }
                             }
                         }
@@ -482,6 +485,8 @@ namespace DeathRun
                 {
                     foreach (KeyValuePair<TechType,TechData> tech in techChanges)
                     {
+                        CattleLogger.Message("Change to: " + tech.Key);
+
                         CraftDataHandler.SetTechData(tech.Key, tech.Value);
                     }
                 }
@@ -491,6 +496,7 @@ namespace DeathRun
                 techChanges = null;
                 if (Config.DEATHRUN.Equals(DeathRun.config.builderCosts))
                 {
+                    CattleLogger.Message("Death Habitat");
                     techChanges = new Dictionary<TechType, TechData>
                     {
                         {
@@ -512,6 +518,7 @@ namespace DeathRun
                 } 
                 else if (Config.HARD.Equals(DeathRun.config.builderCosts))
                 {
+                    CattleLogger.Message("Hard Habitat");
                     techChanges = new Dictionary<TechType, TechData>
                     {
                         {

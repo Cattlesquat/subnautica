@@ -113,6 +113,7 @@
     <Compile Include="Patchers\CauseOfDeathPatcher.cs" />
     <Compile Include="Patchers\CountdownPatcher.cs" />
     <Compile Include="Patchers\DamagePatcher.cs" />
+    <Compile Include="Patchers\FleePatcher.cs" />
     <Compile Include="Patchers\MurkPatcher.cs" />
     <Compile Include="Patchers\PlayerPatcher.cs" />
     <Compile Include="Patchers\ExplosionPatcher.cs" />

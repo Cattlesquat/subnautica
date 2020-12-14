@@ -159,6 +159,14 @@ namespace DeathRun
 
 
         /**
+         * Returns the tech type of a Subnautica game object
+         */
+        public static TechType getTechType (GameObject go)
+        {
+            return CraftData.GetTechType(go, out go);
+        }
+
+        /**
          * Returns the "friendly name" of a Subnautica game object
          */
         public static string getFriendlyName (GameObject go)
@@ -201,6 +209,32 @@ namespace DeathRun
             return result;
         }
     }
+
+
+    public class RunData
+    {
+        public int ID { get; set; }
+        public string Start { get; set; }
+        public string Cause { get; set; }
+        public float RunTime { get; set; }
+        public float Deepest { get; set; }
+        public int Lives { get; set; }
+        public int Score { get; set; }
+        public int BestVehicle { get; set; }
+
+        public RunData()
+        {
+            ID = -1;
+            Start = "";
+            Cause = "";
+            RunTime = 0;
+            Lives = 0;
+            Score = 0;
+            BestVehicle = 0;
+            Deepest = 0;
+        }
+    }
+
 
     /**
      * DeathRunSaveData - saves and restores data we want saved with the saved game.
