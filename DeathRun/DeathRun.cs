@@ -94,8 +94,10 @@ namespace DeathRun
 
                 CattleLogger.Message("Warn-Failure Patch");
 
-                harmony.Patch(AccessTools.Method(typeof(IngameMenu), "Awake"),
+                harmony.Patch(AccessTools.Method(typeof(MainMenuController), "Start"),
                     null, new HarmonyMethod(typeof(WarnFailurePatcher).GetMethod("Postfix")));
+                //harmony.Patch(AccessTools.Method(typeof(IngameMenu), "Awake"),
+                //    null, new HarmonyMethod(typeof(WarnFailurePatcher).GetMethod("Postfix")));
 
                 CattleLogger.Message("Main Patch");
 
@@ -565,8 +567,8 @@ namespace DeathRun
         {
             if (DeathRun.patchFailed)
             {
-                CattleLogger.Message("Got here");
                 ErrorMessage.AddMessage("PATCH FAILED - Death Run patch failed to complete. See errorlog (Logoutput.Log) for details.");
+                DeathRunUtils.CenterMessage("PATCH FAILED", 10, 4);
             }
         }
     }

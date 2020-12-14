@@ -7,6 +7,7 @@
  * is actually fully immune to radiation, but is still in the radiated area.
  */
 
+using Common;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -205,6 +206,83 @@ namespace DeathRun.Patchers
             float playerRadiationStrength = playerDepth / radiationDepth;
 
             return Math.Min(tracker.distanceToPlayer, tracker.maxDistance * playerRadiationStrength);
+        }
+    }
+
+
+    /**
+     * RadiationFX -- shows at least some of the radiation effects even when player is immune.
+     */
+    [HarmonyPatch(typeof(RadiationsScreenFXController))]
+    [HarmonyPatch("Update")]
+
+    public class RadiationFXPatcher
+    {
+        const float MINIMUM_AMOUNT_NORMAL    = 0.1f;
+        const float MINIMUM_AMOUNT_SHIP      = 0.2f;
+        const float MINIMUM_AMOUNT_ON_SHIP   = 0.3f;
+        const float MINIMUM_AMOUNT_DEEP_SHIP = 0.4f;
+        const float MINIMUM_AMOUNT_REACTOR   = 0.5f;
+
+        [HarmonyPrefix]
+        private static bool Update(RadiationsScreenFXController __instance)
+        {
+            float distance = (Player.main.transform.position - LeakingRadiation.main.transform.position).magnitude;
+            float backgroundRads;
+
+            if (distance <= 50)
+            {
+                backgroundRads = MINIMUM_AMOUNT_REACTOR;
+            }
+            else if (distance <= 150)
+            {
+                backgroundRads = MINIMUM_AMOUNT_DEEP_SHIP;
+            }
+            else if (distance <= 250)
+            {
+                backgroundRads = MINIMUM_AMOUNT_ON_SHIP;
+            }
+            else if (RadiationUtils.isInShipsRadiation(Player.main.transform))
+            {
+                backgroundRads = MINIMUM_AMOUNT_SHIP;
+            } 
+            else if (RadiationUtils.isInAnyRadiation(Player.main.transform))
+            {
+                backgroundRads = MINIMUM_AMOUNT_NORMAL;
+            } 
+            else
+            {
+                backgroundRads = 0;
+            }
+
+            //CattleLogger.Message("start = " + LeakingRadiation.main.kStartRadius);
+            //CattleLogger.Message("max = " + LeakingRadiation.main.kMaxRadius);
+            
+            float rads = Mathf.Max(Player.main.radiationAmount, backgroundRads);
+
+            // If Player is naturally in at least our minimum display amount, just run normal method.
+            if (Player.main.radiationAmount >= rads)
+            {
+                return true; 
+            }
+
+            if (rads >= __instance.prevRadiationAmount && rads > 0f)
+            {
+                __instance.animTime += Time.deltaTime / __instance.fadeDuration;
+            }
+            else
+            {
+                __instance.animTime -= Time.deltaTime / __instance.fadeDuration;
+            }
+            __instance.animTime = Mathf.Clamp01(__instance.animTime);
+            __instance.fx.noiseFactor = backgroundRads/2 * __instance.radiationMultiplier + __instance.minRadiation * __instance.animTime;
+            if (__instance.fx.noiseFactor > 0f && !__instance.fx.enabled)
+            {
+                __instance.fx.enabled = true;
+            }
+            __instance.prevRadiationAmount = rads;
+
+            return false;
         }
     }
 }

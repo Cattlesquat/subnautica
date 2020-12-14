@@ -36,6 +36,7 @@ namespace DeathRun.Patchers
         public float safeDepth { get; set; }      // Safe depth for Nitrogen/Bends. Replaces the one in game code that isn't saved w/ saved game.
         public int oldTicks { get; set; }         // Ticks marker for our half-second tick pulse
         public int tookDamageTicks { get; set; }  // Marks tick of last time we took damage
+        public int n2WarningTicks { get; set; }   // Marks tick of last time we got N2 warning
         public int ascentWarning { get; set; }    // Marks tick of when an Ascent Rate warning was given
         public float ascentRate { get; set; }     // Current ascent rate
         public float pipeTime { get; set; }       // Time last got air from a pipe
@@ -50,6 +51,7 @@ namespace DeathRun.Patchers
         {
             oldTicks = 0;
             tookDamageTicks = 0;
+            n2WarningTicks = 0;
             ascentWarning = 0;
             ascentRate = 0;
             atPipe = false;
@@ -142,8 +144,8 @@ namespace DeathRun.Patchers
                         baselineSafe = (depth < 0) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
                     }
 
-                    // Better dissipation when we're breathing through a pipe, or in a vehicle/base
-                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming)
+                    // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide
+                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || Player.main.motorMode == Player.MotorMode.Seaglide)
                     {
                         if (baselineSafe - (depth / 4) <= DeathRun.saveData.nitroSave.safeDepth) { 
                             baselineSafe = baselineSafe - (depth / 4);
@@ -200,7 +202,29 @@ namespace DeathRun.Patchers
                 {                    
                     if (!isInVehicle && !isInBase)
                     {
-                        if (UnityEngine.Random.value < (isSwimming ? 0.0125f : 0.025f))
+                        if (DeathRun.saveData.nitroSave.n2WarningTicks == 0)
+                        {
+                            // If we've NEVER had an N2 warning, institute a hard delay before we can take damage
+                            DeathRun.saveData.nitroSave.tookDamageTicks = ticks;
+                        }
+
+                        if ((DeathRun.saveData.nitroSave.n2WarningTicks == 0) || (ticks - DeathRun.saveData.nitroSave.n2WarningTicks > 60))
+                        {
+                            if ((DeathRun.saveData.nitroSave.safeDepth >= 13f) || ((int)depth + 1) < (int)DeathRun.saveData.nitroSave.safeDepth) // Avoid spurious warnings right at surface
+                            {
+                                DeathRunUtils.CenterMessage("Decompression Warning", 5);
+                                DeathRunUtils.CenterMessage("Dive to Safe Depth!", 5, 1);
+                                DeathRun.saveData.nitroSave.n2WarningTicks = ticks;
+                            }
+                        }
+
+                        int danger = (int)DeathRun.saveData.nitroSave.safeDepth - (int)depth;
+                        float deco = (isSwimming ? 0.0125f : 0.025f);
+
+                        if (danger < 5) deco /= 2;
+                        if (danger < 2) deco /= 2;
+
+                        if (UnityEngine.Random.value < deco)
                         {
                             if ((DeathRun.saveData.nitroSave.tookDamageTicks == 0) || (ticks - DeathRun.saveData.nitroSave.tookDamageTicks > 10))
                             {
@@ -313,6 +337,16 @@ namespace DeathRun.Patchers
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
 
             float damageBase = (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends)) ? 20f : 10f;
+
+            if ((DeathRun.saveData.nitroSave.safeDepth - depthOf) < 5)
+            {
+                damageBase /= 2;
+            }
+
+            if ((DeathRun.saveData.nitroSave.safeDepth - depthOf) < 2)
+            {
+                damageBase /= 2;
+            }
 
             float damage = damageBase + UnityEngine.Random.value * damageBase + (DeathRun.saveData.nitroSave.safeDepth - depthOf);
 

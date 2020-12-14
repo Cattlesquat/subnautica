@@ -24,7 +24,8 @@ namespace DeathRun
             new CenterText(0, 250f),
             new CenterText(1, 210f),
             new CenterText(2, -210f),
-            new CenterText(3, -250f)
+            new CenterText(3, -250f),
+            new CenterText(4, 100f)
         };
 
         public class CenterText

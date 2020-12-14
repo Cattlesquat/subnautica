@@ -205,4 +205,31 @@ namespace DeathRun.Patchers
             SwimToSurfacePatcher.setHinter(__instance);
         }
     }
+
+    /**
+     * I find it endlessly irritating that it won't let you deploy the pump when you're on the surface. 
+     * It's not "challenging gameplay" it's just a bad interface. So this fixes it.
+     */
+    //[HarmonyPatch(typeof(PipeSurfaceFloater))]
+    //[HarmonyPatch("OnRightHandDown")]
+    //internal class FloatingPumpPatcher
+    //{
+    //    [HarmonyPostfix]
+    //    public static void OnRightHandDown(PipeSurfaceFloater __instance, bool __result)
+    //    {
+    //        __result = PatchDropTool.OnRightHandDown(__instance) && Player.main.IsSwimming();            
+    //    }
+    //}
+
+    //[HarmonyPatch]
+    //class PatchDropTool
+    //{
+    //    [HarmonyReversePatch]        
+    //    [HarmonyPatch(typeof(DropTool), "OnRightHandDown")]
+    //    public static bool OnRightHandDown(DropTool instance)
+    //    {
+    //        throw new NotImplementedException("Stub - should actually end up running DropTool.OnRightHandDown");
+    //    }
+    //}
+
 }
