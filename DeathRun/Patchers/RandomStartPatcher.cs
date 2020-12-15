@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using HarmonyLib;
 using UnityEngine;
 
@@ -104,11 +105,14 @@ namespace DeathRun.Patchers
             DeathRun.saveData.podSave.podGravity  = true;  // Pod should sink
             DeathRun.saveData.podSave.podSinking  = false; // ... but isn't sinking yet
             DeathRun.saveData.podSave.podAnchored = false; // ... and hasn't come to rest on the bottom
+            DeathRun.saveData.podSave.spotPicked  = true;   // But we have picked the spot for it
             DeathRun.saveData.startSave           = spot;  // Here's where we started
 
             //ErrorMessage.AddMessage("\"" + spot.message + "\"");
             DeathRunUtils.CenterMessage("DEATH RUN", 10, 2);
             DeathRunUtils.CenterMessage("Start: \"" + spot.message + "\"", 10, 3);
+
+            CattleLogger.Message("Start: " + spot.message);
 
             __result.x = spot.x;
             __result.y = spot.y;

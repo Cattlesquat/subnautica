@@ -210,7 +210,6 @@ namespace DeathRun
         }
     }
 
-
     public class RunData
     {
         public int ID { get; set; }
@@ -218,20 +217,112 @@ namespace DeathRun
         public string Cause { get; set; }
         public float RunTime { get; set; }
         public float Deepest { get; set; }
-        public int Lives { get; set; }
+        public int Deaths { get; set; }
         public int Score { get; set; }
         public int BestVehicle { get; set; }
+        public int DeathRunSettingCount { get; set; }
+        public int DeathRunSettingBonus { get; set; }
+        public bool Victory { get; set; }
+
+        // I coded these casually and left some space between them in case there's desire to hack something else in later
+        public const int BEST_SEAGLIDE = 10;
+        public const int BEST_SEAMOTH  = 20;
+        public const int BEST_EXOSUIT  = 30;
+        public const int BEST_CYCLOPS  = 40;
 
         public RunData()
         {
             ID = -1;
             Start = "";
+
             Cause = "";
             RunTime = 0;
-            Lives = 0;
+            Deaths = 0;
+
             Score = 0;
             BestVehicle = 0;
             Deepest = 0;
+
+            DeathRunSettingCount = -1;
+            DeathRunSettingBonus = -1;
+
+            Victory = false;
+        }
+
+        public void startNewRun()
+        {
+            ID    = DeathRun.statsData.getNewRunID();
+            Start = DeathRun.saveData.startSave.message;
+
+            CattleLogger.Message("Starting new run - " + ID + " " + Start);
+
+            countSettings();            
+        }
+
+
+        /**
+         * Checks our "difficulty score" based on our settings (and ensures that changing settings can only lower the score)
+         */
+        public void countSettings()
+        {
+            int count   = DeathRun.config.countDeathRunSettings();
+            int bonuses = DeathRun.config.countDeathRunBonuses();
+
+            if ((DeathRunSettingCount < 0) || (count < DeathRunSettingCount))
+            {
+                DeathRunSettingCount = count;
+            }
+
+            if ((DeathRunSettingBonus < 0) || (bonuses < DeathRunSettingBonus))
+            {
+                DeathRunSettingBonus = bonuses;
+            }
+        }
+
+
+        public void updateVitals (bool victory)
+        {
+            Cause   = DeathRun.cause;
+            RunTime = DeathRun.saveData.playerSave.allLives;
+            Deaths  = DeathRun.saveData.playerSave.numDeaths;
+            Victory = victory;
+
+            countSettings();
+
+            DeathRun.statsData.addRun(this);
+        }
+
+
+        public void updateVehicle (int vehicle)
+        {
+            if (vehicle > BestVehicle)
+            {
+                BestVehicle = vehicle;
+            }
+        }
+
+
+        public bool betterThan (RunData other)
+        {
+            // Victory always beats defeat
+            if (Victory && !other.Victory) return true;
+            if (other.Victory) return false;
+
+            // Compares two victories
+            if (Victory)
+            {
+                if (Deaths < other.Deaths) return true; // Fewer deaths is definitive comparison between victories
+                return RunTime < other.RunTime; // In victory a SHORTER time is best
+            }
+
+            // Otherwise we are comparing two defeats. In death, longer survival is best.
+
+            if ((Deaths > 0) && other.Deaths > 0)
+            {
+                return RunTime / Deaths > other.RunTime / other.Deaths;
+            }
+
+            return RunTime > other.RunTime;
         }
     }
 
@@ -241,11 +332,12 @@ namespace DeathRun
      */
     public class DeathRunSaveData
     {
-        public PlayerSaveData playerSave { get; set; } // Player (lives, duration) save data
-        public NitroSaveData nitroSave { get; set; } // Nitrogen/Bends save data
-        public PodSaveData podSave { get; set; }     // Escape Pod save data
-        public StartSpot startSave { get; set; }     // Escape Pod start spot save data
-        public CountdownSaveData countSave { get; set; } //Countdown save data
+        public PlayerSaveData playerSave { get; set; }   // Player (lives, duration) save data
+        public NitroSaveData nitroSave { get; set; }     // Nitrogen/Bends save data
+        public PodSaveData podSave { get; set; }         // Escape Pod save data
+        public StartSpot startSave { get; set; }         // Escape Pod start spot save data
+        public CountdownSaveData countSave { get; set; } // Countdown save data
+        public RunData runData { get; set; }             // Stats about our run
 
         public DeathRunSaveData()
         {
@@ -254,6 +346,9 @@ namespace DeathRun
             podSave    = new PodSaveData();
             startSave  = new StartSpot();
             countSave  = new CountdownSaveData();
+            runData    = new RunData();
+
+            CattleLogger.Message("SaveData Constructor");
 
             setDefaults();
         }
@@ -362,6 +457,178 @@ namespace DeathRun
             DeathRun.saveData.Save();
         }
     }
+
+
+
+   /**
+    * DeathRunStats - saves and restores "stats" data across all games
+    */
+    public class DeathRunStats
+    {
+        public int RunCounter { get; set; }
+        public int RecentIndex { get; set; }
+        public List<RunData> HighScores { get; set; }
+
+        public const int MAX_HIGH_SCORES = 10;
+
+        public DeathRunStats()
+        {
+            HighScores = new List<RunData>();
+            setDefaults();
+        }
+
+        public void setDefaults()
+        {
+            RunCounter = 0;
+            RecentIndex = -1;
+        }
+
+        /**
+         * Gets a unique Run ID for a newly-starting run, so that we'll know which other scores in the list potentially came from our same run.
+         */
+        public int getNewRunID()
+        {
+            if (DeathRun.patchFailed) return -1;
+
+            RunCounter++;
+
+            SaveStats();
+
+            return RunCounter;
+        }
+
+        /**
+         * Clear any "extra scores" from the end of the list (in case we added a recent run as an "temporary 11th place")
+         */
+        private void ClearExtraScores()
+        {
+            // Remove anything more than the max number of items.
+            while (HighScores.Count > MAX_HIGH_SCORES)
+            {
+                HighScores.RemoveAt(MAX_HIGH_SCORES);
+            }
+        }
+
+
+        /**
+         * When we've just loaded the stats file for the first time this session
+         */
+        public void JustLoadedStats()
+        {
+            ClearExtraScores();
+            RecentIndex = -1; // When reloading, we clear the "my most recent run" pointer.
+        }
+
+
+        /**
+         * Adds a completed run to our high score list at the appropriate place. If 
+         */
+        public int addRun(RunData run)
+        {
+            ClearExtraScores();
+
+            // Remove any earlier lower-scoring entries from this same run ID
+            foreach (RunData existing in HighScores)
+            {
+                if (existing.ID == run.ID)
+                {
+                    if (run.betterThan(existing))
+                    {
+                        HighScores.Remove(existing);
+                    }
+                }
+            }
+
+            int place;
+            for (place = 0; place < HighScores.Count; place++)
+            {
+                if (!run.betterThan(HighScores[place])) continue;
+
+                // Add our score to the list
+                HighScores.Insert(place, run);
+
+                // If we bomped some other run down to 11th place then remove it
+                ClearExtraScores(); 
+                break;
+            }
+
+            // Add to bottom of the list if we didn't displace anyone. 
+            // This will also result in a temporary "11th place" for the current run if it didn't beat anyone
+            if (place == HighScores.Count)
+            {
+                HighScores.Insert(place, run);
+            }
+
+            RecentIndex = place;
+
+            SaveStats();
+
+            return place;
+        }
+
+
+        public void SaveStats()
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore, // Keeps our Vector3's etc from generating infinite references
+                    //PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                };
+
+                var statsDataJson = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
+
+                File.WriteAllText(Path.Combine(DeathRun.modFolder, DeathRun.StatsFile), statsDataJson);
+            }
+            catch (Exception e)
+            {
+                CattleLogger.GenericError(e);
+                CattleLogger.Message("Failed");
+            }
+        }
+
+        public void LoadStats()
+        {
+            var path = Path.Combine(DeathRun.modFolder, DeathRun.StatsFile);
+
+            if (!File.Exists(path))
+            {
+                CattleLogger.Message("Death Run `Stats` data not found - starting new Stats");
+                setDefaults();
+                SaveStats();
+                return;
+            }
+
+            try
+            {
+                var save = File.ReadAllText(path);
+
+                var jsonSerializerSettings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore,
+                    //PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                };
+
+                // This deserializes the whole statsData object all at once.
+                DeathRun.statsData = JsonConvert.DeserializeObject<DeathRunStats>(save, jsonSerializerSettings);
+
+                DeathRun.statsData.JustLoadedStats();
+            }
+            catch (Exception e)
+            {
+                CattleLogger.GenericError(e);
+                CattleLogger.Message("Death Run Stats not found - starting new Stats");
+                CattleLogger.Message(e.StackTrace);
+                setDefaults();
+                SaveStats();
+            }
+        }
+    }
+
+
 
     /**
      * Transformations that can be inexpensively copied (since the = operator in c# copies the reference not the object, and

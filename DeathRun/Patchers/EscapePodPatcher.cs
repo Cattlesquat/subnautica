@@ -31,6 +31,7 @@ namespace DeathRun.Patchers
         public bool podGravity { get; set; }  // True if pod *should* sink (as opposed to float on surface)
         public float lastDepth { get; set; }  // Most recent depth of pod
         public int prevSecs { get; set; }     // Previous integer "secs" time.
+        public bool spotPicked { get; set; }  // Spot picked?
 
         public PodSaveData()
         {
@@ -44,6 +45,7 @@ namespace DeathRun.Patchers
             podSinking = false;
             lastDepth = 0;
             prevSecs = 0;
+            spotPicked = false;
         }
     }
 

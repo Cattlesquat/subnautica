@@ -10,13 +10,16 @@ namespace DeathRun.Patchers
     using Common;
     using UnityEngine;
 
-    [HarmonyPatch(typeof(FleeOnDamage))]
-    [HarmonyPatch("OnTakeDamage")]
+    //[HarmonyPatch(typeof(FleeOnDamage))]
+    //[HarmonyPatch("OnTakeDamage")]
     internal class FleePatcher
     {
-        [HarmonyPrefix]
+        //[HarmonyPrefix]
         public static bool OnTakeDamage(FleeOnDamage __instance, DamageInfo damageInfo)
         {
+            return true;
+
+            /* //Disable this for now
             if (damageInfo.type == DamageType.Electrical) return true;
 
             TechType t = DeathRunUtils.getTechType(__instance.gameObject);
@@ -42,6 +45,7 @@ namespace DeathRun.Patchers
                 default: 
                     return true;
             }
+            */
         }
     }
 }

@@ -28,7 +28,6 @@ namespace DeathRun.Patchers
         public bool killOpening { get; set; }
         public float currTime { get; set; }
         public float prevTime { get; set; }
-        public string causeOfDeath { get; set; }
         public float crushDepth { get; set; }
         public bool toldSeamothCosts { get; set; }
         public bool toldExosuitCosts { get; set; }
@@ -62,7 +61,6 @@ namespace DeathRun.Patchers
             killOpening = false;
             currTime = 0;
             prevTime = 0;
-            causeOfDeath = "Unknown";
             crushDepth = 200f;
             toldSeamothCosts = false;
             toldExosuitCosts = false;
@@ -335,6 +333,7 @@ namespace DeathRun.Patchers
                 return;
             }
 
+            // Adds our "Data Bank" entries
             if (!DeathRun.encyclopediaAdded && (DeathRun.saveData.playerSave.startedGame > 0)) 
             {
                 DeathRun.encyclopediaAdded = true;
@@ -350,11 +349,25 @@ namespace DeathRun.Patchers
                 PDAEncyclopedia.Add("ExitVehicles", false);
             }
 
+            // Officially start our mod's timer/monitor, if we haven't
             if (DeathRun.saveData.playerSave.startedGame == 0)
             {
                 DeathRun.saveData.playerSave.startedGame = DayNightCycle.main.timePassedAsFloat;
-                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);                
+                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
                 return;
+            }
+
+            if (DeathRun.saveData.podSave.spotPicked)
+            {
+                DeathRun.saveData.runData.startNewRun();
+                DeathRun.saveData.podSave.spotPicked = false;
+            }
+
+            // If any difficulty settings have changed, make sure we register any lower ones against the score stats
+            if ((DeathRun.configDirty > 0) && (Time.time > DeathRun.configDirty + 5)) 
+            {
+                DeathRun.saveData.runData.countSettings();
+                DeathRun.configDirty = 0;
             }
 
             DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
@@ -368,7 +381,8 @@ namespace DeathRun.Patchers
             if (!DeathRun.saveData.playerSave.killOpening && (DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.startedGame < 200))
             {
                 doIntroMessages();
-            } else
+            } 
+            else
             {
                 DeathRun.saveData.playerSave.killOpening = true;
             }
@@ -503,7 +517,8 @@ namespace DeathRun.Patchers
 
             //ErrorMessage.AddMessage(text);            
 
-            DeathRun.saveData.playerSave.killOpening = true;            
+            DeathRun.saveData.playerSave.killOpening = true;
+            DeathRun.saveData.runData.updateVitals(false);
         }
 
         static void setCauseOfDeath (DamageType damageType)
@@ -715,6 +730,9 @@ namespace DeathRun.Patchers
             }
 
             text += ")";
+
+            DeathRun.setCause("Victory");
+            DeathRun.saveData.runData.updateVitals(true);
 
             DeathRunUtils.CenterMessage(text, 10);
             CattleLogger.Message(text);

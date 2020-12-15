@@ -80,6 +80,9 @@ namespace DeathRun.Patchers
 
             float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
 
+            // Update our deepest depth for stats
+            DeathRun.saveData.runData.Deepest = Mathf.Max(DeathRun.saveData.runData.Deepest, depth);
+
             //
             // NITROGEN controller
             //

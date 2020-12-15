@@ -31,12 +31,16 @@ namespace DeathRun
         public const string modID = "DeathRun";
         public const string modName = "[DeathRun]";
         public const string SaveFile = modID + "_" + "SavedGame.json";
+        public const string StatsFile = modID + "_" + "Stats.json";
 
         // DeathRun's saved games are handled in DeathRunUtils
         public static DeathRunSaveData saveData = new DeathRunSaveData();
-        public static DeathRunSaveListener saveListener; 
+        public static DeathRunSaveListener saveListener;
 
-        private const string modFolder = "./QMods/DeathRun/";
+        // DeathRun's "Stats" are saved and loaded in DeathRunUtils
+        public static DeathRunStats statsData = new DeathRunStats();
+
+        public const string modFolder = "./QMods/DeathRun/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "n2warning";
 
@@ -46,6 +50,7 @@ namespace DeathRun
         public static global::Utils.ScalarMonitor playerMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
 
         //public static bool podGravity  = true;
+        public static float configDirty = 0;
 
         public static bool murkinessDirty    = false;
         public static bool encyclopediaAdded = false;
@@ -547,6 +552,10 @@ namespace DeathRun
                 }
 
                 Console.WriteLine("[DeathRun] Patched");
+
+                statsData.LoadStats();
+
+                Console.WriteLine("[DeathRun] Stats Loaded");
             }
             catch (Exception ex)
             {
@@ -564,6 +573,33 @@ namespace DeathRun
         {
             causeObject = newCause;
         }
+
+
+        /**
+         * This gets called when we detect a brand-new-game being started from the main menu.
+         */
+        public static void StartNewGame()
+        {
+            CattleLogger.Message("Start New Game -- clearing all mod-specific player data");
+
+            saveData = new DeathRunSaveData();
+            countdownMonitor = new global::Utils.ScalarMonitor(0f);
+            playerMonitor = new global::Utils.ScalarMonitor(0f);
+
+            configDirty = 0;
+
+            murkinessDirty = false;
+
+            craftingSemaphore = false;
+            chargingSemaphore = false;
+            filterSemaphore = false;
+            scannerSemaphore = false;
+
+            cause = CAUSE_UNKNOWN;
+            causeObject = null;
+            cinematicCause = CAUSE_UNKNOWN;
+            cinematicCauseObject = null;
+        }
     }
 
 
@@ -579,5 +615,4 @@ namespace DeathRun
             }
         }
     }
-
 }

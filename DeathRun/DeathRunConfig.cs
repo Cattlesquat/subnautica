@@ -15,6 +15,7 @@ using SMLHelper.V2.Json;
 using SMLHelper.V2.Options.Attributes;
 using DeathRun.Patchers;
 using SMLHelper.V2.Options;
+using UnityEngine;
 
 namespace DeathRun
 {
@@ -68,40 +69,40 @@ namespace DeathRun
         public const string MURK_DARKEST = "Darkest";
         public const string MURK_CLEAR   = "Crazy Clear";
 
-        [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY })]
+        [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY }), OnChange(nameof(ChangedChoice))]
         public string damageTaken = INSANITY;
 
-        [Choice("Surface Air", new string[] { POISONED, IRRADIATED, BREATHABLE })]
+        [Choice("Surface Air", new string[] { POISONED, IRRADIATED, BREATHABLE }), OnChange(nameof(ChangedChoice))]
         public string surfaceAir = POISONED;
 
-        [Choice("Radiation", new string[] { RADIATION_DEATHRUN, RADIATION_HARD, NORMAL })]
+        [Choice("Radiation", new string[] { RADIATION_DEATHRUN, RADIATION_HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string radiationDepth = RADIATION_DEATHRUN;
 
-        [Choice("Nitrogen and the Bends", new string[] { DEATHRUN, HARD, NORMAL })]
+        [Choice("Nitrogen and the Bends", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string nitrogenBends = DEATHRUN;
 
-        [Choice("Personal Diving Depth", new string[] { DEATHRUN, HARD, NORMAL })]
+        [Choice("Personal Diving Depth", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string personalCrushDepth = DEATHRUN;
 
-        [Choice("Depth of Explosion", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL })]
+        [Choice("Depth of Explosion", new string[] { EXPLOSION_DEATHRUN, EXPLOSION_HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string explodeDepth = EXPLOSION_DEATHRUN;
 
-        [Choice("Explosion Time", new string[] { TIME_RANDOM, TIME_SHORT, TIME_MEDIUM, TIME_LONG })]
+        [Choice("Explosion Time", new string[] { TIME_RANDOM, TIME_SHORT, TIME_MEDIUM, TIME_LONG }), OnChange(nameof(ChangedChoice))]
         public string explosionTime = TIME_RANDOM;
 
-        [Choice("Power Costs", new string[] { DEATHRUN, HARD, NORMAL })]
+        [Choice("Power Costs", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string powerCosts = DEATHRUN;
 
-        [Choice("Power to Exit Vehicles", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL })]
+        [Choice("Power to Exit Vehicles", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string powerExitVehicles = DEATHRUN;
 
-        [Choice("Vehicle Costs", new string[] { NO_VEHICLES, DEATH_VEHICLES, HARD_VEHICLES, NORMAL })]
+        [Choice("Vehicle Costs", new string[] { NO_VEHICLES, DEATH_VEHICLES, HARD_VEHICLES, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string vehicleCosts = DEATH_VEHICLES;
 
-        [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL })]
+        [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string builderCosts = DEATHRUN;
 
-        [Choice("Creature Aggression", new string[] { DEATHRUN, HARD, NORMAL })]
+        [Choice("Creature Aggression", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string creatureAggression = DEATHRUN;
 
         //FIXME - ideally this should use the values from RandomStartPatcher's "spots" List, but if I did that I wouldn't be able to
@@ -153,9 +154,16 @@ namespace DeathRun
         public bool enableSpecialtyTanks = false;
 
 
+        private void ChangedChoice(ChoiceChangedEventArgs e)
+        {
+            DeathRun.configDirty = Time.time;
+        }
+
+
         private void ChangedMurkiness(ChoiceChangedEventArgs e)
         {
             DeathRun.murkinessDirty = true;
+            DeathRun.configDirty = Time.time;
         }
 
         private void ChangedTipOver(ToggleChangedEventArgs e)
@@ -176,6 +184,108 @@ namespace DeathRun
                     DeathRun.saveData.podSave.podTipped.copyTo(EscapePod.main.transform);
                 }
             }
+        }
+
+
+        private int quickCheck (string setting)
+        {
+            if (DEATHRUN.Equals(setting))
+            {
+                return 2;
+            } else if (HARD.Equals(setting))
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int countDeathRunSettings ()
+        {
+            int count = 0;
+
+            if (INSANITY.Equals(damageTaken))
+            {
+                count += 2;
+            } else if (HARDCORE.Equals(damageTaken))
+            {
+                count += 1;
+            }
+
+            if (POISONED.Equals(surfaceAir))
+            {
+                count += 2;
+            } else if (IRRADIATED.Equals(surfaceAir))
+            {
+                count += 1;
+            }
+
+            if (RADIATION_DEATHRUN.Equals(radiationDepth))
+            {
+                count += 2;
+            } else if (RADIATION_HARD.Equals(radiationDepth))
+            {
+                count += 1;
+            }
+
+            if (EXPLOSION_DEATHRUN.Equals(explodeDepth))
+            {
+                count += 2;
+            }
+            else if (EXPLOSION_HARD.Equals(explodeDepth))
+            {
+                count += 1;
+            }
+
+
+            if (DEATH_VEHICLES.Equals(vehicleCosts) || NO_VEHICLES.Equals(vehicleCosts))
+            {
+                count += 2;
+            }
+            else if (HARD_VEHICLES.Equals(vehicleCosts))
+            {
+                count += 1;
+            }
+
+            count += quickCheck(nitrogenBends);
+            count += quickCheck(personalCrushDepth);
+            count += quickCheck(powerCosts);
+            count += quickCheck(powerExitVehicles);
+            count += quickCheck(builderCosts);
+            count += quickCheck(creatureAggression);
+
+            if (EXORBITANT.Equals(powerExitVehicles))
+            {
+                count += 2;
+            }
+
+            return count; // of 22
+        }
+
+
+        public int countDeathRunBonuses()
+        {
+            int bonuses = 0;
+
+            if (NO_VEHICLES.Equals(vehicleCosts))
+            {
+                bonuses += 3;
+            } else if (EXORBITANT.Equals(powerExitVehicles))
+            {
+                bonuses++;
+            }
+
+            if (MURK_DARK.Equals(murkiness))
+            {
+                bonuses++;
+            } else if (MURK_DARKER.Equals(murkiness))
+            {
+                bonuses += 2;
+            } else if (MURK_DARKEST.Equals(murkiness))
+            {
+                bonuses += 3;
+            }
+
+            return bonuses;
         }
     }
 }
