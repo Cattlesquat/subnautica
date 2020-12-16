@@ -270,7 +270,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(SeaDragonMeleeAttack __instance)
         {
-            DeathRun.setCause("Stomped By Sea Treader");
+            DeathRun.setCause("Stomped by Treader");
             return true;
         }
     }
@@ -296,7 +296,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(CyclopsDestructionEvent __instance)
         {
-            DeathRun.setCause("Went Down With The Cyclops");
+            DeathRun.setCause("Went Down w/ Cyclops");
             return true;
         }
     }
@@ -309,7 +309,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRun.setCause("Deliberate Console Command");
+            DeathRun.setCause("Console Command");
             return true;
         }
     }
@@ -322,7 +322,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRun.setCause("Unfortunate Console Command");
+            DeathRun.setCause("Console Command");
             return true;
         }
     }

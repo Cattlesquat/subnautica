@@ -21,70 +21,18 @@ namespace DeathRun
     public class DeathRunUtils
     {
         public static CenterText[] centerMessages = new CenterText[] {
-            new CenterText(0, 250f),
-            new CenterText(1, 210f),
-            new CenterText(2, -210f),
-            new CenterText(3, -250f),
-            new CenterText(4, 100f)
+            new CenterText(250f),
+            new CenterText(210f),
+            new CenterText(-210f),
+            new CenterText(-250f),
+            new CenterText(100f)
         };
 
-        public class CenterText
+        public class CenterText : BasicText
         {
-            int id { get; set; } = 0;
-            float y { get; set; } = 250f;
-            ContentSizeFitter textFitter { get; set; } = null;
-            public GameObject textObject { get; set; } = null;
-            public Text textText { get; set; } = null;
-            public uGUI_TextFade textFade { get; set; } = null;
-
-            public CenterText(int set_id, float set_y)
+            public CenterText(float set_y) : base()
             {
-                id = set_id;
-                y = set_y;
-            }
-
-            public void ShowMessage(String s, float seconds)
-            {
-                if (textFade == null)
-                {
-                    InitializeText();
-                }
-
-                textFade.SetText(s);
-                textFade.SetState(true);
-                textFade.FadeOut(seconds, null);
-            }
-
-            private void InitializeText()
-            {
-                // Make our own text object
-                textObject = new GameObject("DeathRunText" + id);
-                textText = textObject.AddComponent<Text>();          // The text itself
-                textFade = textObject.AddComponent<uGUI_TextFade>(); // The uGUI's helpful automatic fade component
-
-                // This makes the text box fit the text (rather than the other way around)
-                textFitter = textObject.AddComponent<ContentSizeFitter>();
-                textFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-                textFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-                // This clones the in game "Press Any Button To Begin" message's font size, style, etc.
-                textText.font = uGUI.main.intro.mainText.text.font;
-                textText.fontSize = uGUI.main.intro.mainText.text.fontSize;
-                textText.alignment = uGUI.main.intro.mainText.text.alignment;
-                textText.material = uGUI.main.intro.mainText.text.material;
-                textText.color = uGUI.main.intro.mainText.text.color;
-
-                // This puts the text OVER the black "you are dead" screen, so it will still show for a death message
-                var go = uGUI.main.overlays.overlays[0].graphic;
-                textObject.transform.SetParent(go.transform, false); // Parents our text to the black overlay
-                textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work
-                textObject.layer += 100;                             // Set to a higher layer than the black overlay
-
-                // Sets our text's location on screen
-                textObject.transform.localPosition = new Vector3(0f, y, 0f);
-
-                // Turns our text item on
-                textObject.SetActive(true);
+                setLoc(0, set_y);
             }
         }
 
@@ -113,10 +61,7 @@ namespace DeathRun
         {
             foreach (CenterText ct in centerMessages)
             {
-                if (ct.textText)
-                {
-                    ct.textText.text = "";
-                }
+                ct.Hide();
             }
         }
 
@@ -207,6 +152,145 @@ namespace DeathRun
             }
 
             return result;
+        }
+
+        public static string sayBriefTime(TimeSpan time, bool noDays)
+        {
+            string result = "";
+            bool any = false;
+
+            if ((time.Days > 0) && !noDays)
+            {
+                result += time.Days;
+                any = true;
+            }
+
+            int hours = time.Hours + (noDays ? time.Days * 24 : 0);
+
+            if (any || (hours > 0))
+            {
+                if (any) result += ":";
+                if (any && (hours < 10)) result += "0";
+                result += hours;
+                any = true;
+            }
+
+            if (any) result += ":";
+            if (any && (time.Minutes < 10)) result += "0";
+            result += time.Minutes;
+            any = true;
+
+            if (any) result += ":";
+            if (any && (time.Seconds < 10)) result += "0";
+            result += time.Seconds;
+
+            return result;
+        }
+
+
+        public static int HIGH_SCORE_ROWS = DeathRunStats.MAX_HIGH_SCORES + 2;
+
+        public static BasicText highScoreLabel = new BasicText(-544,  130, 30);
+        public static BasicText highScoreTag   = new BasicText(-544, -220, 20);
+
+        public static HighScoreText[] highScoreNumbers  = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScoreStarts   = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScoreCauses   = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScoreTimes    = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScoreDeaths   = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScorePercents = new HighScoreText[HIGH_SCORE_ROWS];
+        public static HighScoreText[] highScoreScores   = new HighScoreText[HIGH_SCORE_ROWS];
+
+        public static void ShowHighScores()
+        {
+            if (highScoreNumbers[0] == null)
+            {
+                for (int row = 0; row < HIGH_SCORE_ROWS; row++)
+                {
+                    highScoreNumbers[row] = new HighScoreText();
+                    highScoreStarts[row] = new HighScoreText();
+                    highScoreCauses[row] = new HighScoreText();
+                    highScoreTimes[row] = new HighScoreText();
+                    highScoreDeaths[row] = new HighScoreText();
+                    highScorePercents[row] = new HighScoreText();
+                    highScoreScores[row] = new HighScoreText();
+                }
+            }
+
+
+            float y = 55;
+            for (int row = 0; row < HIGH_SCORE_ROWS; row++)
+            {
+                if (row == HIGH_SCORE_ROWS - 1)
+                {
+                    y = 80;
+                }
+
+                highScoreNumbers[row].setLoc(-930, y);
+                highScoreStarts[row].setLoc(-825, y);
+                highScoreCauses[row].setLoc(-620, y);
+                highScoreTimes[row].setLoc(-465, y);
+                highScoreDeaths[row].setLoc(-380, y);
+                highScorePercents[row].setLoc(-280, y);
+                highScoreScores[row].setLoc(-180, y);
+                y -= 25;
+            }
+
+            highScoreLabel.ShowMessage("Death Run - Best Scores");
+            highScoreTag.ShowMessage("How long can YOU survive?");
+
+            int index = 0;
+            foreach (RunData score in DeathRun.statsData.HighScores)
+            {
+                if (index == 5) break;
+                highScoreNumbers[index].ShowMessage("" + (index + 1));
+                highScoreStarts[index].ShowMessage(score.Start);
+                highScoreCauses[index].ShowMessage(score.Cause);
+
+                TimeSpan t = TimeSpan.FromSeconds(score.RunTime);
+                highScoreTimes[index].ShowMessage(sayBriefTime(t, true));
+
+                highScoreDeaths[index].ShowMessage("" + score.Deaths);
+                highScorePercents[index].ShowMessage("" + (int)(((float)score.DeathRunSettingCount / (float)22) * 100) + "% +1");
+
+                highScoreScores[index].ShowMessage("" + (index * 10000));
+
+                index++;
+                if (index == HIGH_SCORE_ROWS - 1)
+                {
+                    break;
+                }
+            }
+
+            while (index < DeathRunStats.MAX_HIGH_SCORES)
+            {
+                highScoreNumbers[index].ShowMessage("" + (index + 1));
+                index++;
+            }
+
+            highScoreNumbers[HIGH_SCORE_ROWS - 1].ShowMessage("#");
+            highScoreStarts[HIGH_SCORE_ROWS - 1].ShowMessage("START");
+            highScoreCauses[HIGH_SCORE_ROWS - 1].ShowMessage("CAUSE OF DEATH");
+            highScoreTimes[HIGH_SCORE_ROWS - 1].ShowMessage("TIME");
+            highScoreDeaths[HIGH_SCORE_ROWS - 1].ShowMessage("DEATHS");
+            highScorePercents[HIGH_SCORE_ROWS - 1].ShowMessage("DIFFICULTY");
+            highScoreScores[HIGH_SCORE_ROWS - 1].ShowMessage("SCORE");
+        }
+
+        public static void HideHighScores()
+        {
+            highScoreLabel.Hide();
+            highScoreTag.Hide();
+            for (int row = 0; row < HIGH_SCORE_ROWS; row++)
+            {
+                highScoreNumbers[row].Hide();
+                highScoreStarts[row].Hide();
+                highScoreCauses[row].Hide();
+                highScoreTimes[row].Hide();
+                highScoreDeaths[row].Hide();
+                highScorePercents[row].Hide();
+                highScoreScores[row].Hide();
+            }
         }
     }
 
@@ -625,6 +709,20 @@ namespace DeathRun
                 setDefaults();
                 SaveStats();
             }
+        }
+    }
+
+
+
+
+    public class HighScoreText : BasicText
+    {
+        public HighScoreText() : base(20)
+        {            
+        }
+
+        public HighScoreText(TextAnchor useAlign) : base(20, useAlign)
+        {
         }
     }
 

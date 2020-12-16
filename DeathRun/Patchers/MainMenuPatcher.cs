@@ -18,6 +18,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
+            DeathRunUtils.HideHighScores();
             DeathRun.StartNewGame();
             return true;
         }
@@ -31,6 +32,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
+            DeathRunUtils.HideHighScores();
             DeathRun.StartNewGame();
             return true;
         }
@@ -44,6 +46,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
+            DeathRunUtils.HideHighScores();
             DeathRun.StartNewGame();
             return true;
         }
@@ -57,8 +60,59 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
+            DeathRunUtils.HideHighScores();
             DeathRun.StartNewGame();
             return true;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(uGUI_MainMenu))]
+    [HarmonyPatch("ShowPrimaryOptions")]
+    internal class ShowPrimaryOptionsPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(bool show)
+        {
+            if (show)
+            {
+                CattleLogger.Message("Show High Scores");
+                ErrorMessage.AddMessage("Show High Scores");
+                DeathRunUtils.ShowHighScores();
+            }
+            else
+            {
+                CattleLogger.Message("Hide High Scores");
+                ErrorMessage.AddMessage("Hide High Scores");
+                DeathRunUtils.HideHighScores();
+            }            
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(MainMenuLoadButton))]
+    [HarmonyPatch("Load")]
+    internal class LoadButtonPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(MainMenuLoadButton __instance)
+        {
+            if (!__instance.IsEmpty()) 
+            {
+                DeathRunUtils.HideHighScores();
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(SceneCleaner))]
+    [HarmonyPatch("Open")]
+    internal class SceneCleanerPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            DeathRunUtils.ShowHighScores();
         }
     }
 }

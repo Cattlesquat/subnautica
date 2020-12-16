@@ -408,7 +408,7 @@ namespace DeathRun.Patchers
         {
             if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 15))
             {
-                ErrorMessage.AddMessage(DeathRunUtils.centerMessages[0].textText.text);
+                ErrorMessage.AddMessage(DeathRunUtils.centerMessages[0].getText());
 
                 if (DeathRun.saveData.playerSave.numDeaths > 1)
                 {
@@ -703,7 +703,7 @@ namespace DeathRun.Patchers
         public static void Postfix(uGUI_HardcoreGameOver __instance)
         {
             // Use the time-of-death message we will have just queued as our "Game Over" message.
-            __instance.text.text = DeathRunUtils.centerMessages[0].textText.text + " Game Over.";
+            __instance.text.text = DeathRunUtils.centerMessages[0].getText() + " Game Over.";
         }
     }
 
