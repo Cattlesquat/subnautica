@@ -76,14 +76,10 @@ namespace DeathRun.Patchers
         {
             if (show)
             {
-                CattleLogger.Message("Show High Scores");
-                ErrorMessage.AddMessage("Show High Scores");
                 DeathRunUtils.ShowHighScores();
             }
             else
             {
-                CattleLogger.Message("Hide High Scores");
-                ErrorMessage.AddMessage("Hide High Scores");
                 DeathRunUtils.HideHighScores();
             }            
             return true;

@@ -17,7 +17,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_CYCLOPS);
+            DeathRun.saveData.runData.updateVehicle(RunData.BEST_CYCLOPS, RunData.FLAG_CYCLOPS);
         }
     }
 
@@ -29,7 +29,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_EXOSUIT);
+            DeathRun.saveData.runData.updateVehicle(RunData.BEST_EXOSUIT, RunData.FLAG_EXOSUIT);
         }
     }
 
@@ -40,7 +40,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAMOTH);
+            DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAMOTH, RunData.FLAG_SEAMOTH);
         }
     }
 
@@ -53,8 +53,19 @@ namespace DeathRun.Patchers
         {
             if (__instance.logic.craftingTechType == TechType.Seaglide)
             {
-                DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAGLIDE);
+                DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAGLIDE, RunData.FLAG_SEAGLIDE);
             }
+
+            if (__instance.logic.craftingTechType == TechType.Builder)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_HABITAT);
+            }
+
+            if (__instance.logic.craftingTechType == TechType.HatchingEnzymes)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_CURE);
+            }
+
         }
     }
 

@@ -187,7 +187,6 @@ namespace DeathRun
             return result;
         }
 
-
         public static int HIGH_SCORE_ROWS = DeathRunStats.MAX_HIGH_SCORES + 2;
 
         public static BasicText highScoreLabel = new BasicText(-544,  130, 30);
@@ -207,13 +206,13 @@ namespace DeathRun
             {
                 for (int row = 0; row < HIGH_SCORE_ROWS; row++)
                 {
-                    highScoreNumbers[row] = new HighScoreText();
-                    highScoreStarts[row] = new HighScoreText();
-                    highScoreCauses[row] = new HighScoreText();
-                    highScoreTimes[row] = new HighScoreText();
-                    highScoreDeaths[row] = new HighScoreText();
-                    highScorePercents[row] = new HighScoreText();
-                    highScoreScores[row] = new HighScoreText();
+                    highScoreNumbers[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScoreStarts[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScoreCauses[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScoreTimes[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScoreDeaths[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScorePercents[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                    highScoreScores[row] = new HighScoreText(TextAnchor.MiddleCenter);
                 }
             }
 
@@ -236,13 +235,14 @@ namespace DeathRun
                 y -= 25;
             }
 
+            highScoreLabel.setAlign(TextAnchor.MiddleCenter);
             highScoreLabel.ShowMessage("Death Run - Best Scores");
+            highScoreTag.setAlign(TextAnchor.MiddleCenter);
             highScoreTag.ShowMessage("How long can YOU survive?");
 
             int index = 0;
             foreach (RunData score in DeathRun.statsData.HighScores)
             {
-                if (index == 5) break;
                 highScoreNumbers[index].ShowMessage("" + (index + 1));
                 highScoreStarts[index].ShowMessage(score.Start);
                 highScoreCauses[index].ShowMessage(score.Cause);
@@ -251,9 +251,29 @@ namespace DeathRun
                 highScoreTimes[index].ShowMessage(sayBriefTime(t, true));
 
                 highScoreDeaths[index].ShowMessage("" + score.Deaths);
-                highScorePercents[index].ShowMessage("" + (int)(((float)score.DeathRunSettingCount / (float)22) * 100) + "% +1");
 
-                highScoreScores[index].ShowMessage("" + (index * 10000));
+                string msg = "" + (int)(((float)score.DeathRunSettingCount / (float)22) * 100) + "%";
+
+                if (score.DeathRunSettingBonus > 0)
+                {
+                    msg += " +" + score.DeathRunSettingBonus;
+                }
+
+                highScorePercents[index].ShowMessage(msg);
+
+                highScoreScores[index].ShowMessage("" + score.Score);
+
+                if (index == DeathRun.statsData.RecentIndex)
+                {
+                    Color c = (index == DeathRunStats.MAX_HIGH_SCORES) ? Color.red : Color.green;
+                    highScoreNumbers[index].setColor(c);
+                    highScoreStarts[index].setColor(c);
+                    highScoreCauses[index].setColor(c);
+                    highScoreTimes[index].setColor(c);
+                    highScoreDeaths[index].setColor(c);
+                    highScorePercents[index].setColor(c);
+                    highScoreScores[index].setColor(c);
+                }
 
                 index++;
                 if (index == HIGH_SCORE_ROWS - 1)
@@ -304,15 +324,25 @@ namespace DeathRun
         public int Deaths { get; set; }
         public int Score { get; set; }
         public int BestVehicle { get; set; }
+        public int VehicleFlags { get; set; }
         public int DeathRunSettingCount { get; set; }
         public int DeathRunSettingBonus { get; set; }
         public bool Victory { get; set; }
+
+        public const int MAX_DEATHRUN_SETTING_COUNT = 22;
 
         // I coded these casually and left some space between them in case there's desire to hack something else in later
         public const int BEST_SEAGLIDE = 10;
         public const int BEST_SEAMOTH  = 20;
         public const int BEST_EXOSUIT  = 30;
         public const int BEST_CYCLOPS  = 40;
+
+        public const int FLAG_SEAGLIDE = 0x01;
+        public const int FLAG_SEAMOTH  = 0x02;
+        public const int FLAG_EXOSUIT  = 0x04;
+        public const int FLAG_CYCLOPS  = 0x08;
+        public const int FLAG_HABITAT  = 0x10;
+        public const int FLAG_CURE     = 0x20;
 
         public RunData()
         {
@@ -325,6 +355,7 @@ namespace DeathRun
 
             Score = 0;
             BestVehicle = 0;
+            VehicleFlags = 0;
             Deepest = 0;
 
             DeathRunSettingCount = -1;
@@ -372,13 +403,15 @@ namespace DeathRun
             Victory = victory;
 
             countSettings();
+            calcScore();
 
             DeathRun.statsData.addRun(this);
         }
 
 
-        public void updateVehicle (int vehicle)
+        public void updateVehicle (int vehicle, int flag)
         {
+            VehicleFlags |= flag;
             if (vehicle > BestVehicle)
             {
                 BestVehicle = vehicle;
@@ -386,9 +419,87 @@ namespace DeathRun
         }
 
 
+        public int calcScore()
+        {
+            float timeVal = 0;
+            float timeLeft = RunTime;
+            do
+            {
+                if (timeLeft <= 3600)
+                {
+                    timeVal += timeLeft;
+                    break;
+                }
+                else
+                {
+                    timeVal += 3600;
+                    timeLeft = (timeLeft - 3600) / 2;
+                }
+            } while (timeLeft > 0);
+
+            float vehicleVal = 0;
+            if ((VehicleFlags & FLAG_SEAGLIDE) != 0)
+            {
+                vehicleVal += 1000; 
+            }
+            if ((VehicleFlags & FLAG_SEAMOTH) != 0)
+            {
+                vehicleVal += 5000;
+            }
+            if ((VehicleFlags & FLAG_EXOSUIT) != 0)
+            {
+                vehicleVal += 7500;
+            }
+            if ((VehicleFlags & FLAG_CYCLOPS) != 0)
+            {
+                vehicleVal += 15000;
+            }
+            if ((VehicleFlags & FLAG_HABITAT) != 0)
+            {
+                vehicleVal += 4000;
+            }
+            if ((VehicleFlags & FLAG_CURE) != 0)
+            {
+                vehicleVal += 25000;
+            }
+
+            float victoryVal = 0;
+            if (Victory)
+            {
+                victoryVal = 35000 - timeVal; // SHORTER victory runs are better
+
+                timeVal = 0;
+                if (victoryVal < 20000) victoryVal = 20000;                
+
+                if ((VehicleFlags & (FLAG_SEAMOTH + FLAG_EXOSUIT + FLAG_CYCLOPS)) == 0)
+                {
+                    victoryVal += 30000;
+                }
+            }
+
+            float totalVal = timeVal + vehicleVal + victoryVal;
+
+            if (Deaths > 1)
+            {
+                totalVal = totalVal / Deaths;
+            }
+
+            int numerator = DeathRunSettingCount + DeathRunSettingBonus / 2;
+
+            Score = (int)(totalVal * numerator / MAX_DEATHRUN_SETTING_COUNT);
+
+            if (Score > 99999) Score = 99999;
+
+            return Score;
+        }
+
+
         public bool betterThan (RunData other)
         {
-            // Victory always beats defeat
+            // Mostly at this point use score
+            if (Score > other.Score) return true;
+
+            // Victory beats defeat
             if (Victory && !other.Victory) return true;
             if (other.Victory) return false;
 
@@ -400,7 +511,6 @@ namespace DeathRun
             }
 
             // Otherwise we are comparing two defeats. In death, longer survival is best.
-
             if ((Deaths > 0) && other.Deaths > 0)
             {
                 return RunTime / Deaths > other.RunTime / other.Deaths;
@@ -600,6 +710,12 @@ namespace DeathRun
         public void JustLoadedStats()
         {
             ClearExtraScores();
+
+            foreach (RunData run in HighScores)
+            {
+                run.calcScore();
+            }
+
             RecentIndex = -1; // When reloading, we clear the "my most recent run" pointer.
         }
 
