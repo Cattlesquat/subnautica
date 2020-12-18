@@ -9,9 +9,6 @@
  */
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace DeathRun.Patchers
@@ -139,7 +136,7 @@ namespace DeathRun.Patchers
         }
 
         /**
-         * This is overriden as the breath period on surface would be a very large value otherwise
+         * This is overridden as the breath period on surface would be a very large value otherwise
          */
         [HarmonyPostfix]
         public static void GetBreathPeriod(ref float __result)
@@ -209,6 +206,8 @@ namespace DeathRun.Patchers
     /**
      * I find it endlessly irritating that it won't let you deploy the pump when you're on the surface. 
      * It's not "challenging gameplay" it's just a bad interface. So this fixes it.
+     * 
+     * ... except apparently the current Qmod version of Harmony doesn't support [HarmonyReversePatch] yet.
      */
     //[HarmonyPatch(typeof(PipeSurfaceFloater))]
     //[HarmonyPatch("OnRightHandDown")]
@@ -231,5 +230,4 @@ namespace DeathRun.Patchers
     //        throw new NotImplementedException("Stub - should actually end up running DropTool.OnRightHandDown");
     //    }
     //}
-
 }

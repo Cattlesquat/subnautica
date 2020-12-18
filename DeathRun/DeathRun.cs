@@ -86,7 +86,7 @@ namespace DeathRun
         public static void Patch()
         {
             CattleLogger.setModName(modName);
-            CattleLogger.PatchStart("1.2.1");
+            CattleLogger.PatchStart("1.3.2");
 
             try
             {
@@ -615,7 +615,7 @@ namespace DeathRun
                 DeathRunUtils.CenterMessage("PATCH FAILED", 10, 4);
             }
 
-            DeathRunUtils.ShowHighScores();
+            DeathRunUtils.ShowHighScores(true);
         }
     }
 }

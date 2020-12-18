@@ -90,6 +90,22 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
+            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                DeathRun.saveData.podSave.podGravity  = false;
+                DeathRun.saveData.podSave.podSinking  = false;
+                DeathRun.saveData.podSave.podAnchored = false;
+                DeathRun.saveData.podSave.spotPicked  = true;
+                DeathRun.saveData.startSave = new StartSpot(0, 0, "Safe Shallows");
+
+                DeathRunUtils.CenterMessage("DEATH RUN", 10, 2);
+                DeathRunUtils.CenterMessage("Start: \"" + DeathRun.saveData.startSave.message + "\"", 10, 3);
+
+                CattleLogger.Message("Start: " + DeathRun.saveData.startSave.message);
+
+                return true;
+            }
+
             int picker = UnityEngine.Random.Range(0, spots.Count);            
             StartSpot spot = spots[picker];
 

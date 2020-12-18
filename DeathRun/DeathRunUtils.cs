@@ -189,8 +189,8 @@ namespace DeathRun
 
         public static int HIGH_SCORE_ROWS = DeathRunStats.MAX_HIGH_SCORES + 2;
 
-        public static BasicText highScoreLabel = new BasicText(-544,  130, 30);
-        public static BasicText highScoreTag   = new BasicText(-544, -220, 20);
+        public static BasicText highScoreLabel = new BasicText(-544,  150, 30);
+        public static BasicText highScoreTag   = new BasicText(-544, -200, 20);
 
         public static HighScoreText[] highScoreNumbers  = new HighScoreText[HIGH_SCORE_ROWS];
         public static HighScoreText[] highScoreStarts   = new HighScoreText[HIGH_SCORE_ROWS];
@@ -200,7 +200,9 @@ namespace DeathRun
         public static HighScoreText[] highScorePercents = new HighScoreText[HIGH_SCORE_ROWS];
         public static HighScoreText[] highScoreScores   = new HighScoreText[HIGH_SCORE_ROWS];
 
-        public static void ShowHighScores()
+        public static bool wouldBeShowing = false; // If true, then only reason High Scores aren't currently showing is that they are hidden by the preference
+
+        public static void ShowHighScores(bool should)
         {
             if (highScoreNumbers[0] == null)
             {
@@ -216,13 +218,24 @@ namespace DeathRun
                 }
             }
 
+            // When "should" is false, it means we're being called because of an Options/Preference change, not a menu state change
+            if (!should && !wouldBeShowing) {
+                return;
+            }
 
-            float y = 55;
+            wouldBeShowing = true;
+
+            if (!DeathRun.config.showHighScores)
+            {
+                return;
+            }
+
+            float y = 75;
             for (int row = 0; row < HIGH_SCORE_ROWS; row++)
             {
                 if (row == HIGH_SCORE_ROWS - 1)
                 {
-                    y = 80;
+                    y = 100;
                 }
 
                 highScoreNumbers[row].setLoc(-930, y);
@@ -252,7 +265,7 @@ namespace DeathRun
 
                 highScoreDeaths[index].ShowMessage("" + score.Deaths);
 
-                string msg = "" + (int)(((float)score.DeathRunSettingCount / (float)22) * 100) + "%";
+                string msg = "" + (int)(((float)score.DeathRunSettingCount / (float)RunData.MAX_DEATHRUN_SETTING_COUNT) * 100) + "%";
 
                 if (score.DeathRunSettingBonus > 0)
                 {
@@ -297,8 +310,15 @@ namespace DeathRun
             highScoreScores[HIGH_SCORE_ROWS - 1].ShowMessage("SCORE");
         }
 
-        public static void HideHighScores()
+        public static void HideHighScores(bool should)
         {
+            // When "should" is false, it means we're being called because of an Options/Preference change, not a menu state change
+            // When "should" is true, it means the actual menu state has changed
+            if (should)
+            {
+                wouldBeShowing = false;
+            }
+
             highScoreLabel.Hide();
             highScoreTag.Hide();
             for (int row = 0; row < HIGH_SCORE_ROWS; row++)
@@ -329,7 +349,7 @@ namespace DeathRun
         public int DeathRunSettingBonus { get; set; }
         public bool Victory { get; set; }
 
-        public const int MAX_DEATHRUN_SETTING_COUNT = 22;
+        public const int MAX_DEATHRUN_SETTING_COUNT = 24;
 
         // I coded these casually and left some space between them in case there's desire to hack something else in later
         public const int BEST_SEAGLIDE = 10;

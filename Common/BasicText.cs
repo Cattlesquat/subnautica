@@ -413,7 +413,7 @@ namespace Common
 
             textObject.transform.SetParent(uGUI.main.screenCanvas.transform, false); // Parents our text to the black overlay
             textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work                    
-            textObject.layer += 100;                             // Set to a higher layer than the black overlay
+            textObject.layer = 31;                               // Set to what seems to be Subnautica's highest layer
 
             doAlignment();
         }

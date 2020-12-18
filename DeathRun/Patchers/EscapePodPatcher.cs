@@ -22,10 +22,10 @@ namespace DeathRun.Patchers
      */
     public class PodSaveData
     {
-        public Trans podTransform { get; set; } = new Trans(); // Pod's correct transform
-        public Trans podPrev { get; set; } = new Trans();      // Pod's previous transform
-        public Trans podTipped { get; set; } = new Trans();    // Pod when tipped over
-        public Trans podStraight { get; set; } = new Trans();  // Pod when upright
+        public Trans podTransform { get; set; }   // Pod's correct transform
+        public Trans podPrev { get; set; }        // Pod's previous transform
+        public Trans podTipped { get; set; }      // Pod when tipped over
+        public Trans podStraight { get; set; }    // Pod when upright
         public bool podAnchored { get; set; } // True if pod has reached "final resting position" on bottom and shouldn't move again
         public bool podSinking { get; set; }  // True if "pod sinking" has initiated (after cinematics, etc)
         public bool podGravity { get; set; }  // True if pod *should* sink (as opposed to float on surface)
@@ -35,6 +35,10 @@ namespace DeathRun.Patchers
 
         public PodSaveData()
         {
+            podTransform = new Trans();
+            podPrev = new Trans();
+            podTipped = new Trans();
+            podStraight = new Trans();
             setDefaults();
         }
 
@@ -57,6 +61,11 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]            
         public static bool Prefix(ref Vector3 position, EscapePod __instance) 
         {
+            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                return true;
+            }
+
             __instance.transform.position = position;
             __instance.anchorPosition = position;
             __instance.RespawnPlayer();
@@ -114,6 +123,11 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance)
         {
+            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                return true;
+            }
+
             WorldForces wf = __instance.GetComponent<WorldForces>();
             float depth = Ocean.main.GetDepthOf(__instance.gameObject);
 
@@ -266,6 +280,11 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
+            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                return;
+            }
+
             if (DeathRun.saveData.podSave.podAnchored || !DeathRun.saveData.podSave.podGravity)
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
@@ -307,22 +326,26 @@ namespace DeathRun.Patchers
          */
         public static void JustLoadedGame()
         {
-            WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
-            float depth = Ocean.main.GetDepthOf(EscapePod.main.gameObject);
+            if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
+                float depth = Ocean.main.GetDepthOf(EscapePod.main.gameObject);
 
-            if (DeathRun.saveData.podSave.podSinking)
-            {
-                wf.aboveWaterGravity = 9.81f;
-            }
+                if (DeathRun.saveData.podSave.podSinking)
+                {
+                    wf.aboveWaterGravity = 9.81f;
+                }
 
-            if (DeathRun.saveData.podSave.podAnchored)
-            {
-                DeathRun.saveData.podSave.podTransform.copyTo(EscapePod.main.transform);
-                EscapePod.main.rigidbodyComponent.isKinematic = true;
-                wf.underwaterGravity = 0.0f;
-            } else
-            {
-                wf.underwaterGravity = 9.81f;
+                if (DeathRun.saveData.podSave.podAnchored)
+                {
+                    DeathRun.saveData.podSave.podTransform.copyTo(EscapePod.main.transform);
+                    EscapePod.main.rigidbodyComponent.isKinematic = true;
+                    wf.underwaterGravity = 0.0f;
+                }
+                else
+                {
+                    wf.underwaterGravity = 9.81f;
+                }
             }
 
             if (EscapePod.main.liveMixin.GetHealthFraction() < 0.99f)
@@ -405,26 +428,43 @@ namespace DeathRun.Patchers
                     string content = Language.main.Get("IntroEscapePod3Content");
                     string bonus;
 
-                    if (DeathRun.saveData.podSave.podAnchored)
+                    if (DeathRun.saveData.podSave.podAnchored || Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
                     {
-                        if (DeathRun.config.podStayUpright)
+                        if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
                         {
-                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
-                        } 
-                        else
-                        {
-                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: " + (blinkOn ? "FAILED" : ""));
-                        }                        
-                    } 
-                    else
-                    {
-                        if (!blinkOn)
-                        {
-                            content = content.Replace("Flotation Devices: FAILED", "Flotation Devices: ");
+                            content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: FAILED");
+
+                            if (DeathRun.config.podStayUpright)
+                            {
+                                content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
+                            }
+                            else
+                            {
+                                content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: " + (blinkOn ? "FAILED" : ""));
+                            }
                         }
                     }
+                    else
+                    {
+                        content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: " + (blinkOn ? "FAILED" : ""));
+                    }
 
-                    bonus = "\n\n- Atmosphere: " + (blinkOn ? "NOT BREATHABLE" : "") + "\n- Recommend Air Pumps to Filter Oxygen";
+                    if (!Config.NORMAL.Equals(DeathRun.config.creatureAggression))
+                    {
+                        content = content.Replace("Uncharted ocean planet 4546B", "Planet 4546B: HOSTILE FAUNA");
+                    }
+
+                    if (BreathingPatcher.isSurfaceAirPoisoned())
+                    {
+                        content = content.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
+                    }
+
+                    bonus = "";
+
+                    if (BreathingPatcher.isSurfaceAirPoisoned())
+                    {
+                        bonus += "\n\n- Atmosphere: " + (blinkOn ? "NOT BREATHABLE" : "") + "\n- Recommend Air Pumps to Filter Oxygen";
+                    }
                         
                     if (DeathRunUtils.isExplosionClockRunning())
                     {
@@ -443,9 +483,17 @@ namespace DeathRun.Patchers
                 {
                     string content = Language.main.Get("IntroEscapePod4Content");
 
-                    if (DeathRun.config.podStayUpright)
+                    if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
                     {
-                        content = content.Replace("Inertial Stabilizers: FAILED", "Inertial Stabilizers: DEPLOYED");
+                        content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: FAILED");
+
+                        if (DeathRun.config.podStayUpright)
+                        {
+                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
+                        } else
+                        {
+                            content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: FAILED");
+                        }
                     }
 
                     string bonus = "";

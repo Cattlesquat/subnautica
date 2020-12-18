@@ -18,7 +18,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRunUtils.HideHighScores();
+            DeathRunUtils.HideHighScores(true);
             DeathRun.StartNewGame();
             return true;
         }
@@ -32,7 +32,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRunUtils.HideHighScores();
+            DeathRunUtils.HideHighScores(true);
             DeathRun.StartNewGame();
             return true;
         }
@@ -46,7 +46,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRunUtils.HideHighScores();
+            DeathRunUtils.HideHighScores(true);
             DeathRun.StartNewGame();
             return true;
         }
@@ -60,7 +60,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRunUtils.HideHighScores();
+            DeathRunUtils.HideHighScores(true);
             DeathRun.StartNewGame();
             return true;
         }
@@ -76,11 +76,11 @@ namespace DeathRun.Patchers
         {
             if (show)
             {
-                DeathRunUtils.ShowHighScores();
+                DeathRunUtils.ShowHighScores(true);
             }
             else
             {
-                DeathRunUtils.HideHighScores();
+                DeathRunUtils.HideHighScores(true);
             }            
             return true;
         }
@@ -95,7 +95,7 @@ namespace DeathRun.Patchers
         {
             if (!__instance.IsEmpty()) 
             {
-                DeathRunUtils.HideHighScores();
+                DeathRunUtils.HideHighScores(true);
             }
             return true;
         }
@@ -108,7 +108,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRunUtils.ShowHighScores();
+            DeathRunUtils.ShowHighScores(true);
         }
     }
 }

@@ -291,20 +291,20 @@ namespace DeathRun.Patchers
 
             // Update Escape pod "status screen text" for new situation
             // ... pre-secondary-system fix
-            original = Language.main.Get("IntroEscapePod3Content");
-            updated = original.Replace("DEPLOYED", "FAILED");
+            //original = Language.main.Get("IntroEscapePod3Content");
+            //updated = original.Replace("DEPLOYED", "FAILED");
             //updated = updated.Replace("Integrity: OK", "Stabilizers: FAILED");
-            LanguageHandler.SetLanguageLine("IntroEscapePod3Content", updated);
+            //LanguageHandler.SetLanguageLine("IntroEscapePod3Content", updated);
 
             // Update Escape pod "status screen text" for new situation
             // ... post-secondary-system fix
             LanguageHandler.SetLanguageLine("IntroEscapePod4Header", "CONDITION YELLOW");
-            original = Language.main.Get("IntroEscapePod4Content");
-            updated = original.Replace("DEPLOYED", "FAILED");
-            updated = updated.Replace("Hull Integrity: OK", "Inertial Stabilizers: FAILED");
-            updated = updated.Replace("Uncharted ocean planet 4546B", "Planet 4546B: HOSTILE FAUNA");
-            updated = updated.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
-            LanguageHandler.SetLanguageLine("IntroEscapePod4Content", updated);
+            //original = Language.main.Get("IntroEscapePod4Content");
+            //updated = original.Replace("DEPLOYED", "FAILED");
+            //updated = updated.Replace("Hull Integrity: OK", "Inertial Stabilizers: FAILED");
+            //updated = updated.Replace("Uncharted ocean planet 4546B", "Planet 4546B: HOSTILE FAUNA");
+            //updated = updated.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
+            //LanguageHandler.SetLanguageLine("IntroEscapePod4Content", updated);
 
             // Forces the language handler to restart with our updates
             Language.main.SetCurrentLanguage(Language.main.GetCurrentLanguage());

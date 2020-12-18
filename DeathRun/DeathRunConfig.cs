@@ -45,6 +45,7 @@ namespace DeathRun
         public const string NORMAL     = "Easy";
 
         public const string RANDOM     = "RANDOM";
+        public const string BASIC_GAME = "BASIC GAME";
 
         public const string AGGRESSIVE = "Death Run";
 
@@ -109,7 +110,7 @@ namespace DeathRun
         //use this easy-to-use "[Choice(...)]" annotation, so I've just hacked this horrible thing in (where the strings need to correspond
         //precisely with the ones in the other list). If some kind soul, Knowledgeable in the Ways Of SMLHelper, were to push a PR that did this,
         //I would gratefully merge it.
-        [Choice("Start Location", new string[] { RANDOM,
+        [Choice("Start Location", new string[] { RANDOM, BASIC_GAME, 
             "Bullseye",
             "Cul-de-Sac",
             "Rolled In",
@@ -147,6 +148,9 @@ namespace DeathRun
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
 
+        [Toggle("Show High Score List"), OnChange(nameof(ChangedHighScores))]
+        public bool showHighScores = true;
+
         [Toggle("Don't Tip Escape Pod Over"), OnChange(nameof(ChangedTipOver))]
         public bool podStayUpright = false;
 
@@ -166,8 +170,26 @@ namespace DeathRun
             DeathRun.configDirty = Time.time;
         }
 
+
+        private void ChangedHighScores (ToggleChangedEventArgs e)
+        {
+            if (showHighScores)
+            {
+                DeathRunUtils.ShowHighScores(false);
+            }
+            else
+            {
+                DeathRunUtils.HideHighScores(false);
+            }
+        }
+
         private void ChangedTipOver(ToggleChangedEventArgs e)
         {
+            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            {
+                return;
+            }
+
             if (podStayUpright)
             {
                 if (DeathRun.saveData.podSave.podStraight.isInitialized())
@@ -258,7 +280,12 @@ namespace DeathRun
                 count += 2;
             }
 
-            return count; // of 22
+            if (!BASIC_GAME.Equals(startLocation))
+            {
+                count += 2;
+            }
+
+            return count; // of 24
         }
 
 
