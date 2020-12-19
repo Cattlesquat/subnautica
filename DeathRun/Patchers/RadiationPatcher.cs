@@ -227,6 +227,11 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static bool Update(RadiationsScreenFXController __instance)
         {
+            if ((Player.main == null) || (LeakingRadiation.main == null))
+            {
+                return true;
+            }
+
             float distance = (Player.main.transform.position - LeakingRadiation.main.transform.position).magnitude;
             float backgroundRads;
 

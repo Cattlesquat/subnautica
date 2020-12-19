@@ -183,8 +183,20 @@ namespace DeathRun
             }
         }
 
+
+        private void ChangedTipOverX(ToggleChangedEventArgs e)
+        {
+
+        }
+
         private void ChangedTipOver(ToggleChangedEventArgs e)
         {
+            if (DeathRun.saveData == null) return;
+            if (DeathRun.saveData.podSave == null) return;
+            if (DeathRun.saveData.podSave.podStraight == null) return;
+            if (DeathRun.saveData.podSave.podTipped == null) return;
+            if (EscapePod.main == null) return;
+
             if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
             {
                 return;
