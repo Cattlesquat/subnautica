@@ -39,6 +39,12 @@ namespace Common
             cloneFont = true;
             cloneStyle = true;
             cloneMaterial = true;
+            overBlackScreen = false;
+        }
+
+        public BasicText(bool overBlack) : this()
+        {            
+            overBlackScreen = overBlack;
         }
 
         public BasicText(int set_x, int set_y) : this()
@@ -406,20 +412,26 @@ namespace Common
             // This puts the text OVER the black "you are dead" screen, so it will still show for a death message
             // One could of course get into parenting this object to different things, in different layers, but for
             // basic purposes we're creating text that will "definitely show up".
-            //var go = uGUI.main.overlays.overlays[0].graphic;
-            //textObject.transform.SetParent(go.transform, false); // Parents our text to the black overlay
-            //textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work                    
-            //textObject.layer += 100;                             // Set to a higher layer than the black overlay
-
-            textObject.transform.SetParent(uGUI.main.screenCanvas.transform, false); // Parents our text to the black overlay
-            textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work                    
-            textObject.layer = 31;                               // Set to what seems to be Subnautica's highest layer
+            if (overBlackScreen)
+            {
+                var go = uGUI.main.overlays.overlays[0].graphic;
+                textObject.transform.SetParent(go.transform, false); // Parents our text to the black overlay
+                textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work                    
+                textObject.layer++;                                  // Set to a higher layer than the black overlay
+            }
+            else
+            {
+                textObject.transform.SetParent(uGUI.main.screenCanvas.transform, false); // Parents our text to the black overlay
+                textText.canvas.overrideSorting = true;              // Turn on canvas sort override so the layers will work                    
+                textObject.layer = 31;                               // Set to what seems to be Subnautica's highest layer
+            }
 
             doAlignment();
         }
 
         protected float x { get; set; } = 0;          // X position anchor
         protected float y { get; set; } = 210f;       // Y position anchor (defaults to a comfortable centered about 1/3 from top of screen)
+        protected bool overBlackScreen { get; set; }  // True if should forced be over the "death" screen
         protected bool cloneAlign { get; set; }       // True if we're cloning Subnautica's "Press Any Button To Begin" alignment
         protected bool cloneColor { get; set; }       // True if we're cloning Subnautica's "Press Any Button To Begin" color
         protected bool cloneSize { get; set; }        // True if we're cloning Subnautica's "Press Any Button To Begin" fontsize

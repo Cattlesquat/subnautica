@@ -72,8 +72,19 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix (ref NitrogenLevel __instance)
         {
+            if (DeathRun.murkinessDirty)
+            {
+                WaterBiomeManager.main.Rebuild();
+                DeathRun.murkinessDirty = false;
+            }
+
             // Nitrogen tracking doesn't start until player leaves the pod (for underwater starts)
             if (!EscapePod.main.topHatchUsed && !EscapePod.main.bottomHatchUsed)
+            {
+                return false;
+            }
+
+            if (DeathRun.playerIsDead)
             {
                 return false;
             }
@@ -105,6 +116,15 @@ namespace DeathRun.Patchers
                                    Player.main.GetVehicle() is Exosuit;
 
                 bool isSeaglide = (Player.main.motorMode == Player.MotorMode.Seaglide);
+
+                if (!isSeaglide)
+                {
+                    Pickupable held = Inventory.main.GetHeld();
+                    if (held != null && held.gameObject.GetComponent<Seaglide>() != null)
+                    {
+                        isSeaglide = true;
+                    }
+                }
 
                 float ascent = __instance.GetComponent<Rigidbody>().velocity.y;  // Player's current positive Y velocity is the ascent rate (fastest seems somewhat above 6)
                 DeathRun.saveData.nitroSave.ascentRate = ((DeathRun.saveData.nitroSave.ascentRate * 29) + ascent) / 30;                  // Average based on 30 frames-per-second                
@@ -152,8 +172,10 @@ namespace DeathRun.Patchers
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
                     if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather)) 
                     {
-                        if (baselineSafe - (depth / 4) <= DeathRun.saveData.nitroSave.safeDepth) { 
-                            baselineSafe = baselineSafe - (depth / 4);
+                        float adjustment = depth * (2 + (!isSwimming ? 1 : 0) + (isSeaglide ? 1 : 0) + ((headSlot == TechType.Rebreather) ? 1 : 0)) / 8;
+
+                        if (baselineSafe - adjustment <= DeathRun.saveData.nitroSave.safeDepth) { 
+                            baselineSafe = baselineSafe - adjustment;
                         }
 
                         if (DeathRun.saveData.nitroSave.atPipe)
@@ -334,13 +356,7 @@ namespace DeathRun.Patchers
                     }
                 }
 
-                HUDController(__instance, (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
-            }
-
-            if (DeathRun.murkinessDirty)
-            {
-                WaterBiomeManager.main.Rebuild();
-                DeathRun.murkinessDirty = false;
+                HUDController(__instance, false); // (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
             }
 
             return false;

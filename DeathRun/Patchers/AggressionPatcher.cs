@@ -51,6 +51,11 @@ namespace DeathRun.Patchers
                 }
             }
 
+            if (Ocean.main.GetDepthOf(Player.main.gameObject) <= 5)
+            {
+                if (maxSearchRings > __instance.maxSearchRings + 1) maxSearchRings = __instance.maxSearchRings + 1;
+            }
+
             IEcoTarget ecoTarget = EcoRegionManager.main.FindNearestTarget(__instance.targetType, __instance.transform.position, __instance.isTargetValidFilter, maxSearchRings);
             if (ecoTarget == null)
             {
@@ -128,7 +133,7 @@ namespace DeathRun.Patchers
             }
 
             if ((((target != Player.main.gameObject) || Player.main.IsInside()) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
-                (Ocean.main.GetDepthOf(target) <= 0) ||                                     // Keeps reapers from eating us up on land
+                (Ocean.main.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
                 (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
                 (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
                 (CraftData.GetTechType(__instance.gameObject) == TechType.Crash))           // Not the explody fish (more fun from ambush!)
@@ -176,32 +181,48 @@ namespace DeathRun.Patchers
                 if (ecoTarget != null && !ecoTarget.Equals(null))
                 {
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
+
                     if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside()) || (ecoTarget.GetGameObject().GetComponent<Vehicle>()))
                     {
-                        if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+
+                        bool feeding = false;
+                        if (ecoTarget.GetGameObject() == Player.main.gameObject)
                         {
-                            if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                            Pickupable held = Inventory.main.GetHeld();
+                            if (held != null && (held.GetTechType() == TechType.Peeper))
                             {
-                                sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
-                            }
-                            else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
-                            {
-                                sqrMagnitude /= 4;
-                            }  
-                            else
-                            {
-                                sqrMagnitude /= 2;
+                                feeding = true;
                             }
                         }
-                        else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+
+                        float depth = Ocean.main.GetDepthOf(ecoTarget.GetGameObject());
+                        if ((depth > 5) && !feeding)
                         {
-                            if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
                             {
-                                sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
+                                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                                {
+                                    sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
+                                }
+                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                                {
+                                    sqrMagnitude /= 4;
+                                }
+                                else
+                                {
+                                    sqrMagnitude /= 2;
+                                }
                             }
-                            else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                            else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
                             {
-                                sqrMagnitude /= 2;
+                                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                                {
+                                    sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
+                                }
+                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                                {
+                                    sqrMagnitude /= 2;
+                                }
                             }
                         }
                     }

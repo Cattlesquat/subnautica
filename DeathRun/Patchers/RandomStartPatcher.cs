@@ -90,6 +90,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
+            DeathRun.playerIsDead = false;
+
             if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
             {
                 DeathRun.saveData.podSave.podGravity  = false;

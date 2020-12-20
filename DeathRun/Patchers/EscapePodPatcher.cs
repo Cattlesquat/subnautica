@@ -277,6 +277,8 @@ namespace DeathRun.Patchers
             return true;
         }
 
+        static bool wasDead = false;
+
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
@@ -285,13 +287,30 @@ namespace DeathRun.Patchers
                 return;
             }
 
-            if (DeathRun.saveData.podSave.podAnchored || !DeathRun.saveData.podSave.podGravity)
+            if (DeathRun.saveData.podSave.podAnchored || !DeathRun.saveData.podSave.podGravity) 
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
-            else if (frozen)
+            else if (DeathRun.playerIsDead)
             {
-                DeathRun.saveData.podSave.podTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
+                __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
+                wasDead = true;
+            }
+            else
+            {
+                if (wasDead && !DeathRun.playerIsDead)
+                {
+                    wasDead = false;
+                    if (!DeathRun.saveData.podSave.podAnchored && DeathRun.saveData.podSave.podGravity)
+                    {
+                        __instance.rigidbodyComponent.isKinematic = false;
+                    }
+                }
+
+                if (frozen)
+                {
+                    DeathRun.saveData.podSave.podTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
+                }
             }
         }
 

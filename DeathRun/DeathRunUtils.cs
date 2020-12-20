@@ -21,8 +21,8 @@ namespace DeathRun
     public class DeathRunUtils
     {
         public static CenterText[] centerMessages = new CenterText[] {
-            new CenterText(250f),
-            new CenterText(210f),
+            new CenterText(250f, true),
+            new CenterText(210f, true),
             new CenterText(-210f),
             new CenterText(-250f),
             new CenterText(100f)
@@ -31,6 +31,11 @@ namespace DeathRun
         public class CenterText : BasicText
         {
             public CenterText(float set_y) : base()
+            {
+                setLoc(0, set_y);
+            }
+
+            public CenterText(float set_y, bool over) : base(over)
             {
                 setLoc(0, set_y);
             }
@@ -82,7 +87,7 @@ namespace DeathRun
             }
 
             // Checks if opening animation is running
-            if ((EscapePod.main.IsPlayingIntroCinematic() && EscapePod.main.IsNewBorn()))
+            if ((EscapePod.main == null) || ((EscapePod.main.IsPlayingIntroCinematic() && EscapePod.main.IsNewBorn())))
             {
                 return true;
             }
@@ -202,20 +207,38 @@ namespace DeathRun
 
         public static bool wouldBeShowing = false; // If true, then only reason High Scores aren't currently showing is that they are hidden by the preference
 
+        public static List<String> tips = new List<String>() { "How long can YOU survive?",
+                                                               "Did you know eating raw bladderfish yields oxygen?",
+                                                               "First aid kits also purge nitrogen.",
+                                                               "Eating some native fish purges nitrogen.",
+                                                               "Speak softly, but carry a floating pump.",
+                                                               "Never stop moving - those things bite!",
+                                                               "Keep your food and water topped up: it heals you!",
+                                                               "The more Death Run settings you use - the higher your score!",
+                                                               "Survive longer? Higher score. Win fastest? Highest Score."
+                                                             };
+
+
+        public static void InitHighScores ()
+        {
+            for (int row = 0; row < HIGH_SCORE_ROWS; row++)
+            {
+                highScoreNumbers[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScoreStarts[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScoreCauses[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScoreTimes[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScoreDeaths[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScorePercents[row] = new HighScoreText(TextAnchor.MiddleCenter);
+                highScoreScores[row] = new HighScoreText(TextAnchor.MiddleCenter);
+            }
+        }
+
+
         public static void ShowHighScores(bool should)
         {
             if (highScoreNumbers[0] == null)
             {
-                for (int row = 0; row < HIGH_SCORE_ROWS; row++)
-                {
-                    highScoreNumbers[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScoreStarts[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScoreCauses[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScoreTimes[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScoreDeaths[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScorePercents[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                    highScoreScores[row] = new HighScoreText(TextAnchor.MiddleCenter);
-                }
+                InitHighScores();
             }
 
             // When "should" is false, it means we're being called because of an Options/Preference change, not a menu state change
@@ -251,7 +274,18 @@ namespace DeathRun
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
             highScoreLabel.ShowMessage("Death Run - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
-            highScoreTag.ShowMessage("How long can YOU survive?");
+
+            int pick;
+            if (DeathRun.statsData.VeryFirstTime)
+            {
+                DeathRun.statsData.VeryFirstTime = false;
+                pick = 0;
+            } else
+            {
+                pick = UnityEngine.Random.Range(0, tips.Count);
+            }
+
+            highScoreTag.ShowMessage(tips[pick]); // "How long can YOU survive?");
 
             int index = 0;
             foreach (RunData score in DeathRun.statsData.HighScores)
@@ -312,6 +346,11 @@ namespace DeathRun
 
         public static void HideHighScores(bool should)
         {
+            if (highScoreNumbers[0] == null)
+            {
+                InitHighScores();
+            }
+
             // When "should" is false, it means we're being called because of an Options/Preference change, not a menu state change
             // When "should" is true, it means the actual menu state has changed
             if (should)
@@ -518,6 +557,7 @@ namespace DeathRun
         {
             // Mostly at this point use score
             if (Score > other.Score) return true;
+            if (other.Score > Score) return false;
 
             // Victory beats defeat
             if (Victory && !other.Victory) return true;
@@ -527,16 +567,18 @@ namespace DeathRun
             if (Victory)
             {
                 if (Deaths < other.Deaths) return true; // Fewer deaths is definitive comparison between victories
-                return RunTime < other.RunTime; // In victory a SHORTER time is best
+                if (other.Deaths <= Deaths) return false;
+
+                return RunTime <= other.RunTime; // In victory a SHORTER time is best
             }
 
             // Otherwise we are comparing two defeats. In death, longer survival is best.
             if ((Deaths > 0) && other.Deaths > 0)
             {
-                return RunTime / Deaths > other.RunTime / other.Deaths;
+                return RunTime / Deaths >= other.RunTime / other.Deaths;
             }
 
-            return RunTime > other.RunTime;
+            return RunTime >= other.RunTime;
         }
     }
 
@@ -679,6 +721,7 @@ namespace DeathRun
     */
     public class DeathRunStats
     {
+        public bool VeryFirstTime { get; set; }
         public int RunCounter { get; set; }
         public int RecentIndex { get; set; }
         public List<RunData> HighScores { get; set; }
@@ -693,6 +736,7 @@ namespace DeathRun
 
         public void setDefaults()
         {
+            VeryFirstTime = true;
             RunCounter = 0;
             RecentIndex = -1;
         }
@@ -744,8 +788,10 @@ namespace DeathRun
          * Adds a completed run to our high score list at the appropriate place. If 
          */
         public int addRun(RunData run)
-        {
+        {            
             ClearExtraScores();
+
+            if (run.ID < 0) return 0;
 
             // Remove any earlier lower-scoring entries from this same run ID
             foreach (RunData existing in HighScores)
@@ -760,12 +806,17 @@ namespace DeathRun
             }
 
             int place;
+            bool added = false;
             for (place = 0; place < HighScores.Count; place++)
             {
+                CattleLogger.Message("Place: " + place + "   Existing: " + HighScores[place].Score + "   Comparing: " + run.Score);
                 if (!run.betterThan(HighScores[place])) continue;
+
+                CattleLogger.Message("BETTER THAN!");
 
                 // Add our score to the list
                 HighScores.Insert(place, run);
+                added = true;
 
                 // If we bomped some other run down to 11th place then remove it
                 ClearExtraScores(); 
@@ -774,7 +825,7 @@ namespace DeathRun
 
             // Add to bottom of the list if we didn't displace anyone. 
             // This will also result in a temporary "11th place" for the current run if it didn't beat anyone
-            if (place == HighScores.Count)
+            if (!added && (place == HighScores.Count))
             {
                 HighScores.Insert(place, run);
             }
@@ -789,6 +840,8 @@ namespace DeathRun
 
         public void SaveStats()
         {
+            if (DeathRun.patchFailed) return;
+
             try
             {
                 var settings = new JsonSerializerSettings

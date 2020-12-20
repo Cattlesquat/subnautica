@@ -75,20 +75,20 @@ namespace DeathRun.Patchers
             {
                 if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
                 {
-                    amount /= 4;
+                    amount /= 10;
                 }
                 else if (Config.HARD.Equals(DeathRun.config.powerCosts))
                 {
-                    amount /= 3;
+                    amount /= 6;
                 } 
             }
             else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
             {
-                amount /= 3;
+                amount /= 6;
             }
             else if (Config.HARD.Equals(DeathRun.config.powerCosts))
             {
-                amount /= 2;
+                amount /= 3;
             }
 
             return amount;
@@ -150,13 +150,31 @@ namespace DeathRun.Patchers
             return true;
         }
 
+
+        /**
+         * SolarPanelUpdate - solar panels have a completely different way of adding power
+         */
+        [HarmonyPrefix]
+        public static bool SolarPanelUpdate(SolarPanel __instance)
+        {
+            if (__instance.gameObject.GetComponent<Constructable>().constructed)
+            {
+                float amount = __instance.GetRechargeScalar() * DayNightCycle.main.deltaTime * 0.25f * 5f;
+                amount = AdjustAddEnergy(amount, isTransformInRadiation(__instance.gameObject.transform));
+                __instance.powerSource.power = Mathf.Clamp(__instance.powerSource.power + amount, 0f, __instance.powerSource.maxPower);
+            }
+            return false;
+        }
+
+
         /**
          * AddEnergyBase -- adjusts the amount of power added to a base
          */
         [HarmonyPrefix]
-        public static void AddEnergyBase(ref IPowerInterface powerInterface, ref float amount)
+        public static bool AddEnergyBase(ref IPowerInterface powerInterface, ref float amount)
         {
             amount = AdjustAddEnergy(amount, isPowerInRadiation(powerInterface));
+            return true;
         }
 
         /**

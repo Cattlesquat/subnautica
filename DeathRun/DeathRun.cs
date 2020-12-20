@@ -64,6 +64,9 @@ namespace DeathRun
         // So that the explody fish stay hidden in ambush
         public static bool crashFishSemaphore = false;
 
+        // Don't do extra warnings during respawn process while player is already dead
+        public static bool playerIsDead = false;
+
         // Let player know if patch didn't complete
         public static bool patchFailed = false;
 
@@ -86,7 +89,7 @@ namespace DeathRun
         public static void Patch()
         {
             CattleLogger.setModName(modName);
-            CattleLogger.PatchStart("1.3.2");
+            CattleLogger.PatchStart("1.3.5");
 
             try
             {
@@ -163,7 +166,7 @@ namespace DeathRun
                 //{
                     harmony.Patch(AccessTools.Method(typeof(RadiatePlayerInRange), "Radiate"),
                         new HarmonyMethod(typeof(RadiationPatcher).GetMethod("Radiate")), null);
-
+                 
                     harmony.Patch(AccessTools.Method(typeof(DamagePlayerInRadius), "DoDamage"),
                         new HarmonyMethod(typeof(RadiationPatcher).GetMethod("DoDamage")), null);
                 //}
@@ -173,6 +176,9 @@ namespace DeathRun
                 //if (!Config.NORMAL.Equals(DeathRun.config.powerCosts)) { 
                 harmony.Patch(AccessTools.Method(typeof(PowerSystem), "AddEnergy"),
                         new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyBase")), null);
+
+                harmony.Patch(AccessTools.Method(typeof(SolarPanel), "Update"),
+                        new HarmonyMethod(typeof(PowerPatcher).GetMethod("SolarPanelUpdate")), null);
 
                     harmony.Patch(AccessTools.Method(typeof(EnergyMixin), "AddEnergy"),
                         new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyTool")), null);
@@ -554,15 +560,16 @@ namespace DeathRun
 
                 Console.WriteLine("[DeathRun] Patched");
 
-                statsData.LoadStats();
-
-                Console.WriteLine("[DeathRun] Stats Loaded");
             }
             catch (Exception ex)
             {
                 CattleLogger.PatchFailed(ex);
                 patchFailed = true;
             }
+
+            statsData.LoadStats();
+
+            Console.WriteLine("[DeathRun] Stats Loaded");
         }
 
         public static void setCause(string newCause)
@@ -600,6 +607,8 @@ namespace DeathRun
             causeObject = null;
             cinematicCause = CAUSE_UNKNOWN;
             cinematicCauseObject = null;
+
+            playerIsDead = false;
         }
     }
 
