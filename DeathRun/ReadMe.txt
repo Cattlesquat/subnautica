@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.3.5 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.4.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -27,6 +27,11 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.3 - Normal (non-sinking) Escape Pod start supported
 • 1.3 - (Fixes) Better mod stability when returning to main menu
 -------------------------------------------------------------------------------------------------------------
+• 1.4 - Improved the Deco/Nitrogen meter with color coding.
+• 1.4 - Gradually adding to "Tips" section
+• 1.4 - (Fixes) Various bugfixes
+-------------------------------------------------------------------------------------------------------------
+
 
 :: GENERAL OTHER STUFF ::
 • Option to make water murky

@@ -597,7 +597,7 @@ namespace DeathRun.Patchers
          * Player.UnfreezeStats - a way to detect when the "respawning after death" process is complete
          */
         [HarmonyPostfix]
-        public static void Postfix(DamageType damageType)
+        public static void Postfix()
         {
             DeathRun.playerIsDead = false;
         }

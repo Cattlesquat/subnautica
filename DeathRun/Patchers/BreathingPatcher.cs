@@ -76,6 +76,12 @@ namespace DeathRun.Patchers
                 return true;
             }
 
+            // If we're at a pipe so we can actually breathe, treat it normally.
+            if (DeathRun.saveData.nitroSave.atPipe)
+            {
+                return true;
+            }
+
             // Smoke choke sounds in unbreathable atmosphere
             PlayerDamageSounds s = Player.main.gameObject.GetComponent<PlayerDamageSounds>();
             if (s != null) {

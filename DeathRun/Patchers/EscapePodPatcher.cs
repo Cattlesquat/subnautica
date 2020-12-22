@@ -442,6 +442,15 @@ namespace DeathRun.Patchers
                     blinkOn = !blinkOn;
                 }
 
+                bool radioWorks = false;
+                if (EscapePod.main.radioSpawner != null && EscapePod.main.radioSpawner.spawnedObj != null)
+                {
+                    LiveMixin component = EscapePod.main.radioSpawner.spawnedObj.GetComponent<LiveMixin>();
+                    if (component && component.IsFullHealth()) {
+                        radioWorks = true;
+                    }
+                }
+
                 if (damaged)
                 {
                     string content = Language.main.Get("IntroEscapePod3Content");
@@ -466,6 +475,11 @@ namespace DeathRun.Patchers
                     else
                     {
                         content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: " + (blinkOn ? "FAILED" : ""));
+                    }
+
+                    if (radioWorks)
+                    {
+                        content = content.Replace("Radio: OFFLINE", "Radio: INCOMING ONLY");
                     }
 
                     if (!Config.NORMAL.Equals(DeathRun.config.creatureAggression))
@@ -502,6 +516,11 @@ namespace DeathRun.Patchers
                 {
                     string content = Language.main.Get("IntroEscapePod4Content");
 
+                    if (!radioWorks)
+                    {
+                        content = content.Replace("Incoming radio communication: ONLINE", "Incoming radio communication: OFFLINE");
+                    }
+
                     if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
                     {
                         content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: FAILED");
@@ -513,6 +532,11 @@ namespace DeathRun.Patchers
                         {
                             content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: FAILED");
                         }
+                    }
+
+                    if (BreathingPatcher.isSurfaceAirPoisoned())
+                    {
+                        content = content.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
                     }
 
                     string bonus = "";

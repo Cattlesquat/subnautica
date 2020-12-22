@@ -64,10 +64,12 @@ namespace DeathRun.NMBehaviours
         {
             if (main == null)
                 return;
+
             if ((n2percent >= 100) && (safeDepth >= 10))
             {
                 main.n2Depth.text = safeDepth + "m";
 
+                main.n2Depth.color = Color.white;
                 if (!Player.main.IsSwimming())
                 {
                     main.n2Depth.text += " *";
@@ -75,11 +77,24 @@ namespace DeathRun.NMBehaviours
                 else if (DeathRun.saveData.nitroSave.atPipe)
                 {
                     main.n2Depth.text += " P*";
+                    main.n2Depth.color = Color.cyan;
                 }
+
+                int depth = (int)Ocean.main.GetDepthOf(Player.main.gameObject);
+                if (depth < safeDepth)
+                {
+                    main.n2Depth.color = Color.red;
+                } else if (depth < safeDepth + 3)
+                {
+                    main.n2Depth.color = Color.yellow;
+                }
+
             }
             else
             {
                 main.n2Depth.text = Mathf.RoundToInt(n2percent) + "%";
+
+                main.n2Depth.color = Color.white;
             }
         }
     }

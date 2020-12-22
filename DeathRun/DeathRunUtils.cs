@@ -210,12 +210,15 @@ namespace DeathRun
         public static List<String> tips = new List<String>() { "How long can YOU survive?",
                                                                "Did you know eating raw bladderfish yields oxygen?",
                                                                "First aid kits also purge nitrogen.",
-                                                               "Eating some native fish purges nitrogen.",
+                                                               "Eating certain kinds of native fish purges nitrogen.",
                                                                "Speak softly, but carry a floating pump.",
                                                                "Never stop moving - those things bite!",
                                                                "Keep your food and water topped up: it heals you!",
                                                                "The more Death Run settings you use - the higher your score!",
-                                                               "Survive longer? Higher score. Win fastest? Highest Score."
+                                                               "Survive longer? Higher score. Win fastest? Highest Score.",
+                                                               "Hold a fish in your hand: many enemies will bite it instead of you!",
+                                                               "Famous Last Words: I'll just leave my pump here for a minute.",
+                                                               "You swim faster when you aren't holding something."
                                                              };
 
 

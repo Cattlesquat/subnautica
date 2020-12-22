@@ -89,7 +89,7 @@ namespace DeathRun
         public static void Patch()
         {
             CattleLogger.setModName(modName);
-            CattleLogger.PatchStart("1.3.5");
+            CattleLogger.PatchStart("1.4.1");
 
             try
             {
@@ -525,9 +525,36 @@ namespace DeathRun
                                     new Ingredient(TechType.Magnetite, 1)
                                 }
                             }
-                        }
+                        },
+                        {
+                        TechType.MedicalCabinet,
+                            new TechData
+                            {
+                                craftAmount = 1,
+                                Ingredients = new List<Ingredient>
+                                {
+                                    new Ingredient(TechType.ComputerChip, 1),
+                                    new Ingredient(TechType.FiberMesh, 4),
+                                    new Ingredient(TechType.Silver, 1),
+                                    new Ingredient(TechType.Titanium, 1)
+                                }
+                            }
+                        },
+                        //{
+                        //TechType.Fabricator,
+                        //    new TechData
+                        //    {
+                        //        craftAmount = 1,
+                        //        Ingredients = new List<Ingredient>
+                        //        {
+                        //            new Ingredient(TechType.Titanium, 1),
+                        //            new Ingredient(TechType.Gold, 1),
+                        //            new Ingredient(TechType.JeweledDiskPiece, 1)
+                        //        }
+                        //    }
+                        //}
                     };
-                } 
+                }
                 else if (Config.HARD.Equals(DeathRun.config.builderCosts))
                 {
                     CattleLogger.Message("Hard Habitat");
@@ -544,6 +571,20 @@ namespace DeathRun
                                     new Ingredient(TechType.WiringKit, 2),
                                     new Ingredient(TechType.Battery, 1),
                                     new Ingredient(TechType.Lithium, 1),
+                                }
+                            }
+                        },
+                        {
+                            TechType.MedicalCabinet,
+                            new TechData
+                            {
+                                craftAmount = 1,
+                                Ingredients = new List<Ingredient>
+                                {
+                                    new Ingredient(TechType.ComputerChip, 1),
+                                    new Ingredient(TechType.FiberMesh, 3),
+                                    new Ingredient(TechType.Silver, 1),
+                                    new Ingredient(TechType.Titanium, 1)
                                 }
                             }
                         }
