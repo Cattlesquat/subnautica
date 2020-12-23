@@ -381,7 +381,21 @@ namespace DeathRun
 
         public static void RegisterSave(string slotName, DeathRunSaveData saveData)
         {
-            saveList.Add(slotName, saveData);
+            DeathRunSaveData already = new DeathRunSaveData();
+            if (saveList.TryGetValue(slotName, out already))
+            {
+                saveList.Remove(slotName);
+            }
+
+            try
+            {
+                saveList.Add(slotName, saveData);
+            }
+            catch (Exception ex) 
+            {
+                CattleLogger.Message("Failed to add to dictionary");
+                CattleLogger.GenericError(ex);
+            }
         }
 
         public static DeathRunSaveData FindSave(string slotName)
@@ -754,6 +768,7 @@ namespace DeathRun
                 CattleLogger.GenericError(e);
                 CattleLogger.Message("Death Run thumbnail data not found - using defaults");
                 CattleLogger.Message(e.StackTrace);
+
                 target = null;
                 return false;
             }
