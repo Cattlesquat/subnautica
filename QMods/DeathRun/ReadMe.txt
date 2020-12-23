@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.4.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.5.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -30,6 +30,9 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.4 - Improved the Deco/Nitrogen meter with color coding.
 • 1.4 - Gradually adding to "Tips" section
 • 1.4 - (Fixes) Various bugfixes
+-------------------------------------------------------------------------------------------------------------
+• 1.5 - Saved games now show current score & start spot
+• 1.5 - (Fixes) Fixed an occasional null pointer in nitrogen code
 -------------------------------------------------------------------------------------------------------------
 
 

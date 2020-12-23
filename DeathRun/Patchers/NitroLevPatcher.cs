@@ -74,17 +74,20 @@ namespace DeathRun.Patchers
         {
             if (DeathRun.murkinessDirty)
             {
-                WaterBiomeManager.main.Rebuild();
-                DeathRun.murkinessDirty = false;
+                if (WaterBiomeManager.main != null)
+                {
+                    WaterBiomeManager.main.Rebuild();
+                    DeathRun.murkinessDirty = false;
+                }
             }
 
             // Nitrogen tracking doesn't start until player leaves the pod (for underwater starts)
-            if (!EscapePod.main.topHatchUsed && !EscapePod.main.bottomHatchUsed)
+            if ((EscapePod.main == null) || (!EscapePod.main.topHatchUsed && !EscapePod.main.bottomHatchUsed))
             {
                 return false;
             }
 
-            if (DeathRun.playerIsDead)
+            if (DeathRun.playerIsDead || (Player.main == null) || (Ocean.main == null) || (Inventory.main == null))
             {
                 return false;
             }

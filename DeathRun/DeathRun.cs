@@ -497,8 +497,6 @@ namespace DeathRun
                 {
                     foreach (KeyValuePair<TechType,TechData> tech in techChanges)
                     {
-                        CattleLogger.Message("Change to: " + tech.Key);
-
                         CraftDataHandler.SetTechData(tech.Key, tech.Value);
                     }
                 }

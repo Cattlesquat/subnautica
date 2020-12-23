@@ -218,7 +218,8 @@ namespace DeathRun
                                                                "Survive longer? Higher score. Win fastest? Highest Score.",
                                                                "Hold a fish in your hand: many enemies will bite it instead of you!",
                                                                "Famous Last Words: I'll just leave my pump here for a minute.",
-                                                               "You swim faster when you aren't holding something."
+                                                               "You swim faster when you aren't holding something.",
+                                                               "Low on air? Top off at a friendly brain coral!"
                                                              };
 
 
@@ -374,6 +375,24 @@ namespace DeathRun
                 highScoreScores[row].Hide();
             }
         }
+
+
+        static Dictionary<string, DeathRunSaveData> saveList = new Dictionary<string, DeathRunSaveData>();
+
+        public static void RegisterSave(string slotName, DeathRunSaveData saveData)
+        {
+            saveList.Add(slotName, saveData);
+        }
+
+        public static DeathRunSaveData FindSave(string slotName)
+        {
+            DeathRunSaveData saveData;
+            if (saveList.TryGetValue(slotName, out saveData))
+            {
+                return saveData;
+            }
+            return null;
+        }
     }
 
     public class RunData
@@ -457,11 +476,19 @@ namespace DeathRun
         }
 
 
+        public void updateFromSave(DeathRunSaveData saveData)
+        {
+            RunTime = saveData.playerSave.allLives;
+            Deaths = saveData.playerSave.numDeaths + 1;
+            calcScore();
+        }
+
+
         public void updateVitals (bool victory)
         {
-            Cause   = DeathRun.cause;
+            Cause = DeathRun.cause;
             RunTime = DeathRun.saveData.playerSave.allLives;
-            Deaths  = DeathRun.saveData.playerSave.numDeaths;
+            Deaths = DeathRun.saveData.playerSave.numDeaths;
             Victory = victory;
 
             countSettings();
@@ -485,7 +512,7 @@ namespace DeathRun
         {
             float timeVal = 0;
             float timeLeft = RunTime;
-            do
+            while (timeLeft > 0) 
             {
                 if (timeLeft <= 3600)
                 {
@@ -497,7 +524,7 @@ namespace DeathRun
                     timeVal += 3600;
                     timeLeft = (timeLeft - 3600) / 2;
                 }
-            } while (timeLeft > 0);
+            };
 
             float vehicleVal = 0;
             if ((VehicleFlags & FLAG_SEAGLIDE) != 0)
@@ -546,9 +573,15 @@ namespace DeathRun
                 totalVal = totalVal / Deaths;
             }
 
-            int numerator = DeathRunSettingCount + DeathRunSettingBonus / 2;
 
-            Score = (int)(totalVal * numerator / MAX_DEATHRUN_SETTING_COUNT);
+            if (DeathRunSettingCount >= 0)
+            {
+                Score = (int)(totalVal * (DeathRunSettingCount + DeathRunSettingBonus / 2) / MAX_DEATHRUN_SETTING_COUNT);
+            }
+            else
+            {
+                Score = (int)totalVal;
+            }
 
             if (Score > 99999) Score = 99999;
 
@@ -606,8 +639,6 @@ namespace DeathRun
             startSave  = new StartSpot();
             countSave  = new CountdownSaveData();
             runData    = new RunData();
-
-            CattleLogger.Message("SaveData Constructor");
 
             setDefaults();
         }
@@ -696,6 +727,38 @@ namespace DeathRun
                 CattleLogger.Message(e.StackTrace);
                 setDefaults();
             }
+        }
+
+
+        /**
+         * This deserializes a byte stream we've retrieved from other sources (used on the main menu)
+         */
+        public static bool LoadFromBytes(byte[] bytes, out DeathRunSaveData target)
+        {
+            try
+            {
+                string @jsonData = Encoding.UTF8.GetString(bytes);
+
+                var jsonSerializerSettings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore,
+                };
+                
+
+                // This deserializes the whole saveData object all at once.
+                target = JsonConvert.DeserializeObject<DeathRunSaveData>(jsonData, jsonSerializerSettings);
+            }
+            catch (Exception e)
+            {
+                CattleLogger.GenericError(e);
+                CattleLogger.Message("Death Run thumbnail data not found - using defaults");
+                CattleLogger.Message(e.StackTrace);
+                target = null;
+                return false;
+            }
+
+            return true;
         }
     }
 
@@ -812,10 +875,7 @@ namespace DeathRun
             bool added = false;
             for (place = 0; place < HighScores.Count; place++)
             {
-                CattleLogger.Message("Place: " + place + "   Existing: " + HighScores[place].Score + "   Comparing: " + run.Score);
                 if (!run.betterThan(HighScores[place])) continue;
-
-                CattleLogger.Message("BETTER THAN!");
 
                 // Add our score to the list
                 HighScores.Insert(place, run);
