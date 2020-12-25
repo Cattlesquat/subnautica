@@ -103,7 +103,7 @@ namespace DeathRun
         [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string builderCosts = DEATHRUN;
 
-        [Choice("Creature Aggression", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        [Choice("Creature Aggression", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string creatureAggression = DEATHRUN;
 
         //FIXME - ideally this should use the values from RandomStartPatcher's "spots" List, but if I did that I wouldn't be able to
@@ -151,6 +151,9 @@ namespace DeathRun
         [Toggle("Show High Score List"), OnChange(nameof(ChangedHighScores))]
         public bool showHighScores = true;
 
+        [Toggle("Show Tips w/ High Scores"), OnChange(nameof(ChangedTips))]
+        public bool showTips = true;
+
         [Toggle("Don't Tip Escape Pod Over"), OnChange(nameof(ChangedTipOver))]
         public bool podStayUpright = false;
 
@@ -172,6 +175,19 @@ namespace DeathRun
 
 
         private void ChangedHighScores (ToggleChangedEventArgs e)
+        {
+            if (showHighScores)
+            {
+                DeathRunUtils.ShowHighScores(false);
+            }
+            else
+            {
+                DeathRunUtils.HideHighScores(false);
+            }
+        }
+
+
+        private void ChangedTips(ToggleChangedEventArgs e)
         {
             if (showHighScores)
             {
@@ -223,7 +239,7 @@ namespace DeathRun
 
         private int quickCheck (string setting)
         {
-            if (DEATHRUN.Equals(setting))
+            if (DEATHRUN.Equals(setting) || EXORBITANT.Equals(setting))
             {
                 return 2;
             } else if (HARD.Equals(setting))
@@ -287,11 +303,6 @@ namespace DeathRun
             count += quickCheck(builderCosts);
             count += quickCheck(creatureAggression);
 
-            if (EXORBITANT.Equals(powerExitVehicles))
-            {
-                count += 2;
-            }
-
             if (!BASIC_GAME.Equals(startLocation))
             {
                 count += 2;
@@ -311,6 +322,11 @@ namespace DeathRun
             } else if (EXORBITANT.Equals(powerExitVehicles))
             {
                 bonuses++;
+            }
+
+            if (EXORBITANT.Equals(creatureAggression))
+            {
+                bonuses += 2;
             }
 
             if (MURK_DARK.Equals(murkiness))

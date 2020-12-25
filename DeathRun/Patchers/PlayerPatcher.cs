@@ -456,8 +456,8 @@ namespace DeathRun.Patchers
                     "libraryAddict (Radiation Challenge)",
                     "PrimeSonic (SML Helper, coding advice)",
                     "MrPurple6411 (SML Helper, coding advice)",
-                    "AndreaDev3d (Unity help & advice)",                    
-                    "Your Start Location: \"" + DeathRun.saveData.startSave.message + "\"",
+                    "AndreaDev3d (Unity help & advice)",
+                    "Your Start Location: \"*\"",
                     "GOOD LUCK...",
                     "",
                     "",
@@ -468,7 +468,8 @@ namespace DeathRun.Patchers
             float time = 10;
             foreach (string message in messages)
             {
-                timedMessage(message, time);
+                string display = message.Replace("*", DeathRun.saveData.startSave.message);
+                timedMessage(display, time);
                 time += 8;
             }
         }
@@ -483,7 +484,7 @@ namespace DeathRun.Patchers
          * Player.OnKill -- Display our "Time of Death" message to make it feel a bit more roguelike :)
          */
         [HarmonyPrefix]
-        public static void Prefix(DamageType damageType)
+        public static bool Prefix(DamageType damageType)
         {
             setCauseOfDeath(damageType);
 
@@ -517,73 +518,89 @@ namespace DeathRun.Patchers
             DeathRun.saveData.nitroSave.setDefaults(); // Reset all nitrogen state
 
             DeathRun.playerIsDead = true;
+
+            return true;
         }
 
         static void setCauseOfDeath (DamageType damageType)
         {
-            switch (damageType)
+            try
             {
-                case DamageType.Acid:
-                    DeathRun.setCause("Acid");
-                    break;
+                switch (damageType)
+                {
+                    case DamageType.Acid:
+                        DeathRun.setCause("Acid");
+                        break;
 
-                case DamageType.Collide:
-                    DeathRun.setCause("Collision");
-                    break;
+                    case DamageType.Collide:
+                        DeathRun.setCause("Collision");
+                        break;
 
-                case DamageType.Electrical:
-                    DeathRun.setCause("Electrocution");
-                    break;
+                    case DamageType.Electrical:
+                        DeathRun.setCause("Electrocution");
+                        break;
 
-                case DamageType.Explosive:
-                    DeathRun.setCause("Explosion");
-                    break;
+                    case DamageType.Explosive:
+                        DeathRun.setCause("Explosion");
+                        break;
 
-                case DamageType.Fire:
-                    DeathRun.setCause("Burned to Death");
-                    break;
+                    case DamageType.Fire:
+                        DeathRun.setCause("Burned to Death");
+                        break;
 
-                case DamageType.Heat:
-                    DeathRun.setCause("Extreme Heat");
-                    break;
+                    case DamageType.Heat:
+                        DeathRun.setCause("Extreme Heat");
+                        break;
 
-                case DamageType.Poison:
-                    DeathRun.setCause("Poison");
-                    break;
+                    case DamageType.Poison:
+                        DeathRun.setCause("Poison");
+                        break;
 
-                case DamageType.Pressure:
-                    DeathRun.setCause("Pressure");
-                    break;
+                    case DamageType.Pressure:
+                        DeathRun.setCause("Pressure");
+                        break;
 
-                case DamageType.Puncture:
-                    DeathRun.setCause("Puncture Wounds");
-                    break;
+                    case DamageType.Puncture:
+                        DeathRun.setCause("Puncture Wounds");
+                        break;
 
-                case DamageType.Radiation:
-                    DeathRun.setCause("Radiation");
-                    break;
+                    case DamageType.Radiation:
+                        DeathRun.setCause("Radiation");
+                        break;
 
-                case DamageType.Smoke:
-                    DeathRun.setCause("Smoke Asphyxiation");
-                    break;
+                    case DamageType.Smoke:
+                        DeathRun.setCause("Smoke Asphyxiation");
+                        break;
 
-                //case DamageType.Starve:
-                //case DamageType.Normal:
-                default:
-                    if (DeathRun.CAUSE_UNKNOWN_CREATURE.Equals(DeathRun.cause))
-                    {
-                        if (DeathRun.causeObject != null)
+                    //case DamageType.Starve:
+                    //case DamageType.Normal:
+                    default:
+                        if (DeathRun.CAUSE_UNKNOWN_CREATURE.Equals(DeathRun.cause))
                         {
-                            GameObject go;
-                            TechType t = CraftData.GetTechType(DeathRun.causeObject, out go);
-                            
-                            DeathRun.setCause(Language.main.Get(t.AsString(false)));
+                            if (DeathRun.causeObject != null)
+                            {
+                                GameObject go;
+                                TechType t = CraftData.GetTechType(DeathRun.causeObject, out go);
 
-                            CattleLogger.Message("Cause of Death: " + DeathRun.cause);
+                                if (t != TechType.None)
+                                {
+                                    DeathRun.setCause(Language.main.Get(t.AsString(false)));
+
+                                    CattleLogger.Message("Cause of Death: " + DeathRun.cause);
+                                }
+                                else
+                                {
+                                    CattleLogger.Message("(Couldn't find creature that cause player death)");
+                                }
+                            }
                         }
-                    }
-                    break;
+                        break;
 
+                }
+            }
+            catch (Exception ex)
+            {
+                CattleLogger.GenericError("Getting cause of death", ex);
             }
         }
     }

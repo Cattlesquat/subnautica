@@ -76,7 +76,14 @@ namespace DeathRun.NMBehaviours
                 }
                 else if (DeathRun.saveData.nitroSave.atPipe)
                 {
-                    main.n2Depth.text += " P*";
+                    if (DeathRun.saveData.nitroSave.pipeTime > DeathRun.saveData.nitroSave.bubbleTime)
+                    {
+                        main.n2Depth.text += " P*";
+                    } else
+                    {
+                        main.n2Depth.text += " B*";
+                    }
+
                     main.n2Depth.color = Color.cyan;
                 }
 
@@ -95,6 +102,11 @@ namespace DeathRun.NMBehaviours
                 main.n2Depth.text = Mathf.RoundToInt(n2percent) + "%";
 
                 main.n2Depth.color = Color.white;
+
+                if (DeathRun.saveData.nitroSave.atPipe)
+                {
+                    main.n2Depth.color = Color.cyan;
+                }
             }
         }
     }

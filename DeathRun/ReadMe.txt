@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.5.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.6.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -34,7 +34,11 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.5 - Saved games now show current score & start spot
 • 1.5 - (Fixes) Fixed an occasional null pointer in nitrogen code
 -------------------------------------------------------------------------------------------------------------
-
+• 1.6 - Creatures can no longer see you "through terrain" (unless you use new "Worse than Death Run" setting)
+• 1.6 - Preference added to disable showing of "tips" on menu screen
+• 1.6 - Continued improvement of Escape Pod's data display
+• 1.6 - Misc tuning and improvements of nitrogen model. Display shows blue when bonus from pipe, etc.
+-------------------------------------------------------------------------------------------------------------
 
 :: GENERAL OTHER STUFF ::
 • Option to make water murky

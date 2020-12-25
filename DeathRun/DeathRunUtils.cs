@@ -219,9 +219,13 @@ namespace DeathRun
                                                                "Hold a fish in your hand: many enemies will bite it instead of you!",
                                                                "Famous Last Words: I'll just leave my pump here for a minute.",
                                                                "You swim faster when you aren't holding something.",
-                                                               "Low on air? Top off at a friendly brain coral!"
+                                                               "Low on air? Top off at a friendly brain coral!",
+                                                               "While breathing at a pipe, your nitrogen disperses more quickly.",
+                                                               "One pump, one length of pipe: Portable Breathing!",
+                                                               "You can carry an extra air tank, but remember to fill it!",
+                                                               "Thirsty? Cut fresh seaweed and eat immediately!",
+                                                               "Repair your Escape Pod for better power generation!"
                                                              };
-
 
         public static void InitHighScores ()
         {
@@ -276,11 +280,11 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.6.1 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;
-            if (DeathRun.statsData.VeryFirstTime)
+            if (DeathRun.statsData.VeryFirstTime || !DeathRun.config.showTips)
             {
                 DeathRun.statsData.VeryFirstTime = false;
                 pick = 0;
@@ -289,7 +293,7 @@ namespace DeathRun
                 pick = UnityEngine.Random.Range(0, tips.Count);
             }
 
-            highScoreTag.ShowMessage(tips[pick]); // "How long can YOU survive?");
+            highScoreTag.ShowMessage(tips[pick]); // "How long can YOU survive?"
 
             int index = 0;
             foreach (RunData score in DeathRun.statsData.HighScores)

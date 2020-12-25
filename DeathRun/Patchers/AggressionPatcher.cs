@@ -32,7 +32,7 @@ namespace DeathRun.Patchers
             {
                 DeathRun.crashFishSemaphore = true;
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+            else if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
             {
                 if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
                 {
@@ -134,7 +134,7 @@ namespace DeathRun.Patchers
 
             if ((((target != Player.main.gameObject) || Player.main.IsInside()) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
                 (Ocean.main.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
-                (!Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
+                (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression) && !Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
                 (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
                 (CraftData.GetTechType(__instance.gameObject) == TechType.Crash))           // Not the explody fish (more fun from ambush!)
             {
@@ -142,7 +142,13 @@ namespace DeathRun.Patchers
             }
             else
             {
-                __result = true; //BR// Can definitely see player
+                if (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression)) {
+                    __result = true; //BR// Can definitely see player "even through terrain"
+                } else
+                {
+                    //BR// For DeathRun setting, we don't check "field of view", only that line-of-sight doesn't pass through terrain.
+                    __result = !Physics.Linecast(__instance.transform.position, target.transform.position, Voxeland.GetTerrainLayerMask());
+                }
             }
         }
     }
@@ -198,7 +204,7 @@ namespace DeathRun.Patchers
                         float depth = Ocean.main.GetDepthOf(ecoTarget.GetGameObject());
                         if ((depth > 5) && !feeding)
                         {
-                            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+                            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
                             {
                                 if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
                                 {
@@ -264,7 +270,7 @@ namespace DeathRun.Patchers
             }
 
             //BR// Adjust aggression levels            
-            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression))
+            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
             {
                 if (DayNightCycle.main.timePassedAsFloat > DeathRun.FULL_AGGRESSION)
                 {
@@ -309,5 +315,20 @@ namespace DeathRun.Patchers
             return false;
         }
     }
+
+
+    [HarmonyPatch(typeof(OutOfBoundsWarp))]
+    [HarmonyPatch("Warp")]
+    internal class OutOfBoundsWarp_Warp_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(OutOfBoundsWarp __instance)
+        {
+            CattleLogger.Message("***** Object out of bounds: " + __instance.gameObject + "  " + __instance.gameObject.name);
+            return true;
+        }
+    }
+
 }
+
 

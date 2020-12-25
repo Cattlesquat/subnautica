@@ -193,7 +193,7 @@ namespace DeathRun.Patchers
                     if (!DeathRun.saveData.podSave.podAnchored && (dist < 0.5))
                     {
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
-                        DeathRunUtils.CenterMessage("The Escape Pod has struck bottom!", 4);
+                        DeathRunUtils.CenterMessage("The Escape Pod has struck bottom!", 6);
                         DeathRun.saveData.podSave.podAnchored = true;
                         float random = UnityEngine.Random.value;
                         float angle;
@@ -334,9 +334,15 @@ namespace DeathRun.Patchers
             if (EscapePod.main.damageEffectsShowing)
             {
                 setRegenerateInterval(20);
-            } else
+            } else 
             {
-                setRegenerateInterval(15);
+                if ((CrashedShipExploder.main != null) && (DayNightCycle.main.timePassedAsFloat < CrashedShipExploder.main.timeToStartCountdown + 24f + 60 * 60))
+                {
+                    setRegenerateInterval(10);
+                } else
+                {
+                    setRegenerateInterval(15);
+                }                
             }
         }
 
@@ -369,7 +375,6 @@ namespace DeathRun.Patchers
 
             if (EscapePod.main.liveMixin.GetHealthFraction() < 0.99f)
             {
-                CattleLogger.Message("Loading Damaged Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
                 EscapePod.main.damageEffectsShowing = false;
                 EscapePod.main.ShowDamagedEffects();
                 EscapePod.main.lightingController.SnapToState(2);
@@ -379,7 +384,6 @@ namespace DeathRun.Patchers
                 EscapePod.main.introCinematic.interpolationTimeOut = 0f;
             } else
             {
-                CattleLogger.Message("Loading Repaired Pod - effects showing: " + EscapePod.main.damageEffectsShowing);
                 EscapePod.main.lightingController.SnapToState(0);   //159,243,63
                 uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32(243, 243, 63, byte.MaxValue), 2f);
                 uGUI_EscapePod.main.SetContent(Language.main.Get("IntroEscapePod4Content"), new Color32(243, 243, 63, byte.MaxValue));
@@ -407,16 +411,19 @@ namespace DeathRun.Patchers
         public static bool Prefix()
         {
             damaged = EscapePod.main.damageEffectsShowing;
+            if (!EscapePod.main.damageEffectsShowing) 
+            {
+                EscapePod.main.healthScalar = 1.0f;
+            }
             return true;
         }
 
         [HarmonyPostfix]
         public static void Postfix()
         {
+            EscapePod_FixedUpdate_Patch.CheckSolarCellRate();
             if (damaged != EscapePod.main.damageEffectsShowing)
-            {
-                EscapePod_FixedUpdate_Patch.CheckSolarCellRate();
-
+            {                
                 if (!EscapePod.main.damageEffectsShowing)
                 {
                     // At repair, give a one-time "full recharge"
@@ -442,12 +449,17 @@ namespace DeathRun.Patchers
                     blinkOn = !blinkOn;
                 }
 
+                bool radioFound = false;
                 bool radioWorks = false;
                 if (EscapePod.main.radioSpawner != null && EscapePod.main.radioSpawner.spawnedObj != null)
                 {
                     LiveMixin component = EscapePod.main.radioSpawner.spawnedObj.GetComponent<LiveMixin>();
-                    if (component && component.IsFullHealth()) {
-                        radioWorks = true;
+                    if (component) {
+                        radioFound = true;
+                        if (component.IsFullHealth())
+                        {
+                            radioWorks = true;
+                        }
                     }
                 }
 
@@ -516,9 +528,19 @@ namespace DeathRun.Patchers
                 {
                     string content = Language.main.Get("IntroEscapePod4Content");
 
-                    if (!radioWorks)
+                    if (radioFound && !radioWorks)
                     {
                         content = content.Replace("Incoming radio communication: ONLINE", "Incoming radio communication: OFFLINE");
+                    }
+
+                    if (!Config.NORMAL.Equals(DeathRun.config.creatureAggression))
+                    {
+                        content = content.Replace("Uncharted ocean planet 4546B", (blinkOn ? "Planet 4546B: HOSTILE FAUNA" : "Planet 4546B: "));
+                    }
+
+                    if (BreathingPatcher.isSurfaceAirPoisoned())
+                    {
+                        content = content.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
                     }
 
                     if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
@@ -543,16 +565,23 @@ namespace DeathRun.Patchers
 
                     if (DeathRunUtils.isExplosionClockRunning())
                     {
-                        bonus += "\n    - QUANTUM EXPLOSION WARNING";
+                        bonus += "\n    " + (blinkOn ? "- QUANTUM EXPLOSION WARNING" : "");
                     }
 
                     if (RadiationUtils.isRadiationActive())
                     {
-                        bonus += "\n    - EXTREME RADIATION HAZARD";
+                        if (Config.NORMAL.Equals(DeathRun.config.radiationDepth))
+                        {
+                            bonus += "\n    - Radiation Hazard: Aurora";
+                        }
+                        else
+                        {
+                            bonus += "\n    " + (blinkOn ? "- EXTREME RADIATION HAZARD" : "");
+                        }
                     }
 
-                    uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32((byte)(blinkOn ? 243 : 228), (byte)(blinkOn ? 243 : 228), 63, byte.MaxValue)); //, 2f);
-                    uGUI_EscapePod.main.SetContent(content + bonus, new Color32((byte)(blinkOn ? 243 : 228), (byte)(blinkOn ? 243 : 228), 63, byte.MaxValue));
+                    uGUI_EscapePod.main.SetHeader(Language.main.Get("IntroEscapePod4Header"), new Color32((byte)(blinkOn ? 243 : 223), (byte)(blinkOn ? 243 : 223), 63, byte.MaxValue)); //, 2f);
+                    uGUI_EscapePod.main.SetContent(content + bonus, new Color32((byte)(blinkOn ? 243 : 223), (byte)(blinkOn ? 243 : 223), 63, byte.MaxValue));
                 }
             }
         }

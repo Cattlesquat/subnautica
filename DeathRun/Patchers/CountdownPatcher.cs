@@ -38,6 +38,7 @@ namespace DeathRun.Patchers
         {
             DeathRun.countdownMonitor.currValue = currTime; // TimeMonitor doesn't seem to serialize well, so we do this.
             DeathRun.countdownMonitor.prevValue = prevTime;
+            Countdown_Patch.showingShip = false;
         }
 
         public void setDefaults()
@@ -81,7 +82,9 @@ namespace DeathRun.Patchers
     [HarmonyPatch("UpdateInterface")]
     internal class Countdown_Patch
     {
-        static bool showingShip = false;        
+        static public bool showingShip = false;
+
+        const int MESSAGE_TIME = 8;
 
         /**
          * Returns true if we're currently showing the Sunbeam Arrival countdown
@@ -122,11 +125,11 @@ namespace DeathRun.Patchers
             if (deep > 0) { 
                 // At time of second Aurora warning
                 if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f))) {
-                    DeathRunUtils.CenterMessage("Explosion Shockwave Will Be", 5);
-                    DeathRunUtils.CenterMessage("Over " + deep + "m Deep!", 5, 1);                    
+                    DeathRunUtils.CenterMessage("Explosion Shockwave Will Be", MESSAGE_TIME);
+                    DeathRunUtils.CenterMessage("Over " + deep + "m Deep!", MESSAGE_TIME, 1);                    
                 }
 
-                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f) + 5))
+                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.5f) + MESSAGE_TIME))
                 {
                     ErrorMessage.AddMessage("WARNING: Explosion will produce shockwave over " + deep + "m deep!");
                 }
@@ -134,11 +137,11 @@ namespace DeathRun.Patchers
                 // At time of third Aurora warning
                 if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f)))
                 {
-                    DeathRunUtils.CenterMessage("Prepare To Evacuate At Least", 5);
-                    DeathRunUtils.CenterMessage("" + deep + "m Deep. Preferably Inside.", 5, 1);                    
+                    DeathRunUtils.CenterMessage("Prepare To Evacuate At Least", MESSAGE_TIME);
+                    DeathRunUtils.CenterMessage("" + deep + "m Deep. Preferably Inside.", MESSAGE_TIME, 1);                    
                 }
                 
-                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f) + 5))
+                if (DeathRun.countdownMonitor.JustWentAbove(Mathf.Lerp(timeToStartWarning, timeToStartCountdown, 0.8f) + MESSAGE_TIME))
                 {
                     ErrorMessage.AddMessage("Prepare to evacuate at least " + deep + "m deep, preferably inside!");
                 }
@@ -146,11 +149,11 @@ namespace DeathRun.Patchers
                 // At time of final countdown
                 if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown))
                 {
-                    DeathRunUtils.CenterMessage("Seek Safe Depth Immediately!", 5);
-                    DeathRunUtils.CenterMessage("Preferably Inside!", 5, 1);
+                    DeathRunUtils.CenterMessage("Seek Safe Depth Immediately!", MESSAGE_TIME);
+                    DeathRunUtils.CenterMessage("Preferably Inside!", MESSAGE_TIME, 1);
                 }
 
-                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 5))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + MESSAGE_TIME))
                 {
                     ErrorMessage.AddMessage("Seek safe depth immediately! Preferably inside!");
                 }
@@ -161,22 +164,22 @@ namespace DeathRun.Patchers
             {
                 if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f))
                 {
-                    DeathRunUtils.CenterMessage("Radiation Will Gradually Permeate", 5);
-                    DeathRunUtils.CenterMessage("Ocean As Deep As " + deep + "m.", 5, 1);
+                    DeathRunUtils.CenterMessage("Radiation Will Gradually Permeate", MESSAGE_TIME);
+                    DeathRunUtils.CenterMessage("Ocean As Deep As " + deep + "m.", MESSAGE_TIME, 1);
                     
                 }
-                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 105f))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f + MESSAGE_TIME))
                 {
                     ErrorMessage.AddMessage("Radiation will gradually permeate the sea, as deep as " + deep + "m.");
                 }
 
-                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 110))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f + MESSAGE_TIME*2))
                 {
-                    DeathRunUtils.CenterMessage("All devices will consume power more rapidly", 5);
-                    DeathRunUtils.CenterMessage("while exposed to RADIATION, and recharge slowly.", 5, 1);                    
+                    DeathRunUtils.CenterMessage("All devices will consume power more rapidly", MESSAGE_TIME);
+                    DeathRunUtils.CenterMessage("while exposed to RADIATION, and recharge slowly.", MESSAGE_TIME, 1);                    
                 }
 
-                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 115))
+                if (DeathRun.countdownMonitor.JustWentAbove(timeToStartCountdown + 100f + MESSAGE_TIME*3))
                 {
                     ErrorMessage.AddMessage("All devices will consume power more rapidly while exposed to RADIATION and recharge slowly.");
                 }                    

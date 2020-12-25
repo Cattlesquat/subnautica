@@ -180,8 +180,6 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static bool Prefix(ref List<string> fileNames)
         {
-            CattleLogger.Message("LoadSlotsAsync");
-
             fileNames.Add(DeathRun.SaveFile);
             return true;
         }

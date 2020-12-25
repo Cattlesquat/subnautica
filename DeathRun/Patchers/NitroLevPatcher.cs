@@ -40,6 +40,7 @@ namespace DeathRun.Patchers
         public int ascentWarning { get; set; }    // Marks tick of when an Ascent Rate warning was given
         public float ascentRate { get; set; }     // Current ascent rate
         public float pipeTime { get; set; }       // Time last got air from a pipe
+        public float bubbleTime { get; set; }     // Time last got air from a bubble
         public bool atPipe { get; set; }          // True if currently considered "breathing from a pipe"
 
         public NitroSaveData()
@@ -56,6 +57,7 @@ namespace DeathRun.Patchers
             ascentRate = 0;
             atPipe = false;
             pipeTime = 0;
+            bubbleTime = 0;
             safeDepth = 0;
         }
     }
@@ -184,7 +186,7 @@ namespace DeathRun.Patchers
                         if (DeathRun.saveData.nitroSave.atPipe)
                         {
                             float now = DayNightCycle.main.timePassedAsFloat;
-                            if ((now > DeathRun.saveData.nitroSave.pipeTime + 1) && (now > DeathRun.saveData.nitroSave.pipeTime + 1))
+                            if ((now > DeathRun.saveData.nitroSave.pipeTime + 1) && (now > DeathRun.saveData.nitroSave.bubbleTime + 3))
                             {
                                 DeathRun.saveData.nitroSave.atPipe = false;
                             }
@@ -221,7 +223,7 @@ namespace DeathRun.Patchers
                     } 
                     else
                     {
-                        rate = (depth <= 1) ? 4 : (DeathRun.saveData.nitroSave.atPipe || !isSwimming) ? 3 : 2;
+                        rate = (depth <= 1) ? 6 : (DeathRun.saveData.nitroSave.atPipe || !isSwimming) ? 4 : 2;
                     }
 
                     __instance.nitrogenLevel = UWE.Utils.Slerp(__instance.nitrogenLevel, target, rate * modifier);
@@ -402,8 +404,8 @@ namespace DeathRun.Patchers
             if (component.health - damage > 0f)
             {
                 ErrorMessage.AddMessage("You have the bends from ascending too quickly!");
-                DeathRunUtils.CenterMessage("You have the bends!", 4);
-                DeathRunUtils.CenterMessage("Slow your ascent!", 4, 1);
+                DeathRunUtils.CenterMessage("You have the bends!", 6);
+                DeathRunUtils.CenterMessage("Slow your ascent!", 6, 1);
             }
             //else 
             //{
@@ -525,21 +527,21 @@ namespace DeathRun.Patchers
         }
     }
 
-    //[HarmonyPatch(typeof(Bubble))]
-    //[HarmonyPatch("OnCollisionEnter")]
-    //internal class BubblePatcher
-    //{
-    //    [HarmonyPrefix]
-    //    public static bool Prefix(ref Bubble __instance, Collision collisionInfo)
-    //    {
-    //        if (__instance.hasPopped || ((Time.time < __instance.dontPopTime) && collisionInfo.gameObject.layer != LayerMask.NameToLayer("Player")))
-    //        {
-    //            return true;
-    //        }
-    //        if ((Player.main == null) || (collisionInfo.gameObject != Player.main.gameObject)) return true;
-    //        DeathRun.saveData.nitroSave.atPipe = true;
-    //        DeathRun.saveData.nitroSave.bubbleTime = DayNightCycle.main.timePassedAsFloat;
-    //        return true;
-    //    }
-    //}
+    [HarmonyPatch(typeof(Bubble))]
+    [HarmonyPatch("OnCollisionEnter")]
+    internal class BubblePatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref Bubble __instance, Collision collisionInfo)
+        {
+            if (__instance.hasPopped || ((Time.time < __instance.dontPopTime) && collisionInfo.gameObject.layer != LayerMask.NameToLayer("Player")))
+            {
+                return true;
+            }
+            if ((Player.main == null) || (collisionInfo.gameObject != Player.main.gameObject)) return true;
+            DeathRun.saveData.nitroSave.atPipe = true;
+            DeathRun.saveData.nitroSave.bubbleTime = DayNightCycle.main.timePassedAsFloat;
+            return true;
+        }
+    }
 }
