@@ -280,7 +280,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.7.1 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.7.2 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;

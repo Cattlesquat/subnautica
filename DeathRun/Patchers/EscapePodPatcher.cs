@@ -130,6 +130,12 @@ namespace DeathRun.Patchers
         static bool frozen = false;
         static int frozenSecs = 0;
 
+        public static bool isRighting()
+        {
+            return DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright;
+        }
+
+
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance)
         {
@@ -142,8 +148,7 @@ namespace DeathRun.Patchers
             float depth = Ocean.main.GetDepthOf(__instance.gameObject);
 
             // Copy our current transform
-            if (!DeathRun.saveData.podSave.podAnchored || 
-                (DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright))
+            if (!DeathRun.saveData.podSave.podAnchored || isRighting())                
             {
                 DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
             }
@@ -201,6 +206,7 @@ namespace DeathRun.Patchers
                 if (!DeathRun.saveData.podSave.podRepaired && (DeathRun.saveData.podSave.prevSecs > 0) && (secs - frozenSecs > 2) && (depth > 20))
                 {
                     float dist = Vector3.Distance(DeathRun.saveData.podSave.podPrev.position, DeathRun.saveData.podSave.podTransform.position);
+
                     if (!DeathRun.saveData.podSave.podAnchored && (dist < 0.5))
                     {
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
@@ -275,7 +281,7 @@ namespace DeathRun.Patchers
 
             // If player is away from the pod, stop gravity so that it doesn't fall through the world when the geometry unloads
             frozen = (Vector3.Distance(__instance.transform.position, Player.main.transform.position) > 20) ||
-                     (DeathRun.saveData.podSave.podAnchored && !(DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright));
+                     (DeathRun.saveData.podSave.podAnchored && !isRighting());
             if (frozen)
             {
                 wf.underwaterGravity = 0.0f;
@@ -286,7 +292,7 @@ namespace DeathRun.Patchers
             }
 
             // Once pod is repaired, we give it a little time to right itself and then restore kinematic mode "for safety"
-            if (DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright)
+            if (isRighting())
             {
                 if ((DeathRun.saveData.podSave.podRightingTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.podSave.podRightingTime + 15))
                 {
@@ -309,7 +315,7 @@ namespace DeathRun.Patchers
                 return;
             }
 
-            if (!DeathRun.saveData.podSave.podGravity || (DeathRun.saveData.podSave.podAnchored && !(DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright))) 
+            if (!DeathRun.saveData.podSave.podGravity || (DeathRun.saveData.podSave.podAnchored && !isRighting())) 
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
@@ -446,12 +452,21 @@ namespace DeathRun.Patchers
             // Check if we've repaired the pod
             if (!EscapePod.main.damageEffectsShowing && !DeathRun.saveData.podSave.podRepaired)
             {
-                DeathRun.saveData.podSave.podRepaired = true;
-                DeathRun.saveData.podSave.podRepairTime = DayNightCycle.main.timePassedAsFloat;
+                if (EscapePod.main.liveMixin.GetHealthFraction() > 0.99f)
+                {
+                    DeathRun.saveData.podSave.podRepaired = true;
+                    DeathRun.saveData.podSave.podRepairTime = DayNightCycle.main.timePassedAsFloat;
+                }
+            }
+
+            // This just fixes a situation that 1.7.1 screwed up for some people
+            if (EscapePod.main.damageEffectsShowing && DeathRun.saveData.podSave.podRepaired) { 
+                DeathRun.saveData.podSave.podRepaired = false;
+                DeathRun.saveData.podSave.podRepairTime = 0;
             }
 
             // If we've repaired the pod but it hasn't right itself yet, let it off the kinematic leash to turn itself upright
-            if (DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright)
+            if (EscapePod_FixedUpdate_Patch.isRighting())
             {
                 if (Vector3.Distance(EscapePod.main.transform.position, Player.main.transform.position) < 15)
                 {
@@ -460,6 +475,8 @@ namespace DeathRun.Patchers
                         DeathRun.saveData.podSave.podRightingTime = DayNightCycle.main.timePassedAsFloat;
                     }
                     EscapePod.main.rigidbodyComponent.isKinematic = false;
+                    WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
+                    wf.underwaterGravity = 0.0f;
                 }
             }
 
