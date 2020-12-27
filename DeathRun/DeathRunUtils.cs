@@ -280,7 +280,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.6.1 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.7.1 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;
@@ -442,6 +442,14 @@ namespace DeathRun
         public const int FLAG_CYCLOPS  = 0x08;
         public const int FLAG_HABITAT  = 0x10;
         public const int FLAG_CURE     = 0x20;
+        public const int FLAG_BEACON   = 0x40;
+        public const int FLAG_DIVEREEL = 0x80;
+        public const int FLAG_REINFORCED = 0x100;
+        public const int FLAG_RADIATION = 0x200;
+        public const int FLAG_LASERCUTTER = 0x400;
+        public const int FLAG_ULTRAGLIDE = 0x800;
+        public const int FLAG_DOUBLETANK = 0x1000;
+        public const int FLAG_PLASTEEL_TANK = 0x2000;
 
         public RunData()
         {
@@ -569,6 +577,42 @@ namespace DeathRun
             {
                 vehicleVal += 25000;
             }
+
+            if ((VehicleFlags & FLAG_BEACON) != 0)
+            {
+                vehicleVal += 200;
+            }
+
+            if ((VehicleFlags & FLAG_DIVEREEL) != 0)
+            {
+                vehicleVal += 400;
+            }
+
+            if ((VehicleFlags & FLAG_REINFORCED) != 0)
+            {
+                vehicleVal += 1500;
+            }
+
+            if ((VehicleFlags & FLAG_RADIATION) != 0)
+            {
+                vehicleVal += 300;
+            }
+
+            if ((VehicleFlags & FLAG_ULTRAGLIDE) != 0)
+            {
+                vehicleVal += 500;
+            }
+
+            if ((VehicleFlags & FLAG_DOUBLETANK) != 0)
+            {
+                vehicleVal += 250;
+            }
+
+            if ((VehicleFlags & FLAG_PLASTEEL_TANK) != 0)
+            {
+                vehicleVal += 1000;
+            }
+
 
             float victoryVal = 0;
             if (Victory)

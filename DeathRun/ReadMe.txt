@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.6.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.7.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -38,6 +38,10 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.6 - Preference added to disable showing of "tips" on menu screen
 • 1.6 - Continued improvement of Escape Pod's data display
 • 1.6 - Misc tuning and improvements of nitrogen model. Display shows blue when bonus from pipe, etc.
+-------------------------------------------------------------------------------------------------------------
+• 1.7 - Vehicles and certain other items require more "scans" to research
+• 1.7 - Escape Pod will now "right itself" when repaired
+• 1.7 - Enhanced aggression no longer applies to vehicles you aren't currently piloting
 -------------------------------------------------------------------------------------------------------------
 
 :: GENERAL OTHER STUFF ::

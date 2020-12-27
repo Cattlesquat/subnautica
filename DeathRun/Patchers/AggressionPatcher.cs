@@ -132,7 +132,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if ((((target != Player.main.gameObject) || Player.main.IsInside()) && !target.GetComponent<Vehicle>()) ||  // Must be player or vehicle
+            if ((((target != Player.main.gameObject) || Player.main.IsInside()) && (!target.GetComponent<Vehicle>() || (target.GetComponent<Vehicle>() != Player.main.currentMountedVehicle))) ||  // Must be player or vehicle
                 (Ocean.main.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
                 (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression) && !Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
                 (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
@@ -188,9 +188,9 @@ namespace DeathRun.Patchers
                 {
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
 
-                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside()) || (ecoTarget.GetGameObject().GetComponent<Vehicle>()))
+                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside()) || 
+                        (ecoTarget.GetGameObject().GetComponent<Vehicle>() && (ecoTarget.GetGameObject().GetComponent<Vehicle>() == Player.main.currentMountedVehicle)))
                     {
-
                         bool feeding = false;
                         if (ecoTarget.GetGameObject() == Player.main.gameObject)
                         {

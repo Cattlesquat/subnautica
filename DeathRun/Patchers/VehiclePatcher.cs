@@ -66,6 +66,49 @@ namespace DeathRun.Patchers
                 DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_CURE);
             }
 
+            if (__instance.logic.craftingTechType == TechType.Beacon)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_BEACON);
+            }
+
+            if (__instance.logic.craftingTechType == TechType.DiveReel)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_DIVEREEL);
+            }
+
+            if (__instance.logic.craftingTechType == TechType.RadiationSuit)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_RADIATION);
+            }
+
+            if (__instance.logic.craftingTechType == TechType.ReinforcedDiveSuit)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_REINFORCED);
+            }
+
+            if (__instance.logic.craftingTechType == TechType.LaserCutter)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_LASERCUTTER);
+            }
+
+            if ((__instance.logic.craftingTechType == TechType.UltraGlideFins) || (__instance.logic.craftingTechType == TechType.SwimChargeFins))
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_ULTRAGLIDE);
+            }
+
+
+            if (__instance.logic.craftingTechType == TechType.DoubleTank)
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_DOUBLETANK);
+            }
+
+            if ((__instance.logic.craftingTechType == TechType.HighCapacityTank) || (__instance.logic.craftingTechType == TechType.PlasteelTank))
+            {
+                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_PLASTEEL_TANK);
+            }
+
+
+
         }
     }
 

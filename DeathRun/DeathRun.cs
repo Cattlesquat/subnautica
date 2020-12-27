@@ -418,6 +418,10 @@ namespace DeathRun
                             }
                         }
                     };
+
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 10);
+                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 30);
+                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
                 }
                 else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
                 {
@@ -491,6 +495,9 @@ namespace DeathRun
                         }
 
                     };
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 25);
+                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
                 }
 
                 if (techChanges != null)
@@ -552,6 +559,25 @@ namespace DeathRun
                         //    }
                         //}
                     };
+
+
+                    PDAHandler.EditFragmentsToScan(TechType.Beacon, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.Welder, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerCellCharger, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.Constructor, 10);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseBioReactor, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseNuclearReactor, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.ThermalPlant, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMoonpool, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 2);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 5);
+                    //PDAHandler.EditFragmentsToScan(TechType.BaseWaterPark, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.Spotlight, 3);
                 }
                 else if (Config.HARD.Equals(DeathRun.config.builderCosts))
                 {
@@ -587,6 +613,25 @@ namespace DeathRun
                             }
                         }
                     };
+
+                    PDAHandler.EditFragmentsToScan(TechType.Beacon, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.RepulsionCannon, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.Welder, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerCellCharger, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.Constructor, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseBioReactor, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseNuclearReactor, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.ThermalPlant, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMoonpool, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 2);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 4);
+                    //PDAHandler.EditFragmentsToScan(TechType.BaseWaterPark, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.Spotlight, 2);
                 }
 
                 if (techChanges != null)
