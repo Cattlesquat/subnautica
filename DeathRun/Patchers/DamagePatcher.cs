@@ -15,7 +15,7 @@ namespace DeathRun.Patchers
     [HarmonyPatch("CalculateDamage")]
     class DamageSystem_CalculateDamage_Patch
     {
-        public static void Postfix(DamageType type, GameObject target, float __result)
+        public static void Postfix(DamageType type, GameObject target, ref float __result)
         {
             // Heat, Pressure, Puncture, Collide, Poison, Acid, Radiation, LaserCutter, Fire, Starve
 
@@ -24,20 +24,25 @@ namespace DeathRun.Patchers
             {
                 float big;
                 float little;
-                if (Config.INSANITY.Equals(DeathRun.config.damageTaken))
+                if (Config.NO_WAY.Equals(DeathRun.config.damageTaken2))
                 {
-                    big = 10;
-                    little = 5;
-                } 
-                else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken))
-                {
-                    big    = 5;
-                    little = 3;
+                    big = 3;
+                    little = 2;
                 }
-                else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken))
+                else if (Config.INSANITY.Equals(DeathRun.config.damageTaken2))
                 {
                     big = 2;
-                    little = 2;
+                    little = 1.5f;
+                } 
+                else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken2))
+                {
+                    big    = 1.5f;
+                    little = 1.25f;
+                }
+                else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken2))
+                {
+                    big = 1.25f;
+                    little = 1.10f;
                 }
                 else
                 {
@@ -59,7 +64,7 @@ namespace DeathRun.Patchers
                         break;
 
                     case DamageType.Normal:
-                        __result *= big;
+                        __result *= little;
                         break;
 
                     case DamageType.Poison:

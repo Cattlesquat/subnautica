@@ -84,28 +84,38 @@ namespace DeathRun.Patchers
 
             // Smoke choke sounds in unbreathable atmosphere
             PlayerDamageSounds s = Player.main.gameObject.GetComponent<PlayerDamageSounds>();
-            if (s != null) {
+            if (s != null)
+            {
                 s.painSmoke.Play();
             }
 
-            if (!warnedNotBreathable || (Time.time > warningTime + 30f))
+            if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
             {
-                warnedNotBreathable = true;
-                warningTime = Time.time;
-                if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+                if (!warnedNotBreathable ||
+                    Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
+                    (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (Time.time > warningTime + 300)))
                 {
-                    DeathRunUtils.CenterMessage("WARNING! Surface air not breathable!", 5);
-                    DeathRunUtils.CenterMessage("A Floating Pump could filter it.", 5, 1);
 
-                    ErrorMessage.AddMessage("WARNING! The surface air on this planet is not breathable!");
-                    ErrorMessage.AddMessage("Use of a Floating Pump could filter it however.");
-                }
-                else
-                {
-                    DeathRunUtils.CenterMessage("WARNING! Surface air now too irradiated to breathe!", 5);
-                    DeathRunUtils.CenterMessage("A Floating Pump could filter it.", 5, 1);
+                    if (!warnedNotBreathable || (Time.time > warningTime + 30f))
+                    {
+                        warnedNotBreathable = true;
+                        warningTime = Time.time;
+                        if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+                        {
+                            DeathRunUtils.CenterMessage("WARNING! Surface air not breathable!", 5);
+                            DeathRunUtils.CenterMessage("A Floating Pump could filter it.", 5, 1);
 
-                    ErrorMessage.AddMessage("The surface air is now too irradiated to breathe!");
+                            ErrorMessage.AddMessage("WARNING! The surface air on this planet is not breathable!");
+                            ErrorMessage.AddMessage("Use of a Floating Pump could filter it however.");
+                        }
+                        else
+                        {
+                            DeathRunUtils.CenterMessage("WARNING! Surface air now too irradiated to breathe!", 5);
+                            DeathRunUtils.CenterMessage("A Floating Pump could filter it.", 5, 1);
+
+                            ErrorMessage.AddMessage("The surface air is now too irradiated to breathe!");
+                        }
+                    }
                 }
             }
 

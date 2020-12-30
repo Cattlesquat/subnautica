@@ -35,9 +35,13 @@ namespace DeathRun.Patchers
     {
         public float safeDepth { get; set; }      // Safe depth for Nitrogen/Bends. Replaces the one in game code that isn't saved w/ saved game.
         public int oldTicks { get; set; }         // Ticks marker for our half-second tick pulse
+        public int n2IntroTicks { get; set; }     // Marks tick of when we were introduced to n2 concept
         public int tookDamageTicks { get; set; }  // Marks tick of last time we took damage
+        public int reallyTookDamageTicks { get; set; }  // Marks tick of last time we took damage
         public int n2WarningTicks { get; set; }   // Marks tick of last time we got N2 warning
-        public int ascentWarning { get; set; }    // Marks tick of when an Ascent Rate warning was given
+        public int ascentWarningTicks { get; set; } // Marks tick of when an Ascent Rate warning was given
+
+        public int ascentWarning { get; set; }    // Ascent warning accumulator
         public float ascentRate { get; set; }     // Current ascent rate
         public float pipeTime { get; set; }       // Time last got air from a pipe
         public float bubbleTime { get; set; }     // Time last got air from a bubble
@@ -51,8 +55,11 @@ namespace DeathRun.Patchers
         public void setDefaults()
         {
             oldTicks = 0;
+            n2IntroTicks = 0;
             tookDamageTicks = 0;
+            reallyTookDamageTicks = 0;
             n2WarningTicks = 0;
+            ascentWarningTicks = 0;
             ascentWarning = 0;
             ascentRate = 0;
             atPipe = false;
@@ -114,11 +121,11 @@ namespace DeathRun.Patchers
 
                 bool isSwimming = Player.main.IsSwimming();
 
-                bool isInBase = !isSwimming && (depth > 10) && !GameModeUtils.RequiresOxygen();
-
                 bool isInVehicle = Player.main.GetCurrentSub()?.isCyclops == true ||
                                    Player.main.GetVehicle() is SeaMoth ||
                                    Player.main.GetVehicle() is Exosuit;
+
+                bool isInBase = Player.main.IsInside() && !isInVehicle; //!isSwimming && (depth > 10) && !GameModeUtils.RequiresOxygen();
 
                 bool isSeaglide = (Player.main.motorMode == Player.MotorMode.Seaglide);
 
@@ -255,9 +262,17 @@ namespace DeathRun.Patchers
                         {
                             if ((DeathRun.saveData.nitroSave.safeDepth >= 13f) || ((int)depth + 1) < (int)DeathRun.saveData.nitroSave.safeDepth) // Avoid spurious warnings right at surface
                             {
-                                DeathRunUtils.CenterMessage("Decompression Warning", 5);
-                                DeathRunUtils.CenterMessage("Dive to Safe Depth!", 5, 1);
-                                DeathRun.saveData.nitroSave.n2WarningTicks = ticks;
+                                if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
+                                {
+                                    if ((DeathRun.saveData.nitroSave.n2WarningTicks == 0) ||
+                                        Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
+                                        (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (ticks - DeathRun.saveData.nitroSave.n2WarningTicks > 600)))
+                                    {
+                                        DeathRunUtils.CenterMessage("Decompression Warning", 5);
+                                        DeathRunUtils.CenterMessage("Dive to Safe Depth!", 5, 1);
+                                        DeathRun.saveData.nitroSave.n2WarningTicks = ticks;
+                                    }
+                                }
                             }
                         }
 
@@ -271,8 +286,9 @@ namespace DeathRun.Patchers
                         {
                             if ((DeathRun.saveData.nitroSave.tookDamageTicks == 0) || (ticks - DeathRun.saveData.nitroSave.tookDamageTicks > 10))
                             {
-                                DecoDamage(ref __instance, depth);
+                                DecoDamage(ref __instance, depth, ticks);
                                 DeathRun.saveData.nitroSave.tookDamageTicks = ticks;
+                                DeathRun.saveData.nitroSave.reallyTookDamageTicks = ticks;
                             }
                         }
                     }
@@ -297,8 +313,7 @@ namespace DeathRun.Patchers
                             DeathRun.saveData.nitroSave.ascentWarning++;
                             if (DeathRun.saveData.nitroSave.ascentWarning == 1)
                             {
-                                DeathRunUtils.CenterMessage("Ascending too quickly!", 4);
-                                ErrorMessage.AddMessage("Ascending too quickly!");
+                                doAscentWarning(ticks);
                             }
                             else if (DeathRun.saveData.nitroSave.ascentRate >= (isSeaglide ? 5.5 : 5))
                             {
@@ -338,8 +353,7 @@ namespace DeathRun.Patchers
 
                                     if ((DeathRun.saveData.nitroSave.ascentWarning % 120) == 0)
                                     {
-                                        ErrorMessage.AddMessage("Ascending too quickly!");
-                                        DeathRunUtils.CenterMessage("Ascending too quickly!", 5);
+                                        doAscentWarning(ticks);
                                     }
                                 }
                             }
@@ -367,11 +381,27 @@ namespace DeathRun.Patchers
             return false;
         }
 
+
+        private static void doAscentWarning (int ticks)
+        {
+            if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
+            {
+                if ((DeathRun.saveData.nitroSave.ascentWarningTicks == 0) ||
+                    Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
+                    (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (ticks - DeathRun.saveData.nitroSave.ascentWarningTicks > 600)))
+                {
+                    ErrorMessage.AddMessage("Ascending too quickly!");
+                    DeathRunUtils.CenterMessage("Ascending too quickly!", 5);
+                    DeathRun.saveData.nitroSave.ascentWarningTicks = ticks;
+                }
+            }
+        }
+
         /**
          * DecoDamage - this actually applies the decompression damage from getting the bends. Includes "anti-one-shotting" protection. Also
          * resets the "safe depth" higher after each shot of damage. 
-         */ 
-        private static void DecoDamage(ref NitrogenLevel __instance, float depthOf)
+         */
+        private static void DecoDamage(ref NitrogenLevel __instance, float depthOf, int ticks)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
 
@@ -403,9 +433,17 @@ namespace DeathRun.Patchers
 
             if (component.health - damage > 0f)
             {
-                ErrorMessage.AddMessage("You have the bends from ascending too quickly!");
-                DeathRunUtils.CenterMessage("You have the bends!", 6);
-                DeathRunUtils.CenterMessage("Slow your ascent!", 6, 1);
+                if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
+                {
+                    if ((DeathRun.saveData.nitroSave.reallyTookDamageTicks == 0) ||
+                        Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
+                        (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (ticks - DeathRun.saveData.nitroSave.reallyTookDamageTicks > 600)))
+                    {
+                        ErrorMessage.AddMessage("You have the bends from ascending too quickly!");
+                        DeathRunUtils.CenterMessage("You have the bends!", 6);
+                        DeathRunUtils.CenterMessage("Slow your ascent!", 6, 1);
+                    }
+                }
             }
             //else 
             //{
@@ -449,7 +487,17 @@ namespace DeathRun.Patchers
                 // If we're just starting N2 accumulation, and haven't had a warning in at least a minute, display the "intro to nitrogen" message
                 if (!cachedActive && ((cachedTicks == 0) || (DeathRun.saveData.nitroSave.oldTicks - cachedTicks > 120)))
                 {
-                    ErrorMessage.AddMessage("The deeper you go, the faster nitrogen accumulates in your bloodstream!");
+                    if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
+                    {
+                        if ((DeathRun.saveData.nitroSave.n2IntroTicks == 0) ||
+                            Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
+                            (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (cachedTicks - DeathRun.saveData.nitroSave.n2IntroTicks > 600)))
+                        {
+                            ErrorMessage.AddMessage("The deeper you go, the faster nitrogen accumulates in your bloodstream!");
+                            DeathRun.saveData.nitroSave.n2IntroTicks = cachedTicks;
+                        }
+                    }
+                    
                     cachedTicks = DeathRun.saveData.nitroSave.oldTicks;
                 }
 

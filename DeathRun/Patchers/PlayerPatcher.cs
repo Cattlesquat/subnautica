@@ -81,15 +81,19 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Config.INSANITY.Equals(DeathRun.config.damageTaken))
+            if (Config.NO_WAY.Equals(DeathRun.config.damageTaken2))
+            {
+                Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .10f;
+            }
+            else if (Config.INSANITY.Equals(DeathRun.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .25f;
             }
-            else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken))
+            else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .50f;
             }
-            else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken))
+            else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .75f;
             }

@@ -31,47 +31,52 @@ namespace DeathRun
         public const string IRRADIATED = "Hard (Pre/Post Radiation)";
         public const string BREATHABLE = "Easy (Always Breathable)";
 
-        public const string INSANITY = "Death Run (up to x10)";
-        public const string HARDCORE = "Very Hard (up to x5)";
-        public const string LOVETAPS = "Love Taps (x2)";
-        public const string COWARDLY = "Noob (x1)";
+        public const string NO_WAY = "No Way! (up to 200% more)";
+        public const string INSANITY = "Death Run (up to 100% more)";
+        public const string HARDCORE = "Very Hard (up to 50% more)";
+        public const string LOVETAPS = "Love Taps (up to 25% more)";
+        public const string COWARDLY = "Noob (normal)";
 
         public const string UNPATCHED = "UNPATCHED";
 
         public const string EXORBITANT = "WORSE than Death Run!";
 
-        public const string DEATHRUN   = "Death Run";
-        public const string HARD       = "Hard";
-        public const string NORMAL     = "Easy";
+        public const string DEATHRUN = "Death Run";
+        public const string HARD = "Hard";
+        public const string NORMAL = "Easy";
 
-        public const string RANDOM     = "RANDOM";
+        public const string RANDOM = "RANDOM";
         public const string BASIC_GAME = "BASIC GAME";
 
         public const string AGGRESSIVE = "Death Run";
 
-        public const string NO_VEHICLES    = "No Vehicles Challenge!";
+        public const string NO_VEHICLES = "No Vehicles Challenge!";
         public const string DEATH_VEHICLES = "Death Run (exotic costs)";
-        public const string HARD_VEHICLES  = "Hard (unusual costs)";
+        public const string HARD_VEHICLES = "Hard (unusual costs)";
 
         public const string RADIATION_DEATHRUN = "Death Run (60m)";
-        public const string RADIATION_HARD     = "Hard (30m)";
+        public const string RADIATION_HARD = "Hard (30m)";
 
         public const string EXPLOSION_DEATHRUN = "Death Run (100m)";
-        public const string EXPLOSION_HARD     = "Hard (50m)";
+        public const string EXPLOSION_HARD = "Hard (50m)";
 
         public const string TIME_RANDOM = "RANDOM";
-        public const string TIME_SHORT  = "Short (45 min)";
+        public const string TIME_SHORT = "Short (45 min)";
         public const string TIME_MEDIUM = "Medium (60 min)";
-        public const string TIME_LONG   = "Long (90 min)";
+        public const string TIME_LONG = "Long (90 min)";
 
-        public const string MURK_NORMAL  = "Normal";
-        public const string MURK_DARK    = "Dark";
-        public const string MURK_DARKER  = "Darker";
+        public const string MURK_NORMAL = "Normal";
+        public const string MURK_DARK = "Dark";
+        public const string MURK_DARKER = "Darker";
         public const string MURK_DARKEST = "Darkest";
-        public const string MURK_CLEAR   = "Crazy Clear";
+        public const string MURK_CLEAR = "Crazy Clear";
 
-        [Choice("Damage Taken", new string[] { INSANITY, HARDCORE, LOVETAPS, COWARDLY }), OnChange(nameof(ChangedChoice))]
-        public string damageTaken = INSANITY;
+        public const string WHENEVER = "Whenever Encountered";
+        public const string OCCASIONAL = "Occasional Reminders (> 5 min)";
+        public const string INTRODUCTORY = "Introducing Concept Only";
+
+        [Choice("Damage Taken", new string[] { NO_WAY, INSANITY, HARDCORE, LOVETAPS, COWARDLY }), OnChange(nameof(ChangedChoice))]
+        public string damageTaken2 = INSANITY;
 
         [Choice("Surface Air", new string[] { POISONED, IRRADIATED, BREATHABLE }), OnChange(nameof(ChangedChoice))]
         public string surfaceAir = POISONED;
@@ -110,7 +115,7 @@ namespace DeathRun
         //use this easy-to-use "[Choice(...)]" annotation, so I've just hacked this horrible thing in (where the strings need to correspond
         //precisely with the ones in the other list). If some kind soul, Knowledgeable in the Ways Of SMLHelper, were to push a PR that did this,
         //I would gratefully merge it.
-        [Choice("Start Location", new string[] { RANDOM, BASIC_GAME, 
+        [Choice("Start Location", new string[] { RANDOM, BASIC_GAME,
             "Bullseye",
             "Cul-de-Sac",
             "Rolled In",
@@ -148,8 +153,12 @@ namespace DeathRun
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
 
+        [Choice("Show Bends and Air Warnings", new string[] { WHENEVER, OCCASIONAL, INTRODUCTORY, NEVER })]
+        public string showWarnings = WHENEVER;
+
         [Toggle("Show High Score List"), OnChange(nameof(ChangedHighScores))]
         public bool showHighScores = true;
+
 
         [Toggle("Show Tips w/ High Scores"), OnChange(nameof(ChangedTips))]
         public bool showTips = true;
@@ -253,10 +262,10 @@ namespace DeathRun
         {
             int count = 0;
 
-            if (INSANITY.Equals(damageTaken))
+            if (INSANITY.Equals(damageTaken2) || NO_WAY.Equals(damageTaken2))
             {
                 count += 2;
-            } else if (HARDCORE.Equals(damageTaken))
+            } else if (HARDCORE.Equals(damageTaken2))
             {
                 count += 1;
             }
@@ -315,6 +324,11 @@ namespace DeathRun
         public int countDeathRunBonuses()
         {
             int bonuses = 0;
+
+            if (NO_WAY.Equals(damageTaken2))
+            {
+                bonuses += 2;
+            }
 
             if (NO_VEHICLES.Equals(vehicleCosts))
             {

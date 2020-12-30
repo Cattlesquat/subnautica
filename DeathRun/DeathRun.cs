@@ -419,8 +419,8 @@ namespace DeathRun
                         }
                     };
 
-                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 10);
-                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 30);
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 15);
+                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 7);
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
                 }
                 else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
@@ -495,8 +495,8 @@ namespace DeathRun
                         }
 
                     };
-                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 7);
-                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 25);
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 10);
+                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 6);
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
                 }
 
@@ -565,8 +565,8 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
                     PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 4);
                     PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 4);
-                    PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 5);
-                    PDAHandler.EditFragmentsToScan(TechType.Welder, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutterFragment, 6);
                     PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 6);
                     PDAHandler.EditFragmentsToScan(TechType.PowerCellCharger, 6);
                     PDAHandler.EditFragmentsToScan(TechType.Constructor, 10);
@@ -620,6 +620,7 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 3);
                     PDAHandler.EditFragmentsToScan(TechType.RepulsionCannon, 3);
                     PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutterFragment, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Welder, 4);
                     PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 4);
                     PDAHandler.EditFragmentsToScan(TechType.PowerCellCharger, 4);
