@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.7.3 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.8.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
