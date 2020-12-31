@@ -188,7 +188,7 @@ namespace DeathRun.Patchers
                 {
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
 
-                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside()) || 
+                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside() && Player.main.IsUnderwater()) || 
                         (ecoTarget.GetGameObject().GetComponent<Vehicle>() && (ecoTarget.GetGameObject().GetComponent<Vehicle>() == Player.main.currentMountedVehicle)))
                     {
                         bool feeding = false;

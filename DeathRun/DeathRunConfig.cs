@@ -52,6 +52,7 @@ namespace DeathRun
 
         public const string NO_VEHICLES = "No Vehicles Challenge!";
         public const string DEATH_VEHICLES = "Death Run (exotic costs)";
+        public const string DEATH_VEHICLES_2 = "Death Run (alternate costs)";
         public const string HARD_VEHICLES = "Hard (unusual costs)";
 
         public const string RADIATION_DEATHRUN = "Death Run (60m)";
@@ -102,7 +103,7 @@ namespace DeathRun
         [Choice("Power to Exit Vehicles", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string powerExitVehicles = DEATHRUN;
 
-        [Choice("Vehicle Costs", new string[] { NO_VEHICLES, DEATH_VEHICLES, HARD_VEHICLES, NORMAL }), OnChange(nameof(ChangedChoice))]
+        [Choice("Vehicle Costs", new string[] { NO_VEHICLES, DEATH_VEHICLES, DEATH_VEHICLES_2, HARD_VEHICLES, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string vehicleCosts = DEATH_VEHICLES;
 
         [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]

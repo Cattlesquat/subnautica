@@ -270,9 +270,9 @@ namespace DeathRun.Patchers
                                     {
                                         DeathRunUtils.CenterMessage("Decompression Warning", 5);
                                         DeathRunUtils.CenterMessage("Dive to Safe Depth!", 5, 1);
-                                        DeathRun.saveData.nitroSave.n2WarningTicks = ticks;
                                     }
                                 }
+                                DeathRun.saveData.nitroSave.n2WarningTicks = ticks;
                             }
                         }
 
@@ -392,9 +392,9 @@ namespace DeathRun.Patchers
                 {
                     ErrorMessage.AddMessage("Ascending too quickly!");
                     DeathRunUtils.CenterMessage("Ascending too quickly!", 5);
-                    DeathRun.saveData.nitroSave.ascentWarningTicks = ticks;
                 }
             }
+            DeathRun.saveData.nitroSave.ascentWarningTicks = ticks;
         }
 
         /**

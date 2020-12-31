@@ -57,7 +57,7 @@ namespace DeathRun.Patchers
 
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("OnButtonFreedom")]
+    [HarmonyPatch("OnButtonCreative")]
     internal class CreativeButtonPatcher
     {
         [HarmonyPrefix]

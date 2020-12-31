@@ -64,7 +64,14 @@ namespace DeathRun.Patchers
                         break;
 
                     case DamageType.Normal:
-                        __result *= little;
+                        if (__result < 50)
+                        {
+                            __result *= UnityEngine.Random.Range(little, big);
+                        }
+                        else
+                        {
+                            __result *= little;
+                        }
                         break;
 
                     case DamageType.Poison:

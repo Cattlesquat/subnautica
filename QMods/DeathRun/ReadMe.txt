@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.7.3 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.8.2 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -46,6 +46,9 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.8 - Damage increases WEREN'T WORKING. Now they are! FEAR THE DAMAGE INCREASES!!!
 • 1.8 - Won't take Bends damage while inside your own base
 • 1.8 - Can adjust the frequency with which Bends / Air Breathability / Etc warnings (aka "tips") appear
+• 1.8.2 - Alternative "Death Run Costs" for Vehicles available
+• 1.8.2 - Fixed lack of bends damage w/ warnings turned off
+• 1.8.2 - Spotlights back to only requiring one scan (since they don't despawn when you scan them, no point)
 -------------------------------------------------------------------------------------------------------------
 
 :: GENERAL OTHER STUFF ::
