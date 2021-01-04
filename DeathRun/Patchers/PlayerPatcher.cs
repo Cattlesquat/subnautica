@@ -490,38 +490,45 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageType damageType)
         {
-            setCauseOfDeath(damageType);
-
-            DeathRun.saveData.playerSave.numDeaths++;
-
-            DeathRun.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
-            DeathRun.saveData.playerSave.spanAtDeath = DeathRun.saveData.playerSave.allLives;
-
-            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.currentLife);
-
-            string text = "Time of Death";
-            if (DeathRun.saveData.playerSave.numDeaths > 1)
+            try
             {
-                text += " #" + DeathRun.saveData.playerSave.numDeaths;
+                setCauseOfDeath(damageType);
+
+                DeathRun.saveData.playerSave.numDeaths++;
+
+                DeathRun.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
+                DeathRun.saveData.playerSave.spanAtDeath = DeathRun.saveData.playerSave.allLives;
+
+                TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.currentLife);
+
+                string text = "Time of Death";
+                if (DeathRun.saveData.playerSave.numDeaths > 1)
+                {
+                    text += " #" + DeathRun.saveData.playerSave.numDeaths;
+                }
+                text += ": ";
+
+                text += DeathRunUtils.sayTime(timeSpan);
+
+                DeathRunUtils.CenterMessage(text, 10);
+                CattleLogger.Message(text);
+
+                text = "Cause of Death: " + DeathRun.cause;
+                DeathRunUtils.CenterMessage(text, 10, 1);
+
+                //ErrorMessage.AddMessage(text);            
+
+                DeathRun.saveData.playerSave.killOpening = true;
+                DeathRun.saveData.runData.updateVitals(false);
+
+                DeathRun.saveData.nitroSave.setDefaults(); // Reset all nitrogen state
+
+                DeathRun.playerIsDead = true;
             }
-            text += ": ";
-
-            text += DeathRunUtils.sayTime(timeSpan);
-
-            DeathRunUtils.CenterMessage(text, 10);
-            CattleLogger.Message(text);
-
-            text = "Cause of Death: " + DeathRun.cause;
-            DeathRunUtils.CenterMessage(text, 10, 1);
-
-            //ErrorMessage.AddMessage(text);            
-
-            DeathRun.saveData.playerSave.killOpening = true;
-            DeathRun.saveData.runData.updateVitals(false);
-
-            DeathRun.saveData.nitroSave.setDefaults(); // Reset all nitrogen state
-
-            DeathRun.playerIsDead = true;
+            catch (Exception ex)
+            {
+                CattleLogger.GenericError("During Player.OnKill - ", ex);
+            }
 
             return true;
         }
@@ -594,7 +601,7 @@ namespace DeathRun.Patchers
                                 }
                                 else
                                 {
-                                    CattleLogger.Message("(Couldn't find creature that cause player death)");
+                                    CattleLogger.Message("(Couldn't find creature that caused player death) - ");
                                 }
                             }
                         }
@@ -638,7 +645,7 @@ namespace DeathRun.Patchers
             {
                 Vehicle vehicle = __instance.GetVehicle();
 
-                if ((vehicle == null) || !(vehicle.gameObject.transform.position.y < vehicle.worldForces.waterDepth + 2f) || vehicle.precursorOutOfWater)
+                if ((vehicle == null) || !(vehicle.gameObject.transform.position.y < vehicle.worldForces.waterDepth + 2f) || vehicle.precursorOutOfWater || vehicle.IsInsideAquarium())
                 {
                     return true;
                 }
@@ -751,24 +758,30 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static void Prefix(uGUI_HardcoreGameOver __instance)
         {
-            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.allLives);
+            DeathRun.setCause("Victory");
+            DeathRun.saveData.runData.updateVitals(true);
+            DeathRun.statsData.SaveStats();
 
+            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.allLives);
             string text = "Victory! In " + DeathRunUtils.sayTime(timeSpan) + " (" + (DeathRun.saveData.playerSave.numDeaths + 1) + " ";
             if (DeathRun.saveData.playerSave.numDeaths == 0)
             {
                 text += "life";
-            } else
+            }
+            else
             {
                 text += "lives";
             }
 
             text += ")";
 
-            DeathRun.setCause("Victory");
-            DeathRun.saveData.runData.updateVitals(true);
-
             DeathRunUtils.CenterMessage(text, 10);
             CattleLogger.Message(text);
+
+            string text2 = "Score: " + DeathRun.saveData.runData.Score;
+            DeathRunUtils.CenterMessage(text, 10, 1);
+            CattleLogger.Message(text);
+
             //ErrorMessage.AddMessage(text);            
         }
     }

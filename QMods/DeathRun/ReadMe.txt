@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.8.2 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.8.3 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -49,6 +49,10 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • 1.8.2 - Alternative "Death Run Costs" for Vehicles available
 • 1.8.2 - Fixed lack of bends damage w/ warnings turned off
 • 1.8.2 - Spotlights back to only requiring one scan (since they don't despawn when you scan them, no point)
+• 1.8.3 - Elevator and Teleporters should no longer give you The Bends
+• 1.8.3 - "Primary Containment Facility" no longer causes crush depth damage, nor exit-vehicle energy costs.
+• 1.8.3 - Launching Rocket now saves the score
+• 1.8.3 - Swim Charge Fins charging penalty reduced
 -------------------------------------------------------------------------------------------------------------
 
 :: GENERAL OTHER STUFF ::

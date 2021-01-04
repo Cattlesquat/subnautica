@@ -592,4 +592,41 @@ namespace DeathRun.Patchers
             return true;
         }
     }
+
+
+    /**
+     * When player uses the funky elevator in the Precursor base, don't give him bends.
+     */
+    [HarmonyPatch(typeof(PrecursorElevator))]
+    [HarmonyPatch("Update")]
+    internal class PrecursorElevatorPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref PrecursorElevator __instance)
+        {
+            if (__instance.elevatorPointIndex != -1)
+            {
+                DeathRun.saveData.nitroSave.safeDepth = 10;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * When player teleports, don't give him bends.
+     */
+    [HarmonyPatch(typeof(PrecursorTeleporter))]
+    [HarmonyPatch("BeginTeleportPlayer")]
+    internal class PrecursorTeleporterPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref PrecursorTeleporter __instance)
+        {
+            if (DeathRun.saveData.nitroSave.safeDepth > 10)
+            {
+                DeathRun.saveData.nitroSave.safeDepth = 10;
+            }
+            return true;
+        }
+    }
 }

@@ -192,7 +192,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static void AddEnergyTool(ref float amount)
         {
-            amount = AdjustAddEnergy(amount, isTransformInRadiation(Player.main.transform));
+            amount = AdjustAddEnergy(amount * 2, isTransformInRadiation(Player.main.transform));
         }
 
         /**

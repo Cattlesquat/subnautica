@@ -31,7 +31,7 @@ namespace DeathRun.Patchers
         private static bool isAirPoisoned(Player player)
         {
             if (!isSurfaceAirPoisoned()) return false;
-            if (player.IsInside()) return false;
+            if (player.IsInside() || player.precursorOutOfWater) return false;
             float depth = Ocean.main.GetDepthOf(player.gameObject);
             if (depth > 5) return false;
             return true;

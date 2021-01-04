@@ -25,7 +25,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ref NitrogenLevel __instance, Player player)
         {
-            if (GameModeUtils.RequiresOxygen())
+            if (GameModeUtils.RequiresOxygen() && !PrisonManager.IsInsideAquarium(player.gameObject.transform.position))
             {
                 float depthOf = Ocean.main.GetDepthOf(player.gameObject);
 
