@@ -371,6 +371,47 @@ namespace DeathRun
                                 }
                             },
                             {
+                                TechType.VehicleHullModule1,
+                                new TechData
+                                {
+                                    craftAmount = 1,
+                                    Ingredients = new List<Ingredient>
+                                    {
+                                        new Ingredient(TechType.TitaniumIngot, 1),
+                                        new Ingredient(TechType.Magnetite, 2),
+                                        new Ingredient(TechType.EnameledGlass, 1)
+                                    }
+                                }
+                            },
+                            {
+                                TechType.VehicleHullModule2,
+                                new TechData
+                                {
+                                    craftAmount = 1,
+                                    Ingredients = new List<Ingredient>
+                                    {
+                                        new Ingredient(TechType.VehicleHullModule1, 1),
+                                        new Ingredient(TechType.PlasteelIngot, 1),
+                                        new Ingredient(TechType.AluminumOxide, 3),
+                                        new Ingredient(TechType.EnameledGlass, 1)
+                                    }
+                                }
+                            },
+                            {
+                                TechType.VehicleHullModule3,
+                                new TechData
+                                {
+                                    craftAmount = 1,
+                                    Ingredients = new List<Ingredient>
+                                    {
+                                        new Ingredient(TechType.VehicleHullModule2, 1),
+                                        new Ingredient(TechType.PlasteelIngot, 1),
+                                        new Ingredient(TechType.Sulphur, 2),
+                                        new Ingredient(TechType.UraniniteCrystal, 2)
+                                    }
+                                }
+                            },
+                            {
                                 TechType.Cyclops,
                                 new TechData
                                 {
@@ -402,6 +443,19 @@ namespace DeathRun
                                         new Ingredient(TechType.Sulphur, 3),
                                         new Ingredient(TechType.UraniniteCrystal, 3),
                                         new Ingredient(TechType.Lubricant, 3)
+                                    }
+                                }
+                            },
+                            {
+                                TechType.ExoHullModule1,
+                                new TechData
+                                {
+                                    craftAmount = 1,
+                                    Ingredients = new List<Ingredient>
+                                    {
+                                        new Ingredient(TechType.PlasteelIngot, 1),
+                                        new Ingredient(TechType.Nickel, 3),
+                                        new Ingredient(TechType.Kyanite, 1)
                                     }
                                 }
                             },
