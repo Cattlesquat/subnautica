@@ -97,8 +97,11 @@ namespace DeathRun
         [Choice("Explosion Time", new string[] { TIME_RANDOM, TIME_SHORT, TIME_MEDIUM, TIME_LONG }), OnChange(nameof(ChangedChoice))]
         public string explosionTime = TIME_RANDOM;
 
-        [Choice("Power Costs", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        [Choice("Power Costs", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string powerCosts = DEATHRUN;
+
+        [Choice("Batteries", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        public string batteryCosts = DEATHRUN;
 
         [Choice("Power to Exit Vehicles", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string powerExitVehicles = DEATHRUN;
@@ -108,6 +111,9 @@ namespace DeathRun
 
         [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string builderCosts = DEATHRUN;
+
+        [Choice("Scans Required", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        public string scansRequired = DEATHRUN;
 
         [Choice("Creature Aggression", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string creatureAggression = DEATHRUN;
@@ -309,6 +315,8 @@ namespace DeathRun
             count += quickCheck(nitrogenBends);
             count += quickCheck(personalCrushDepth);
             count += quickCheck(powerCosts);
+            count += quickCheck(batteryCosts);
+            count += quickCheck(scansRequired);
             count += quickCheck(powerExitVehicles);
             count += quickCheck(builderCosts);
             count += quickCheck(creatureAggression);
@@ -318,7 +326,7 @@ namespace DeathRun
                 count += 2;
             }
 
-            return count; // of 24
+            return count; // of 28
         }
 
 

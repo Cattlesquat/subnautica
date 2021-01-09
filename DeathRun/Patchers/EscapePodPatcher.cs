@@ -96,7 +96,7 @@ namespace DeathRun.Patchers
         public static void Postfix()
         {
             float restore;
-            if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+            if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
             {
                 restore = 5;   // Recharge each cell by 5 (total of 15)
             } 

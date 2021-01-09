@@ -184,7 +184,7 @@ namespace DeathRun.Patchers
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
                     if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather)) 
                     {
-                        float adjustment = depth * (2 + (!isSwimming ? 1 : 0) + (isSeaglide ? 1 : 0) + ((headSlot == TechType.Rebreather) ? 1 : 0)) / 8;
+                        float adjustment = depth * (2 + (!isSwimming ? 1 : 0) + (isSeaglide ? 1 : 0)) / 8;
 
                         if (baselineSafe - adjustment <= DeathRun.saveData.nitroSave.safeDepth) { 
                             baselineSafe = baselineSafe - adjustment;
@@ -212,7 +212,10 @@ namespace DeathRun.Patchers
 
                     // This little % buffer helps introduce the concept of N2 (both initially and as a positive feedback reminder)
                     float target;
-                    if ((DeathRun.saveData.nitroSave.safeDepth > 10f) || (depth >= 20)) {
+                    if (Player.main.precursorOutOfWater)
+                    {
+                        target = 0;
+                    } else if ((DeathRun.saveData.nitroSave.safeDepth > 10f) || (depth >= 20)) {
                         target = 100;
                     }
                     else if (depth <= 10)
@@ -597,6 +600,7 @@ namespace DeathRun.Patchers
     /**
      * When player uses the funky elevator in the Precursor base, don't give him bends.
      */
+    /*
     [HarmonyPatch(typeof(PrecursorElevator))]
     [HarmonyPatch("Update")]
     internal class PrecursorElevatorPatcher
@@ -604,13 +608,64 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ref PrecursorElevator __instance)
         {
+            ErrorMessage.AddMessage("Elevator Update");
             if (__instance.elevatorPointIndex != -1)
             {
+                ErrorMessage.AddMessage("Elevator Update Made Safe");
                 DeathRun.saveData.nitroSave.safeDepth = 10;
             }
             return true;
         }
     }
+    */
+
+
+    /**
+     * When player teleports, don't give him bends.
+     */
+    /*
+    [HarmonyPatch(typeof(PrecursorElevator))]
+    [HarmonyPatch("ActivateElevator")]
+    internal class PrecursorElevatorActivatePatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref PrecursorElevator __instance)
+        {
+            ErrorMessage.AddMessage("Activate");
+            if (__instance.elevatorPointIndex == -1)
+            {
+                ErrorMessage.AddMessage("Activate Made Safe");
+                DeathRun.saveData.nitroSave.safeDepth = 10;
+            }
+            return true;
+        }
+    }
+    */
+
+
+
+    /**
+     * When player teleports, don't give him bends.
+     */
+    /*
+    [HarmonyPatch(typeof(PrecursorElevatorTrigger))]
+    [HarmonyPatch("OnTriggerEnter")]
+    internal class PrecursorElevatorTriggerPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref PrecursorElevatorTrigger __instance, Collider col)
+        {
+            ErrorMessage.AddMessage("Elevator Trigger");
+            if (col.gameObject.Equals(Player.main.gameObject))
+            {
+                ErrorMessage.AddMessage("Elevator Trigger Made Safe");
+                DeathRun.saveData.nitroSave.safeDepth = 10;
+            }
+            return true;
+        }
+    }
+    */
+
 
     /**
      * When player teleports, don't give him bends.

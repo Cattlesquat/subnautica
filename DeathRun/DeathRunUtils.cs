@@ -280,7 +280,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.8.3 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.9.3 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;
@@ -428,7 +428,7 @@ namespace DeathRun
         public int DeathRunSettingBonus { get; set; }
         public bool Victory { get; set; }
 
-        public const int MAX_DEATHRUN_SETTING_COUNT = 24;
+        public const int MAX_DEATHRUN_SETTING_COUNT = 28;
 
         // I coded these casually and left some space between them in case there's desire to hack something else in later
         public const int BEST_SEAGLIDE = 10;
@@ -526,7 +526,11 @@ namespace DeathRun
 
         public void updateVehicle (int vehicle, int flag)
         {
-            VehicleFlags |= flag;
+            if (((VehicleFlags & FLAG_CURE) != FLAG_CURE) || ((flag != FLAG_SEAMOTH) && (flag != FLAG_EXOSUIT) && (flag != FLAG_CYCLOPS)))
+            {
+                VehicleFlags |= flag;
+            }            
+
             if (vehicle > BestVehicle)
             {
                 BestVehicle = vehicle;
@@ -536,6 +540,8 @@ namespace DeathRun
 
         public int calcScore()
         {
+            CattleLogger.Message("=== CALCULATING SCORE ===");
+
             float timeVal = 0;
             float timeLeft = RunTime;
             while (timeLeft > 0) 
@@ -551,6 +557,8 @@ namespace DeathRun
                     timeLeft = (timeLeft - 3600) / 2;
                 }
             };
+
+            CattleLogger.Message("Survival Points: " + timeVal);
 
             float vehicleVal = 0;
             if ((VehicleFlags & FLAG_SEAGLIDE) != 0)
@@ -613,11 +621,13 @@ namespace DeathRun
                 vehicleVal += 1000;
             }
 
+            CattleLogger.Message("Vehicle/Tool Points: " + vehicleVal);
+
 
             float victoryVal = 0;
             if (Victory)
             {
-                victoryVal = 35000 - timeVal; // SHORTER victory runs are better
+                victoryVal = 35000 - timeVal*3/2; // SHORTER victory runs are better
 
                 timeVal = 0;
                 if (victoryVal < 20000) victoryVal = 20000;                
@@ -628,17 +638,22 @@ namespace DeathRun
                 }
             }
 
+            CattleLogger.Message("Victory Points: " + victoryVal);
+
             float totalVal = timeVal + vehicleVal + victoryVal;
 
-            if (Deaths > 1)
-            {
-                totalVal = totalVal / Deaths;
-            }
+            CattleLogger.Message("SUBTOTAL: " + totalVal);
 
+            if ((Deaths > 1) || ((Deaths > 0) && Victory))
+            {
+                totalVal = totalVal / (Deaths + (Victory ? 1 : 0));
+                CattleLogger.Message("ADJUSTED FOR " + Deaths + " DEATHS: " + totalVal);
+            }
 
             if (DeathRunSettingCount >= 0)
             {
                 Score = (int)(totalVal * (DeathRunSettingCount + DeathRunSettingBonus / 2) / MAX_DEATHRUN_SETTING_COUNT);
+                CattleLogger.Message("ADJUSTED FOR DEATHRUN SETTINGS: " + Score);
             }
             else
             {
@@ -646,6 +661,8 @@ namespace DeathRun
             }
 
             if (Score > 99999) Score = 99999;
+
+            CattleLogger.Message("FINAL SCORE: " + Score);
 
             return Score;
         }
@@ -922,6 +939,8 @@ namespace DeathRun
 
             if (run.ID < 0) return 0;
 
+            List<RunData> toRemove = new List<RunData>();
+
             // Remove any earlier lower-scoring entries from this same run ID
             foreach (RunData existing in HighScores)
             {
@@ -929,9 +948,14 @@ namespace DeathRun
                 {
                     if (run.betterThan(existing))
                     {
-                        HighScores.Remove(existing);
+                        toRemove.Add(existing);
                     }
                 }
+            }
+
+            foreach (RunData remove in toRemove)
+            {
+                HighScores.Remove(remove);
             }
 
             int place;

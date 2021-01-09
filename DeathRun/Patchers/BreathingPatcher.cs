@@ -82,6 +82,11 @@ namespace DeathRun.Patchers
                 return true;
             }
 
+            if (Player.main.currentMountedVehicle != null)
+            {
+                return true;
+            }
+
             // Smoke choke sounds in unbreathable atmosphere
             PlayerDamageSounds s = Player.main.gameObject.GetComponent<PlayerDamageSounds>();
             if (s != null)

@@ -31,6 +31,7 @@ namespace DeathRun.Patchers
         public float crushDepth { get; set; }
         public bool toldSeamothCosts { get; set; }
         public bool toldExosuitCosts { get; set; }
+        public bool seaGlideExpended { get; set; }
 
 
         public PlayerSaveData()
@@ -64,6 +65,7 @@ namespace DeathRun.Patchers
             crushDepth = 200f;
             toldSeamothCosts = false;
             toldExosuitCosts = false;
+            seaGlideExpended = false;
         }
     }
 
@@ -293,6 +295,15 @@ namespace DeathRun.Patchers
                 LanguageHandler.Main.SetTechTypeTooltip(TechType.Builder, updated);
             }
 
+            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            {
+                LanguageHandler.Main.SetLanguageLine("Battery", "Lithium Battery");
+                LanguageHandler.Main.SetLanguageLine("PowerCell", "Lithium Cell");
+
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.Battery, "Advanced Rechargeable Mobile Power Source");
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.PowerCell, "High Capacity Mobile Power Source");
+            }
+
             // Update Escape pod "status screen text" for new situation
             // ... post-secondary-system fix
             LanguageHandler.SetLanguageLine("IntroEscapePod4Header", "CONDITION YELLOW");
@@ -458,7 +469,7 @@ namespace DeathRun.Patchers
                     "Seraphim Risen (Nitrogen Mod)",
                     "oldark (Escape Pod Unleashed)",
                     "libraryAddict (Radiation Challenge)",
-                    "PrimeSonic (SML Helper, coding advice)",
+                    "PrimeSonic (SML Helper, Batteries, coding advice)",
                     "MrPurple6411 (SML Helper, coding advice)",
                     "AndreaDev3d (Unity help & advice)",
                     "Your Start Location: \"*\"",
@@ -631,102 +642,173 @@ namespace DeathRun.Patchers
         }
     }
 
-    /**
-        * TryEject - when player is getting out of the Seamoth or Prawn, we want to charge some (difficulty-level-based) extra energy.
-        */
+
+
     [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("TryEject")]
-    internal class EjectionPatcher
+    [HarmonyPatch("UpdateMotorMode")]
+    internal class PlayerUpdateMotorModePatcher
     {
-        [HarmonyPrefix]
-        public static bool Prefix (Player __instance)
+        /**
+         * Player.UpdateMotorMode -- keep Seaglide state from "thrashing" now that Swim Charge fins don't keep up with it
+         */
+        [HarmonyPostfix]
+        public static void Postfix(Player __instance)
         {
-            if (__instance.isPiloting && __instance.CanEject())
+            if (!__instance.IsSwimming()) return;
+
+            bool flag = false;
+            Pickupable held = Inventory.main.GetHeld();
+            if (held != null && held.gameObject.GetComponent<Seaglide>() != null)
             {
-                Vehicle vehicle = __instance.GetVehicle();
-
-                if ((vehicle == null) || !(vehicle.gameObject.transform.position.y < vehicle.worldForces.waterDepth + 2f) || vehicle.precursorOutOfWater || vehicle.IsInsideAquarium())
+                EnergyMixin component = held.gameObject.GetComponent<EnergyMixin>();
+                if (component != null) 
                 {
-                    return true;
-                }
-
-                float divisor;
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerExitVehicles))
-                {
-                    divisor = 1;
-                }
-                else if (Config.HARD.Equals(DeathRun.config.powerExitVehicles))
-                {
-                    divisor = 2;
-                } 
-                else if (Config.EXORBITANT.Equals(DeathRun.config.powerExitVehicles))
-                {
-                    divisor = 0.25f;
-                }
-                else
-                {
-                    return true;
-                }
-
-                float factor;
-                if (vehicle is SeaMoth)
-                {
-                    factor = 10;                        
-                } 
-                else if (vehicle is Exosuit)
-                {
-                    factor = 20;
-                }
-                else
-                {
-                    return true;                        
-                }
-
-                int energyCost;
-                float depth = Ocean.main.GetDepthOf(vehicle.gameObject);
-
-                if (factor > 0)
-                {
-                    energyCost = (int) ( depth / (factor * divisor));
-                    if (energyCost > 0)
+                    if (component.charge >= 1)
                     {
-                        energyCost += (int) (10 / divisor);
+                        DeathRun.saveData.playerSave.seaGlideExpended = false;
+                        flag = true;
                     }
-                } 
-                else
-                {
-                    return true;
-                }
-
-
-                if (energyCost > 0)
-                {
-                    vehicle.energyInterface.ConsumeEnergy(energyCost);
-                    string name = DeathRunUtils.getFriendlyName(vehicle.gameObject);
-
-                    ErrorMessage.AddMessage(name + " power cell drained of " + energyCost + " energy for exit at depth " + (int)depth + "m.");
-
-                    if ((vehicle is SeaMoth) && !DeathRun.saveData.playerSave.toldSeamothCosts)
+                    else if (DeathRun.saveData.playerSave.seaGlideExpended || (component.charge <= 0f)) 
                     {
-                        DeathRun.saveData.playerSave.toldSeamothCosts = true;
-
-                        DeathRunUtils.CenterMessage("Exiting the Seamoth underwater causes battery drain.", 10);
-                        DeathRunUtils.CenterMessage("Exit at surface or Moon Bay for optimum power use.", 10, 1);                                               
-                    }
-
-                    if ((vehicle is Exosuit) && !DeathRun.saveData.playerSave.toldExosuitCosts)
+                        flag = false;
+                        DeathRun.saveData.playerSave.seaGlideExpended = true;
+                    } else
                     {
-                        DeathRun.saveData.playerSave.toldExosuitCosts = true;
-
-                        DeathRunUtils.CenterMessage("Although more efficient than the Seamoth, the Prawn suit", 10);
-                        DeathRunUtils.CenterMessage("does draw power when exited at depth.", 10, 1);
+                        flag = !DeathRun.saveData.playerSave.seaGlideExpended;
                     }
                 }
             }
 
-            CattleLogger.Message("End of Prefix");
+            if (flag)
+            {
+                __instance.SetMotorMode(Player.MotorMode.Seaglide);
+            } else
+            {
+                __instance.SetMotorMode(Player.MotorMode.Dive);
+            }
+        }
+    }
+
+
+    /**
+     * TryEject - when player is getting out of the Seamoth or Prawn, we want to charge some (difficulty-level-based) extra energy.
+     */
+    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch("TryEject")]
+    internal class EjectionPatcher
+    {
+        static Vehicle vehicle = null;
+
+        [HarmonyPrefix]
+        public static bool TrjEjectPrefix(Player __instance)
+        {
+            if (__instance.isPiloting && __instance.CanEject())
+            {
+                vehicle = __instance.GetVehicle();
+            } else
+            {
+                vehicle = null;
+            }
 
             return true;
+        }
+
+        [HarmonyPostfix]
+        public static void TrjEjectPostfix (Player __instance)
+        {
+            if ((vehicle == null) || !(vehicle.gameObject.transform.position.y < vehicle.worldForces.waterDepth + 2f) || vehicle.precursorOutOfWater || vehicle.IsInsideAquarium())
+            {
+                return;
+            }
+
+            if (Player.main.precursorOutOfWater)
+            {
+                return;
+            }
+
+            if (PrecursorMoonPoolTrigger.inMoonpool)
+            {
+                return;
+            }
+
+            // Can always get out for free inside Precursor locations
+            string biome = __instance.CalculateBiome();
+            if (biome.StartsWith("precursor", StringComparison.OrdinalIgnoreCase) || biome.StartsWith("prison", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            float divisor;
+            if (Config.DEATHRUN.Equals(DeathRun.config.powerExitVehicles))
+            {
+                divisor = 1;
+            }
+            else if (Config.HARD.Equals(DeathRun.config.powerExitVehicles))
+            {
+                divisor = 2;
+            } 
+            else if (Config.EXORBITANT.Equals(DeathRun.config.powerExitVehicles))
+            {
+                divisor = 0.25f;
+            }
+            else
+            {
+                return;
+            }
+
+            float factor;
+            if (vehicle is SeaMoth)
+            {
+                factor = 10;                        
+            } 
+            else if (vehicle is Exosuit)
+            {
+                factor = 20;
+            }
+            else
+            {
+                return;
+            }
+
+            int energyCost;
+            float depth = Ocean.main.GetDepthOf(vehicle.gameObject);
+
+            if (factor > 0)
+            {
+                energyCost = (int) ( depth / (factor * divisor));
+                if (energyCost > 0)
+                {
+                    energyCost += (int) (10 / divisor);
+                }
+            } 
+            else
+            {
+                return;
+            }
+
+            if (energyCost > 0)
+            {
+                vehicle.energyInterface.ConsumeEnergy(energyCost);
+                string name = DeathRunUtils.getFriendlyName(vehicle.gameObject);
+
+                ErrorMessage.AddMessage(name + " power cell drained of " + energyCost + " energy for exit at depth " + (int)depth + "m.");
+
+                if ((vehicle is SeaMoth) && !DeathRun.saveData.playerSave.toldSeamothCosts)
+                {
+                    DeathRun.saveData.playerSave.toldSeamothCosts = true;
+
+                    DeathRunUtils.CenterMessage("Exiting the Seamoth underwater causes battery drain.", 10);
+                    DeathRunUtils.CenterMessage("Exit at surface or Moon Bay for optimum power use.", 10, 1);                                               
+                }
+
+                if ((vehicle is Exosuit) && !DeathRun.saveData.playerSave.toldExosuitCosts)
+                {
+                    DeathRun.saveData.playerSave.toldExosuitCosts = true;
+
+                    DeathRunUtils.CenterMessage("Although more efficient than the Seamoth, the Prawn suit", 10);
+                    DeathRunUtils.CenterMessage("does draw power when exited at depth.", 10, 1);
+                }
+            }
         }
     }
 

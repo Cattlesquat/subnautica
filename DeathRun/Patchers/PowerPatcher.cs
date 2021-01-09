@@ -73,7 +73,7 @@ namespace DeathRun.Patchers
         {
             if (radiation)
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
                 {
                     amount /= 10;
                 }
@@ -82,7 +82,7 @@ namespace DeathRun.Patchers
                     amount /= 6;
                 } 
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+            else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
             {
                 amount /= 6;
             }
@@ -102,7 +102,7 @@ namespace DeathRun.Patchers
         {
             if (radiation)
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
                 {
                     amount *= 5;
                 }
@@ -114,7 +114,7 @@ namespace DeathRun.Patchers
             else if (isBase ||
                      (DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore || DeathRun.filterSemaphore))
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
                 {
                     amount *= 3;
                 }
@@ -190,9 +190,39 @@ namespace DeathRun.Patchers
          * AddEnergyTool - adjust the amount of power added to a handheld tool
          */
         [HarmonyPrefix]
-        public static void AddEnergyTool(ref float amount)
+        public static void AddEnergyTool(EnergyMixin __instance, ref float amount)
         {
-            amount = AdjustAddEnergy(amount * 2, isTransformInRadiation(Player.main.transform));
+            // Acid Battery is not chargeable by any method (e.g. Swim Charge Fins)
+            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            {
+                var batt = __instance.GetBattery();
+                if (batt != null) 
+                {
+                    TechType t = CraftData.GetTechType(batt);
+                    if (t == AcidBatteryCellBase.BatteryID) 
+                    {
+                        amount = 0;
+                        return;
+                    }
+                }
+            }
+
+            if (isTransformInRadiation(Player.main.transform))
+            {
+                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+                {
+                    amount /= 4;
+                }
+                else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+                {
+                    amount /= 2;
+                }
+
+            }
+            else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+            {
+                amount /= 2;
+            }
         }
 
         /**

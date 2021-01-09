@@ -256,439 +256,407 @@ namespace DeathRun
 
                 CattleLogger.Message("Vehicle Costs: " + DeathRun.config.vehicleCosts);
 
-                Dictionary<TechType, TechData> techChanges = null;
+                Dictionary<TechType, TechData> techChanges = new Dictionary<TechType, TechData>();
 
+                // HATCHING ENZYMES - only changes if No Vehicles run (gives us extra copies to make vehicles after curing Kharaa)
                 if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
                 {
-                    CattleLogger.Message("No Vehicles");
-                    techChanges = new Dictionary<TechType, TechData>
-                    {
+                    CattleLogger.Message("Hatching Enzymes");
+
+                    techChanges.Add(TechType.HatchingEnzymes,
+                        new TechData
                         {
-                            TechType.HatchingEnzymes,
-                            new TechData
-                            {
-                                craftAmount = 5, // Gives you extra copies of Hatching Enzymes so that vehicles are then unlocked
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.EyesPlantSeed, 1),
-                                    new Ingredient(TechType.SeaCrownSeed, 1),
-                                    new Ingredient(TechType.TreeMushroomPiece, 1),
-                                    new Ingredient(TechType.RedGreenTentacleSeed, 1),
-                                    new Ingredient(TechType.KooshChunk, 1)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Seamoth,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.TitaniumIngot, 1),
-                                    new Ingredient(TechType.PowerCell, 1),
-                                    new Ingredient(TechType.Glass, 2),
-                                    new Ingredient(TechType.Lubricant, 1),
-                                    new Ingredient(TechType.Lead, 1),
-                                    new Ingredient(TechType.HatchingEnzymes, 1)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Cyclops,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.PlasteelIngot, 3),
-                                    new Ingredient(TechType.EnameledGlass, 3),
-                                    new Ingredient(TechType.Lubricant, 1),
-                                    new Ingredient(TechType.AdvancedWiringKit, 1),
-                                    new Ingredient(TechType.Lead, 3),
-                                    new Ingredient(TechType.HatchingEnzymes, 1)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Exosuit,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.PlasteelIngot, 2),
-                                    new Ingredient(TechType.Aerogel, 1),
-                                    new Ingredient(TechType.EnameledGlass, 1),
-                                    new Ingredient(TechType.Diamond, 2),
-                                    new Ingredient(TechType.Lead, 2),
-                                    new Ingredient(TechType.HatchingEnzymes, 1)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Seaglide,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.Battery, 1),
-                                    new Ingredient(TechType.Lubricant, 2),
-                                    new Ingredient(TechType.CopperWire, 1),
-                                    new Ingredient(TechType.Lead, 2),
-                                    new Ingredient(TechType.Lithium, 2),
-                                }
-                            }
+                            craftAmount = 5, // Gives you extra copies of Hatching Enzymes so that vehicles are then unlocked
+                            Ingredients = new List<Ingredient>
+                                    {
+                                        new Ingredient(TechType.EyesPlantSeed, 1),
+                                        new Ingredient(TechType.SeaCrownSeed, 1),
+                                        new Ingredient(TechType.TreeMushroomPiece, 1),
+                                        new Ingredient(TechType.RedGreenTentacleSeed, 1),
+                                        new Ingredient(TechType.KooshChunk, 1)
+                                    }
                         }
+                    );
+                }
+
+                List<Ingredient> ingredients;
+
+                // SEAGLIDE
+                CattleLogger.Message("Seaglide");
+                ingredients = null;
+                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts) || Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        //new Ingredient(TechType.Battery, 1),
+                        new Ingredient(TechType.Lubricant, 2),
+                        new Ingredient(TechType.CopperWire, 1),
+                        new Ingredient(TechType.Lead, 2),
+                        new Ingredient(TechType.Gold, 2)
+                    };
+                }
+                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient>
+                    {
+                        //new Ingredient(TechType.Battery, 1),
+                        new Ingredient(TechType.Lubricant, 2),
+                        new Ingredient(TechType.CopperWire, 1),
+                        new Ingredient(TechType.Lead, 1),
+                        new Ingredient(TechType.Gold, 1)
+                    };
+                } else
+                {
+                    ingredients = new List<Ingredient>
+                    {
+                        //new Ingredient(TechType.Battery, 1),
+                        new Ingredient(TechType.Lubricant, 1),
+                        new Ingredient(TechType.CopperWire, 1),
+                        new Ingredient(TechType.Titanium, 1)
+                    };
+
+                }
+                if (ingredients != null)
+                {
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.Seaglide, new TechData { craftAmount = 1, Ingredients = ingredients });
+                }
+
+
+                // SEAMOTH
+                CattleLogger.Message("Seamoth");
+                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.TitaniumIngot, 1),
+                        //new Ingredient(TechType.PowerCell, 1),
+                        new Ingredient(TechType.Glass, 2),
+                        new Ingredient(TechType.Lubricant, 1),
+                        new Ingredient(TechType.Lead, 1),
+                        new Ingredient(TechType.HatchingEnzymes, 1)
+                    };
+                }
+                else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 1),
+                        //new Ingredient(TechType.PowerCell, 1),
+                        new Ingredient(TechType.EnameledGlass, 2),
+                        new Ingredient(TechType.Lubricant, 2),
+                        new Ingredient(TechType.Lead, 4),
+                        new Ingredient(TechType.TreeMushroomPiece, 1),
+                        new Ingredient(TechType.KooshChunk, 1),
+                        new Ingredient(TechType.RedGreenTentacleSeed, 1),
+                        new Ingredient(TechType.EyesPlantSeed, 1)
+                    };
+                }
+                else if (Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 1),
+                        //new Ingredient(TechType.PowerCell, 1),
+                        new Ingredient(TechType.EnameledGlass, 2),
+                        new Ingredient(TechType.Lubricant, 2),
+                        new Ingredient(TechType.Lead, 4),
+                        new Ingredient(TechType.HydrochloricAcid, 3),
+                        new Ingredient(TechType.Aerogel, 1)
+                    };
+                }
+                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient>
+                    {
+                        new Ingredient(TechType.PlasteelIngot, 1),
+                        //new Ingredient(TechType.PowerCell, 1),
+                        new Ingredient(TechType.EnameledGlass, 2),
+                        new Ingredient(TechType.Lubricant, 3),
+                        new Ingredient(TechType.Lead, 4)
+                    };
+                } 
+                else
+                {
+                    ingredients = new List<Ingredient>
+                    {
+                        new Ingredient(TechType.TitaniumIngot, 1),
+                        //new Ingredient(TechType.PowerCell, 1),
+                        new Ingredient(TechType.Glass, 2),
+                        new Ingredient(TechType.Lubricant, 1),
+                        new Ingredient(TechType.Lead, 1)
+                    };
+                }
+                if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                {
+                    ingredients.Add(new Ingredient(TechType.PowerCell, 1));
+                }
+                techChanges.Add(TechType.Seamoth, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                // SEAMOTH Depth Modules
+                CattleLogger.Message("Seamoth Depth Modules");
+                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                {
+                    techChanges.Add(TechType.VehicleHullModule1,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.TitaniumIngot, 1),
+                                            new Ingredient(TechType.Magnetite, 2),
+                                            new Ingredient(TechType.EnameledGlass, 1)
+                                        }
+                                    });
+
+                    techChanges.Add(TechType.VehicleHullModule2,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.VehicleHullModule1, 1),
+                                            new Ingredient(TechType.PlasteelIngot, 1),
+                                            new Ingredient(TechType.AluminumOxide, 3),
+                                            new Ingredient(TechType.EnameledGlass, 1)
+                                        }
+                                    });
+
+                    techChanges.Add(TechType.VehicleHullModule3,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.VehicleHullModule2, 1),
+                                            new Ingredient(TechType.PlasteelIngot, 1),
+                                            new Ingredient(TechType.Aerogel, 3),
+                                            new Ingredient(TechType.EnameledGlass, 1)
+                                        }
+                                    });
+
+                }
+
+
+                // PRAWN
+                CattleLogger.Message("Prawn");
+                ingredients = null;
+                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 2),
+                        new Ingredient(TechType.Aerogel, 1),
+                        new Ingredient(TechType.EnameledGlass, 1),
+                        new Ingredient(TechType.Diamond, 2),
+                        new Ingredient(TechType.Lead, 2),
+                        new Ingredient(TechType.HatchingEnzymes, 1)
                     };
                 }
                 else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
                 {
-                    CattleLogger.Message("Death Vehicles");
-
-                    if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts))
-                    {
-                        techChanges = new Dictionary<TechType, TechData>
-                        {
-                            {
-                                TechType.Seamoth,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 1),
-                                        new Ingredient(TechType.PowerCell, 1),
-                                        new Ingredient(TechType.EnameledGlass, 2),
-                                        new Ingredient(TechType.Lubricant, 2),
-                                        new Ingredient(TechType.Lead, 4),
-                                        new Ingredient(TechType.TreeMushroomPiece, 1),
-                                        new Ingredient(TechType.KooshChunk, 1),
-                                        new Ingredient(TechType.RedGreenTentacleSeed, 1),
-                                        new Ingredient(TechType.EyesPlantSeed, 1)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.VehicleHullModule1,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.TitaniumIngot, 1),
-                                        new Ingredient(TechType.Magnetite, 2),
-                                        new Ingredient(TechType.EnameledGlass, 1)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.VehicleHullModule2,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.VehicleHullModule1, 1),
-                                        new Ingredient(TechType.PlasteelIngot, 1),
-                                        new Ingredient(TechType.AluminumOxide, 3),
-                                        new Ingredient(TechType.EnameledGlass, 1)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.VehicleHullModule3,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.VehicleHullModule2, 1),
-                                        new Ingredient(TechType.PlasteelIngot, 1),
-                                        new Ingredient(TechType.Sulphur, 2),
-                                        new Ingredient(TechType.UraniniteCrystal, 2)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Cyclops,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 3),
-                                        new Ingredient(TechType.EnameledGlass, 3),
-                                        new Ingredient(TechType.Lubricant, 4),
-                                        new Ingredient(TechType.AdvancedWiringKit, 1),
-                                        new Ingredient(TechType.Lead, 3),
-                                        new Ingredient(TechType.Nickel, 2),
-                                        new Ingredient(TechType.Kyanite, 2)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Exosuit,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 2),
-                                        new Ingredient(TechType.Aerogel, 3),
-                                        new Ingredient(TechType.EnameledGlass, 2),
-                                        new Ingredient(TechType.Diamond, 2),
-                                        new Ingredient(TechType.Lead, 2),
-                                        new Ingredient(TechType.Sulphur, 3),
-                                        new Ingredient(TechType.UraniniteCrystal, 3),
-                                        new Ingredient(TechType.Lubricant, 3)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.ExoHullModule1,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 1),
-                                        new Ingredient(TechType.Nickel, 3),
-                                        new Ingredient(TechType.Kyanite, 1)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Seaglide,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.Battery, 1),
-                                        new Ingredient(TechType.Lubricant, 2),
-                                        new Ingredient(TechType.CopperWire, 1),
-                                        new Ingredient(TechType.Lead, 2),
-                                        new Ingredient(TechType.Gold, 2)
-                                    }
-                                }
-                            }
-                        };
-                    } 
-                    else
-                    {
-                        techChanges = new Dictionary<TechType, TechData>
-                        {
-                            {
-                                TechType.Seamoth,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 1),
-                                        new Ingredient(TechType.PowerCell, 1),
-                                        new Ingredient(TechType.EnameledGlass, 2),
-                                        new Ingredient(TechType.Lubricant, 2),
-                                        new Ingredient(TechType.Lead, 4),
-                                        new Ingredient(TechType.HydrochloricAcid, 3),
-                                        new Ingredient(TechType.Aerogel, 1)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Cyclops,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 3),
-                                        new Ingredient(TechType.EnameledGlass, 3),
-                                        new Ingredient(TechType.Lubricant, 4),
-                                        new Ingredient(TechType.AdvancedWiringKit, 1),
-                                        new Ingredient(TechType.Lead, 3),
-                                        new Ingredient(TechType.Nickel, 2),
-                                        new Ingredient(TechType.Kyanite, 2)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Exosuit,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.PlasteelIngot, 2),
-                                        new Ingredient(TechType.Aerogel, 3),
-                                        new Ingredient(TechType.EnameledGlass, 2),
-                                        new Ingredient(TechType.Diamond, 2),
-                                        new Ingredient(TechType.Lead, 2),
-                                        new Ingredient(TechType.Sulphur, 3),
-                                        new Ingredient(TechType.UraniniteCrystal, 3),
-                                        new Ingredient(TechType.Lubricant, 3)
-                                    }
-                                }
-                            },
-                            {
-                                TechType.Seaglide,
-                                new TechData
-                                {
-                                    craftAmount = 1,
-                                    Ingredients = new List<Ingredient>
-                                    {
-                                        new Ingredient(TechType.Battery, 1),
-                                        new Ingredient(TechType.Lubricant, 2),
-                                        new Ingredient(TechType.CopperWire, 1),
-                                        new Ingredient(TechType.Lead, 2),
-                                        new Ingredient(TechType.Gold, 2)
-                                    }
-                                }
-                            }
-                        };
-                    }
-
-                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 15);
-                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 7);
-                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 2),
+                        new Ingredient(TechType.Aerogel, 2),
+                        new Ingredient(TechType.EnameledGlass, 2),
+                        new Ingredient(TechType.Diamond, 2),
+                        new Ingredient(TechType.Lead, 2),
+                        new Ingredient(TechType.Sulphur, 3),
+                        new Ingredient(TechType.Nickel, 1),
+                        new Ingredient(TechType.Lubricant, 3)
+                    };
                 }
                 else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
                 {
-                    CattleLogger.Message("Hard Vehicles");
-                    techChanges = new Dictionary<TechType, TechData>
+                    ingredients = new List<Ingredient>
                     {
-                        {
-                            TechType.Seamoth,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.PlasteelIngot, 1),
-                                    new Ingredient(TechType.PowerCell, 1),
-                                    new Ingredient(TechType.EnameledGlass, 2),
-                                    new Ingredient(TechType.Lubricant, 3),
-                                    new Ingredient(TechType.Lead, 4)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Cyclops,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.PlasteelIngot, 3),
-                                    new Ingredient(TechType.EnameledGlass, 3),
-                                    new Ingredient(TechType.Lubricant, 4),
-                                    new Ingredient(TechType.AdvancedWiringKit, 1),
-                                    new Ingredient(TechType.Lead, 4),
-                                    new Ingredient(TechType.Nickel, 1)
-                                }
-                            }
-                        },
-                        {
-                            TechType.Exosuit,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.PlasteelIngot, 2),
-                                    new Ingredient(TechType.Aerogel, 2),
-                                    new Ingredient(TechType.EnameledGlass, 1),
-                                    new Ingredient(TechType.Diamond, 2),
-                                    new Ingredient(TechType.Lead, 4),
-                                    new Ingredient(TechType.Sulphur, 2),
-                                    new Ingredient(TechType.Lubricant, 2)
-                                }
-                            }
-                        },
-                        {
-                        TechType.Seaglide,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.Battery, 1),
-                                    new Ingredient(TechType.Lubricant, 2),
-                                    new Ingredient(TechType.CopperWire, 1),
-                                    new Ingredient(TechType.Lead, 1),
-                                    new Ingredient(TechType.Gold, 1)
-                                }
-                            }
-                        }
-
+                        new Ingredient(TechType.PlasteelIngot, 2),
+                        new Ingredient(TechType.Aerogel, 2),
+                        new Ingredient(TechType.EnameledGlass, 1),
+                        new Ingredient(TechType.Diamond, 2),
+                        new Ingredient(TechType.Lead, 4),
+                        new Ingredient(TechType.Sulphur, 2),
+                        new Ingredient(TechType.Lubricant, 2)
                     };
-                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 10);
-                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 6);
-                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
+                }
+                if (ingredients != null)
+                {
+                    //if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    //{
+                    //    ingredients.Add(new Ingredient(TechType.PowerCell, 1));
+                    //}
+                    techChanges.Add(TechType.Exosuit, new TechData { craftAmount = 1, Ingredients = ingredients });
                 }
 
-                if (techChanges != null)
+                // PRAWN Depth Module
+                CattleLogger.Message("Prawn Depth Modules");
+                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
                 {
-                    foreach (KeyValuePair<TechType,TechData> tech in techChanges)
-                    {
-                        CraftDataHandler.SetTechData(tech.Key, tech.Value);
-                    }
+                    techChanges.Add(TechType.ExoHullModule1,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.PlasteelIngot, 1),
+                                            new Ingredient(TechType.Nickel, 3),
+                                            new Ingredient(TechType.Kyanite, 1)
+                                        }
+                                    });
                 }
+
+
+
+                // CYCLOPS
+                CattleLogger.Message("Cyclops");
+                ingredients = null;
+                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 3),
+                        new Ingredient(TechType.EnameledGlass, 3),
+                        new Ingredient(TechType.Lubricant, 1),
+                        new Ingredient(TechType.AdvancedWiringKit, 1),
+                        new Ingredient(TechType.Lead, 3),
+                        new Ingredient(TechType.HatchingEnzymes, 1)
+                    };
+                }
+                else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient> {
+                        new Ingredient(TechType.PlasteelIngot, 3),
+                        new Ingredient(TechType.EnameledGlass, 3),
+                        new Ingredient(TechType.Lubricant, 4),
+                        new Ingredient(TechType.AdvancedWiringKit, 1),
+                        new Ingredient(TechType.Lead, 3),
+                        new Ingredient(TechType.UraniniteCrystal, 3),
+                        new Ingredient(TechType.Nickel, 1),
+                    };
+                }
+                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                {
+                    ingredients = new List<Ingredient>
+                    {
+                        new Ingredient(TechType.PlasteelIngot, 3),
+                        new Ingredient(TechType.EnameledGlass, 3),
+                        new Ingredient(TechType.Lubricant, 4),
+                        new Ingredient(TechType.AdvancedWiringKit, 1),
+                        new Ingredient(TechType.Lead, 4),
+                        new Ingredient(TechType.UraniniteCrystal, 2),
+                        new Ingredient(TechType.Sulphur, 1)
+                    };
+                }
+                if (ingredients != null)
+                {
+                    //if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    //{
+                    //    ingredients.Add(new Ingredient(TechType.PowerCell, 1));
+                    //}
+                    techChanges.Add(TechType.Cyclops, new TechData { craftAmount = 1, Ingredients = ingredients });
+                }
+
+
+
+                // CYCLOPS Depth Modules
+                CattleLogger.Message("Cyclops Depth Modules");
+                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                {
+                    techChanges.Add(TechType.CyclopsHullModule1,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.PlasteelIngot, 1),
+                                            new Ingredient(TechType.AluminumOxide, 3),
+                                            new Ingredient(TechType.Nickel, 3)
+                                        }
+                                    });
+
+                    techChanges.Add(TechType.CyclopsHullModule2,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.CyclopsHullModule1, 1),
+                                            new Ingredient(TechType.PlasteelIngot, 1),
+                                            new Ingredient(TechType.Nickel, 3),
+                                            new Ingredient(TechType.Kyanite, 1),
+                                        }
+                                    });
+
+                    techChanges.Add(TechType.CyclopsHullModule3,
+                                    new TechData
+                                    {
+                                        craftAmount = 1,
+                                        Ingredients = new List<Ingredient>
+                                        {
+                                            new Ingredient(TechType.CyclopsHullModule2, 1),
+                                            new Ingredient(TechType.Nickel, 3),
+                                            new Ingredient(TechType.Kyanite, 5),
+                                        }
+                                    });
+                }
+
 
                 CattleLogger.Message("Habitat Builder Costs");
 
-                techChanges = null;
                 if (Config.DEATHRUN.Equals(DeathRun.config.builderCosts))
                 {
-                    CattleLogger.Message("Death Habitat");
-                    techChanges = new Dictionary<TechType, TechData>
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 2),
+                            new Ingredient(TechType.WiringKit, 2),
+                            //new Ingredient(TechType.Battery, 1),
+                            new Ingredient(TechType.Lithium, 2),
+                            new Ingredient(TechType.Magnetite, 1)
+                        };
+                    if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
                     {
-                        {
-                            TechType.Builder,
-                            new TechData
-                            {
-                                craftAmount = 1, 
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.ComputerChip, 2),
-                                    new Ingredient(TechType.WiringKit, 2),
-                                    new Ingredient(TechType.Battery, 1),
-                                    new Ingredient(TechType.Lithium, 2),
-                                    new Ingredient(TechType.Magnetite, 1)
-                                }
-                            }
-                        },
-                        {
-                        TechType.MedicalCabinet,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.ComputerChip, 1),
-                                    new Ingredient(TechType.FiberMesh, 4),
-                                    new Ingredient(TechType.Silver, 1),
-                                    new Ingredient(TechType.Titanium, 1)
-                                }
-                            }
-                        },
-                        //{
-                        //TechType.Fabricator,
-                        //    new TechData
-                        //    {
-                        //        craftAmount = 1,
-                        //        Ingredients = new List<Ingredient>
-                        //        {
-                        //            new Ingredient(TechType.Titanium, 1),
-                        //            new Ingredient(TechType.Gold, 1),
-                        //            new Ingredient(TechType.JeweledDiskPiece, 1)
-                        //        }
-                        //    }
-                        //}
-                    };
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.FiberMesh, 4),
+                            new Ingredient(TechType.Silver, 1),
+                            new Ingredient(TechType.Titanium, 1)
+                        };
+                    techChanges.Add(TechType.MedicalCabinet, new TechData { craftAmount = 1, Ingredients = ingredients });
+                }
+                else if (Config.HARD.Equals(DeathRun.config.builderCosts))
+                {
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 2),
+                            new Ingredient(TechType.WiringKit, 2),
+                            //new Ingredient(TechType.Battery, 1),
+                            new Ingredient(TechType.Lithium, 1),
+                        };
+                    if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.FiberMesh, 3),
+                            new Ingredient(TechType.Silver, 1),
+                            new Ingredient(TechType.Titanium, 1)
+                        };
+                    techChanges.Add(TechType.MedicalCabinet, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                }
+
+                CattleLogger.Message("Scans Required");
+                if (Config.DEATHRUN.Equals(DeathRun.config.scansRequired))
+                {
+                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 12);
+                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 7);
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
@@ -708,40 +676,11 @@ namespace DeathRun
                     //PDAHandler.EditFragmentsToScan(TechType.BaseWaterPark, 4);
                     //PDAHandler.EditFragmentsToScan(TechType.Spotlight, 3);
                 }
-                else if (Config.HARD.Equals(DeathRun.config.builderCosts))
+                else if (Config.HARD.Equals(DeathRun.config.scansRequired))
                 {
-                    CattleLogger.Message("Hard Habitat");
-                    techChanges = new Dictionary<TechType, TechData>
-                    {
-                        {
-                            TechType.Builder,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.ComputerChip, 2),
-                                    new Ingredient(TechType.WiringKit, 2),
-                                    new Ingredient(TechType.Battery, 1),
-                                    new Ingredient(TechType.Lithium, 1),
-                                }
-                            }
-                        },
-                        {
-                            TechType.MedicalCabinet,
-                            new TechData
-                            {
-                                craftAmount = 1,
-                                Ingredients = new List<Ingredient>
-                                {
-                                    new Ingredient(TechType.ComputerChip, 1),
-                                    new Ingredient(TechType.FiberMesh, 3),
-                                    new Ingredient(TechType.Silver, 1),
-                                    new Ingredient(TechType.Titanium, 1)
-                                }
-                            }
-                        }
-                    };
+                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 8);
+                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 6);
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 3);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 3);
@@ -764,13 +703,99 @@ namespace DeathRun
                     //PDAHandler.EditFragmentsToScan(TechType.Spotlight, 2);
                 }
 
+
+                CattleLogger.Message("Battery Costs");
+
+                if (Config.DEATHRUN.Equals(DeathRun.config.batteryCosts) || Config.EXORBITANT.Equals(DeathRun.config.batteryCosts))
+                {
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.Lithium,  1),
+                            new Ingredient(TechType.Diamond,  1),
+                            new Ingredient(TechType.Salt,     1),
+                            new Ingredient(TechType.Silicone, 1)
+                        };
+                    techChanges.Add(TechType.Battery, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    KnownTechHandler.Main.SetAnalysisTechEntry(TechType.Lithium, new List<TechType>() { TechType.Battery });
+                }
+                else if (Config.HARD.Equals(DeathRun.config.batteryCosts))
+                {
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.Lithium,  1),
+                            new Ingredient(TechType.Salt,     1),
+                        };
+                    techChanges.Add(TechType.Battery, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    KnownTechHandler.Main.SetAnalysisTechEntry(TechType.Lithium, new List<TechType>() { TechType.Battery });
+                }
+
+                CattleLogger.Message("Remove Batteries from Recipes");
+
+                if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                {
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.Glass,    1),
+                            new Ingredient(TechType.Titanium, 1)
+                        };
+                    techChanges.Add(TechType.Flashlight, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.Titanium, 1),
+                            new Ingredient(TechType.Copper, 1)
+                        };
+                    techChanges.Add(TechType.Scanner, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.Titanium, 1),
+                        };
+                    techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.Titanium, 1),
+                        };
+                    techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.Diamond, 2),
+                            new Ingredient(TechType.Titanium, 1),
+                            new Ingredient(TechType.CrashPowder, 1)
+                        };
+                    techChanges.Add(TechType.LaserCutter, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.AcidMushroom, 2),
+                            new Ingredient(TechType.Copper, 1),
+                            new Ingredient(TechType.Lead, 1),
+                            new Ingredient(TechType.Titanium, 1)
+                        };
+                    techChanges.Add(TechType.Gravsphere, new TechData { craftAmount = 1, Ingredients = ingredients });
+                }
+
+
+                CattleLogger.Message("Tech Changes");
+
                 if (techChanges != null)
                 {
-                    foreach (KeyValuePair<TechType, TechData> tech in techChanges)
+                    foreach (KeyValuePair<TechType,TechData> tech in techChanges)
                     {
                         CraftDataHandler.SetTechData(tech.Key, tech.Value);
                     }
                 }
+
+                CattleLogger.Message("New Batteries");
+
+                AcidBatteryCellBase.PatchAll();
 
                 Console.WriteLine("[DeathRun] Patched");
 

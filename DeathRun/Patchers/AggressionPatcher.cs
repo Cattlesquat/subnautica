@@ -121,6 +121,25 @@ namespace DeathRun.Patchers
                     __result = false;
                     return;
                 }
+
+                if (target == Player.main.gameObject)
+                {
+                    if (Player.main.precursorOutOfWater || PrecursorMoonPoolTrigger.inMoonpool)
+                    {
+                        __result = false;
+                        return;
+                    }
+                }
+
+                if (target.GetComponent<Vehicle>() != null)
+                {
+                    if ((target.GetComponent<Vehicle>() != Player.main.currentMountedVehicle) || target.GetComponent<Vehicle>().precursorOutOfWater || PrecursorMoonPoolTrigger.inMoonpool)
+                    {
+                        __result = false;
+                        return;
+                    }
+                }
+
             }
             if (!Mathf.Approximately(__instance.minimumVelocity, 0f))
             {
@@ -132,7 +151,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if ((((target != Player.main.gameObject) || Player.main.IsInside()) && (!target.GetComponent<Vehicle>() || (target.GetComponent<Vehicle>() != Player.main.currentMountedVehicle))) ||  // Must be player or vehicle
+            if ((((target != Player.main.gameObject) || Player.main.IsInside() || Player.main.precursorOutOfWater || PrecursorMoonPoolTrigger.inMoonpool) && (!target.GetComponent<Vehicle>() || (target.GetComponent<Vehicle>() != Player.main.currentMountedVehicle) || target.GetComponent<Vehicle>().precursorOutOfWater)) ||  // Must be player or vehicle
                 (Ocean.main.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
                 (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression) && !Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
                 (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
@@ -188,8 +207,8 @@ namespace DeathRun.Patchers
                 {
                     float sqrMagnitude = (wsPos - ecoTarget.GetPosition()).sqrMagnitude;
 
-                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside() && Player.main.IsUnderwater()) || 
-                        (ecoTarget.GetGameObject().GetComponent<Vehicle>() && (ecoTarget.GetGameObject().GetComponent<Vehicle>() == Player.main.currentMountedVehicle)))
+                    if (((ecoTarget.GetGameObject() == Player.main.gameObject) && !Player.main.IsInside() && Player.main.IsUnderwater() && !Player.main.precursorOutOfWater) || 
+                        (ecoTarget.GetGameObject().GetComponent<Vehicle>() && (ecoTarget.GetGameObject().GetComponent<Vehicle>() == Player.main.currentMountedVehicle)) && !Player.main.currentMountedVehicle.precursorOutOfWater)
                     {
                         bool feeding = false;
                         if (ecoTarget.GetGameObject() == Player.main.gameObject)
@@ -269,6 +288,17 @@ namespace DeathRun.Patchers
                 return true; // Explody ambush fish just runs normal method
             }
 
+            if (Player.main.precursorOutOfWater || !Player.main.IsUnderwater() || PrecursorMoonPoolTrigger.inMoonpool || (Ocean.main.GetDepthOf(Player.main.gameObject) < 5))
+            {
+                return true;
+            }
+
+            Vehicle veh = Player.main.currentMountedVehicle;
+            if (veh != null)
+            {
+                if (veh.precursorOutOfWater) return true;                
+            }
+
             //BR// Adjust aggression levels            
             if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
             {
@@ -317,17 +347,17 @@ namespace DeathRun.Patchers
     }
 
 
-    [HarmonyPatch(typeof(OutOfBoundsWarp))]
-    [HarmonyPatch("Warp")]
-    internal class OutOfBoundsWarp_Warp_Patch
-    {
-        [HarmonyPrefix]
-        public static bool Prefix(OutOfBoundsWarp __instance)
-        {
-            CattleLogger.Message("***** Object out of bounds: " + __instance.gameObject + "  " + __instance.gameObject.name);
-            return true;
-        }
-    }
+    //[HarmonyPatch(typeof(OutOfBoundsWarp))]
+    //[HarmonyPatch("Warp")]
+    //internal class OutOfBoundsWarp_Warp_Patch
+    //{
+    //    [HarmonyPrefix]
+    //    public static bool Prefix(OutOfBoundsWarp __instance)
+    //    {
+    //        CattleLogger.Message("***** Object out of bounds: " + __instance.gameObject + "  " + __instance.gameObject.name);
+    //        return true;
+    //    }
+    //}
 
 }
 

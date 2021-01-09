@@ -109,6 +109,8 @@
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\AggressionPatcher.cs" />
+    <Compile Include="Patchers\SeaglidePatcher.cs" />
+    <Compile Include="Patchers\BatteryPatcher.cs" />
     <Compile Include="Patchers\BreathPatcher.cs" />
     <Compile Include="Patchers\CauseOfDeathPatcher.cs" />
     <Compile Include="Patchers\CountdownPatcher.cs" />
@@ -149,6 +151,9 @@
     <Content Include="Assets\chemosynthesistank.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\CraftingTabIcon.png" />
+    <Content Include="Assets\DeepBattery.png" />
+    <Content Include="Assets\DeepPowerCell.png" />
     <Content Include="Assets\lavalizardscale.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
