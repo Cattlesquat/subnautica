@@ -105,11 +105,13 @@ namespace DeathRun.Patchers
     internal abstract class AcidBatteryCellBase : Craftable
     {
         private const string BatteryPowerCraftingTab = "BatteryPower";
+        private const string BasicMaterialsCraftingTab = "BasicMaterials";
         private const string ElectronicsCraftingTab = "Electronics";
         private const string ResourcesCraftingTab = "Resources";
         private const string MgBatteryAssets = @"DeathRun\Assets";
 
         private static readonly string[] PathToNewTab = new[] { ResourcesCraftingTab, ElectronicsCraftingTab, BatteryPowerCraftingTab };
+        private static readonly string[] PathToBasicTab = new[] { ResourcesCraftingTab, BasicMaterialsCraftingTab };
 
         // Class level elements
 
@@ -181,6 +183,11 @@ namespace DeathRun.Patchers
             // Add the Ion Batteries after the Lithium Batteries
             CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PrecursorIonBattery, PathToNewTab);
             CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.PrecursorIonPowerCell, PathToNewTab);
+
+            CattleLogger.Message("Patching Copper Recycling");
+            // Add recycling of batteries for copper
+            CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, TechType.Copper, PathToBasicTab);
+            CattleLogger.Message("Patching Copper Recycling Done");
         }
 
         protected abstract TechType BaseType { get; } // Should only ever be Battery or PowerCell

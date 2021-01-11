@@ -731,10 +731,20 @@ namespace DeathRun
                     KnownTechHandler.Main.SetAnalysisTechEntry(TechType.Lithium, new List<TechType>() { TechType.Battery });
                 }
 
+                CattleLogger.Message("New Batteries");
+
+                AcidBatteryCellBase.PatchAll();
+
                 CattleLogger.Message("Remove Batteries from Recipes");
 
                 if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
                 {
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(AcidBatteryCellBase.BatteryID, 3),
+                        };
+                    techChanges.Add(TechType.Copper, new TechData { craftAmount = 2, Ingredients = ingredients });
+
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.Glass,    1),
@@ -792,10 +802,6 @@ namespace DeathRun
                         CraftDataHandler.SetTechData(tech.Key, tech.Value);
                     }
                 }
-
-                CattleLogger.Message("New Batteries");
-
-                AcidBatteryCellBase.PatchAll();
 
                 Console.WriteLine("[DeathRun] Patched");
 
