@@ -20,6 +20,8 @@ namespace DeathRun
 
     public class DeathRunUtils
     {
+        public const string VERSION = "1.9.4";
+
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(250f, true),
             new CenterText(210f, true),
@@ -280,7 +282,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.9.3 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.9.4 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;
@@ -427,6 +429,7 @@ namespace DeathRun
         public int DeathRunSettingCount { get; set; }
         public int DeathRunSettingBonus { get; set; }
         public bool Victory { get; set; }
+        public string Version { get; set; }
 
         public const int MAX_DEATHRUN_SETTING_COUNT = 28;
 
@@ -469,12 +472,15 @@ namespace DeathRun
             DeathRunSettingBonus = -1;
 
             Victory = false;
+
+            Version = "";
         }
 
         public void startNewRun()
         {
             ID    = DeathRun.statsData.getNewRunID();
             Start = DeathRun.saveData.startSave.message;
+            Version = DeathRunUtils.VERSION;
 
             CattleLogger.Message("Starting new run - " + ID + " " + Start);
 
@@ -490,14 +496,23 @@ namespace DeathRun
             int count   = DeathRun.config.countDeathRunSettings();
             int bonuses = DeathRun.config.countDeathRunBonuses();
 
-            if ((DeathRunSettingCount < 0) || (count < DeathRunSettingCount))
+            if ("".Equals(Version))
             {
+                Version = DeathRunUtils.VERSION;
                 DeathRunSettingCount = count;
-            }
-
-            if ((DeathRunSettingBonus < 0) || (bonuses < DeathRunSettingBonus))
-            {
                 DeathRunSettingBonus = bonuses;
+            }
+            else
+            {
+                if ((DeathRunSettingCount < 0) || (count < DeathRunSettingCount))
+                {
+                    DeathRunSettingCount = count;
+                }
+
+                if ((DeathRunSettingBonus < 0) || (bonuses < DeathRunSettingBonus))
+                {
+                    DeathRunSettingBonus = bonuses;
+                }
             }
         }
 
@@ -871,6 +886,7 @@ namespace DeathRun
         public int RunCounter { get; set; }
         public int RecentIndex { get; set; }
         public List<RunData> HighScores { get; set; }
+        public string Version { get; set; }
 
         public const int MAX_HIGH_SCORES = 10;
 
@@ -885,6 +901,7 @@ namespace DeathRun
             VeryFirstTime = true;
             RunCounter = 0;
             RecentIndex = -1;
+            Version = "";
         }
 
         /**
@@ -991,6 +1008,8 @@ namespace DeathRun
         public void SaveStats()
         {
             if (DeathRun.patchFailed) return;
+
+            Version = DeathRunUtils.VERSION;
 
             try
             {

@@ -303,7 +303,7 @@ namespace DeathRun
             }
 
 
-            if (DEATH_VEHICLES.Equals(vehicleCosts) || NO_VEHICLES.Equals(vehicleCosts))
+            if (DEATH_VEHICLES.Equals(vehicleCosts) || DEATH_VEHICLES_2.Equals(vehicleCosts) || NO_VEHICLES.Equals(vehicleCosts))
             {
                 count += 2;
             }

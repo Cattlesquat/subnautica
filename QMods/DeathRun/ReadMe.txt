@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.9.3 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.9.4 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -19,6 +19,8 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 1.9.4 - "Alternative" Death Run Vehicles costs wasn't giving proper scoring credit.
+• 1.9.4 - Habitat Builder tool recipe no longer includes inappropriate Lithium Battery
 • 1.9.3 - Swim Charge Fins rebalanced (will keep up w/ Flashlight. Does not allow infinite Seaglide)
 • 1.9.3 - Seamoth "Depth 3" module costs were incorrect - have fixed/patched
 • 1.9.2 - Fixed broken targeting (misplaced parenthesis) that was often preventing creatures from attacking.

@@ -610,7 +610,7 @@ namespace DeathRun
                             new Ingredient(TechType.Lithium, 2),
                             new Ingredient(TechType.Magnetite, 1)
                         };
-                    if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
