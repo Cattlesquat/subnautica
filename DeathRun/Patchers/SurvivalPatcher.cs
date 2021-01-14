@@ -19,10 +19,12 @@ namespace DeathRun.Patchers
     internal class SurvivalUsePatcher
     {
         static float ticksNotice = 0;
+        static bool usedSemaphore = false;
 
         [HarmonyPrefix]
         public static bool Prefix(ref Survival __instance, ref bool __result, GameObject useObj)
         {
+            usedSemaphore = false;
             if (useObj != null)
             {
                 TechType techType = CraftData.GetTechType(useObj);
@@ -34,6 +36,7 @@ namespace DeathRun.Patchers
                     if (DeathRun.saveData.nitroSave.safeDepth > 10f)
                     {
                         DeathRun.saveData.nitroSave.safeDepth /= 2;
+                        usedSemaphore = true;
 
                         if (Time.time - ticksNotice > 60)
                         {
@@ -48,12 +51,27 @@ namespace DeathRun.Patchers
                     }
                     else
                     {
-                        nitrogenLevel.nitrogenLevel = 0;
+                        if (nitrogenLevel.nitrogenLevel > 0)
+                        {
+                            nitrogenLevel.nitrogenLevel = 0;
+                            usedSemaphore = true;
+                        }
                     }
                 }
             }
             return true;
         }
+
+
+        [HarmonyPostfix]
+        public static void Postfix(ref Survival __instance, ref bool __result)
+        {
+            if (usedSemaphore)
+            {
+                __result = true;
+            }
+        }
+
     }
 
     [HarmonyPatch(typeof(Survival))]

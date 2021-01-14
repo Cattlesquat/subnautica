@@ -803,6 +803,12 @@ namespace DeathRun
                     }
                 }
 
+                if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                {
+                    CattleLogger.Message("Unlock copper recycling");
+                    KnownTechHandler.Main.UnlockOnStart(TechType.Copper);
+                }
+
                 Console.WriteLine("[DeathRun] Patched");
 
             }

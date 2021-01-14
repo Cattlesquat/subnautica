@@ -64,11 +64,12 @@ namespace DeathRun.Patchers
                         break;
 
                     case DamageType.Normal:
-                        if (__result < 50)
+                        if ((__result < 35) || 
+                            (target.GetComponent<Player>() && (__result < 70) && Player.main.HasReinforcedSuit()))
                         {
                             __result *= UnityEngine.Random.Range(little, big);
                         }
-                        else
+                        else 
                         {
                             __result *= little;
                         }

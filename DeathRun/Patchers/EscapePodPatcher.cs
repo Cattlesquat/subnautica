@@ -364,7 +364,11 @@ namespace DeathRun.Patchers
                 setRegenerateInterval(20);
             } else 
             {
-                if ((CrashedShipExploder.main != null) && (DayNightCycle.main.timePassedAsFloat < CrashedShipExploder.main.timeToStartCountdown + 24f + 60 * 60))
+                if (DayNightCycle.main.timePassedAsFloat < DeathRun.saveData.podSave.podRepairTime + 45*60)
+                {
+                    setRegenerateInterval(7.5f);
+                }
+                else if ((CrashedShipExploder.main != null) && (DayNightCycle.main.timePassedAsFloat < CrashedShipExploder.main.timeToStartCountdown + 24f + 60 * 60))
                 {
                     setRegenerateInterval(10);
                 } else

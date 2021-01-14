@@ -215,7 +215,7 @@ namespace DeathRun
                                                                "Eating certain kinds of native fish purges nitrogen.",
                                                                "Speak softly, but carry a floating pump.",
                                                                "Never stop moving - those things bite!",
-                                                               "Keep your food and water topped up: it heals you!",
+                                                               "Keep your food and water topped up: it slowly heals you!",
                                                                "The more Death Run settings you use - the higher your score!",
                                                                "Survive longer? Higher score. Win fastest? Highest Score.",
                                                                "Hold a fish in your hand: many enemies will bite it instead of you!",
@@ -226,7 +226,10 @@ namespace DeathRun
                                                                "One pump, one length of pipe: Portable Breathing!",
                                                                "You can carry an extra air tank, but remember to fill it!",
                                                                "Thirsty? Cut fresh seaweed and eat immediately!",
-                                                               "Repair your Escape Pod for better power generation!"
+                                                               "Repair your Escape Pod for better power generation!",
+                                                               "You swim faster when on the surface.",
+                                                               "Enemies only chase you if they can SEE you.",
+                                                               "Hugging the ground helps hide from enemies (and Crash Fish blasts)"
                                                              };
 
         public static void InitHighScores ()

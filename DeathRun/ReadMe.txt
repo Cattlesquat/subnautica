@@ -19,6 +19,8 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 1.9.5 - Copper batteries can be "recycled" in the Fabricator -- three batteries returns 2 copper.
+• 1.9.5 - First Aid Kits used to purge oxygen are still consumed even if health is 100%
 • 1.9.4 - "Alternative" Death Run Vehicles costs wasn't giving proper scoring credit.
 • 1.9.4 - Habitat Builder tool recipe no longer includes inappropriate Lithium Battery
 • 1.9.3 - Swim Charge Fins rebalanced (will keep up w/ Flashlight. Does not allow infinite Seaglide)
