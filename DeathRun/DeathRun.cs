@@ -654,6 +654,8 @@ namespace DeathRun
                 CattleLogger.Message("Scans Required");
                 if (Config.DEATHRUN.Equals(DeathRun.config.scansRequired))
                 {
+                    CattleLogger.Message("Scans Required: DeathRun");
+
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Seamoth, 12);
                     PDAHandler.EditFragmentsToScan(TechType.Exosuit, 7);
@@ -678,6 +680,8 @@ namespace DeathRun
                 }
                 else if (Config.HARD.Equals(DeathRun.config.scansRequired))
                 {
+                    CattleLogger.Message("Scans Required: Hard");
+
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
                     PDAHandler.EditFragmentsToScan(TechType.Seamoth, 8);
                     PDAHandler.EditFragmentsToScan(TechType.Exosuit, 6);
