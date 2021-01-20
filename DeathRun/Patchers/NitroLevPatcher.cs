@@ -178,7 +178,7 @@ namespace DeathRun.Patchers
                         baselineSafe = (depth < 0) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
                     } else
                     {
-                        baselineSafe = (depth < 0) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
+                        baselineSafe = ((depth < 0) || !isSwimming) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
                     }
 
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather

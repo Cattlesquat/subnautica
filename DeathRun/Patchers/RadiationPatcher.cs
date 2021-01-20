@@ -220,49 +220,128 @@ namespace DeathRun.Patchers
     {
         const float MINIMUM_AMOUNT_NORMAL    = 0.1f;
         const float MINIMUM_AMOUNT_SHIP      = 0.2f;
-        const float MINIMUM_AMOUNT_ON_SHIP   = 0.3f;
-        const float MINIMUM_AMOUNT_DEEP_SHIP = 0.4f;
-        const float MINIMUM_AMOUNT_REACTOR   = 0.5f;
+
+        const float FIX_PERIOD = 5;
 
         [HarmonyPrefix]
         private static bool Update(RadiationsScreenFXController __instance)
         {
             if ((Player.main == null) || (LeakingRadiation.main == null))
             {
+                DeathRun.saveData.playerSave.backgroundRads = 0;
                 return true;
             }
 
-            float distance = (Player.main.transform.position - LeakingRadiation.main.transform.position).magnitude;
+            Vector3 reactorRoom = new Vector3(873.7f, 2.9f, -1.7f);
+            float distance = (Player.main.transform.position - reactorRoom).magnitude; //LeakingRadiation.main.transform.position
             float backgroundRads;
 
-            if (distance <= 50)
-            {
-                backgroundRads = MINIMUM_AMOUNT_REACTOR;
-            }
-            else if (distance <= 150)
-            {
-                backgroundRads = MINIMUM_AMOUNT_DEEP_SHIP;
-            }
-            else if (distance <= 250)
-            {
-                backgroundRads = MINIMUM_AMOUNT_ON_SHIP;
-            }
-            else if (RadiationUtils.isInShipsRadiation(Player.main.transform))
+            string LDBiome     = TerrainDebugGUI.main.CalculateRawBiome(Player.main);
+            string PlayerBiome = Player.main.GetBiomeString();
+
+            //ErrorMessage.AddMessage("LDBiome=" + LDBiome + "  PlayerBiome=" + PlayerBiome);
+
+
+            if (RadiationUtils.isInShipsRadiation(Player.main.transform))
             {
                 backgroundRads = MINIMUM_AMOUNT_SHIP;
-            } 
+            }
             else if (RadiationUtils.isInAnyRadiation(Player.main.transform))
             {
                 backgroundRads = MINIMUM_AMOUNT_NORMAL;
-            } 
+            }
             else
             {
                 backgroundRads = 0;
             }
+            DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
+
+            // In the moments right after we fix the leaks, the visible radiation fades back a bit.
+            float fixFactor = 1.0f;
+            if (LeakingRadiation.main.GetNumLeaks() == 0)
+            {
+                if (DeathRun.saveData.playerSave.fixedRadiation == 0)
+                {
+                    DeathRun.saveData.playerSave.fixedRadiation = DayNightCycle.main.timePassedAsFloat;
+                } 
+                else if (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.playerSave.fixedRadiation + FIX_PERIOD)
+                {
+                    fixFactor = 0.0f;
+                } 
+                else
+                {
+                    fixFactor = 1 - ((DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.fixedRadiation) / FIX_PERIOD);
+                }                
+            }
+
+            // If we're inside the ship (or near it), and radiation leaks aren't fixed yet, we show quite a bit more radiation effects
+            if (fixFactor > 0)
+            {
+                if (LDBiome.Contains("CrashedShip")) {
+                    if (LDBiome.Contains("Interior_Power") && !LDBiome.Contains("Corridor"))
+                    {
+                        if (Player.main.IsSwimming())
+                        {
+                            backgroundRads = 2.0f;
+                        }
+                        else
+                        {
+                            backgroundRads = 1.6f;
+                        }
+                    }
+                    else if (LDBiome.Contains("PowerCorridor")) 
+                    {
+                        if (distance <= 32)
+                        {
+                            backgroundRads = 1.4f;
+                        }
+                        else
+                        {
+                            backgroundRads = 1.2f;
+                        }
+                    } 
+                    else if (LDBiome.Contains("Elevator") || LDBiome.Contains("Locker") || LDBiome.Contains("Seamoth"))
+                    {
+                        backgroundRads = 1.0f;
+                    }
+                    else if (LDBiome.Contains("Exo") || LDBiome.Contains("Living") || LDBiome.Contains("Cargo"))
+                    {
+                        backgroundRads = 0.8f;
+                    }
+                    else if (LDBiome.Contains("Entrance_03") || LDBiome.Contains("Entrance_01_01"))
+                    {
+                        backgroundRads = 0.7f;
+                    }
+                    else if (LDBiome.Contains("THallway_Lower") || LDBiome.Contains("Entrance_01"))
+                    {
+                        backgroundRads = 0.6f;
+                    }
+                    else if (LDBiome.Contains("THallway") || LDBiome.Contains("Entrance"))
+                    {
+                        backgroundRads = 0.5f;
+                    }
+                    else if (PlayerBiome.Contains("crashedShip") || PlayerBiome.Contains("generatorRoom"))
+                    {
+                        backgroundRads = 0.4f;
+                    }
+                    else if (PlayerBiome.Contains("CrashZone") || PlayerBiome.Contains("crashZone"))
+                    {
+                        backgroundRads = 0.3f;
+                    }
+                }
+
+                backgroundRads = backgroundRads * fixFactor;
+                if (backgroundRads > DeathRun.saveData.playerSave.backgroundRads)
+                {
+                    DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
+                }
+            }            
+
+            //ErrorMessage.AddMessage("Dist=" + distance + "  Rads=" + backgroundRads + "  Leaks="+ LeakingRadiation.main.GetNumLeaks());
 
             //CattleLogger.Message("start = " + LeakingRadiation.main.kStartRadius);
             //CattleLogger.Message("max = " + LeakingRadiation.main.kMaxRadius);
-            
+
             float rads = Mathf.Max(Player.main.radiationAmount, backgroundRads);
 
             // If Player is naturally in at least our minimum display amount, just run normal method.
@@ -280,7 +359,7 @@ namespace DeathRun.Patchers
                 __instance.animTime -= Time.deltaTime / __instance.fadeDuration;
             }
             __instance.animTime = Mathf.Clamp01(__instance.animTime);
-            __instance.fx.noiseFactor = backgroundRads/2 * __instance.radiationMultiplier + __instance.minRadiation * __instance.animTime;
+            __instance.fx.noiseFactor = rads * __instance.radiationMultiplier + __instance.minRadiation * __instance.animTime;
             if (__instance.fx.noiseFactor > 0f && !__instance.fx.enabled)
             {
                 __instance.fx.enabled = true;

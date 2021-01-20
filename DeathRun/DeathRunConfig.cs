@@ -352,6 +352,11 @@ namespace DeathRun
                 bonuses += 2;
             }
 
+            if (EXORBITANT.Equals(batteryCosts))
+            {
+                bonuses++;
+            }
+
             if (MURK_DARK.Equals(murkiness))
             {
                 bonuses++;

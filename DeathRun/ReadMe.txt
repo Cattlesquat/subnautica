@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.9.5 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.9.7 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -19,6 +19,11 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 1.9.7 - Aurora interior is more Chernobyl-ish before repair, but AFTER repair the air inside it works again
+• 1.9.7 - Nitrogen/Bends on "Hard" level falls toward 0 when you go inside a base/vehicle
+• 1.9.7 - Setting Batteries to "Worse than Deathrun" gives appropriate scoring credit
+• 1.9.7 - Scans Required for Cyclops fragments increased (5 of each type on Death Run, 4 of each type on Hard)
+• 1.9.6 - Fix # scans for Prawn that I apparently broke a few builds back
 • 1.9.5 - Copper batteries can be "recycled" in the Fabricator -- three batteries returns 2 copper.
 • 1.9.5 - First Aid Kits used to purge oxygen are still consumed even if health is 100%
 • 1.9.4 - "Alternative" Death Run Vehicles costs wasn't giving proper scoring credit.

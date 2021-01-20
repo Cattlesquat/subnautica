@@ -32,7 +32,8 @@ namespace DeathRun.Patchers
         public bool toldSeamothCosts { get; set; }
         public bool toldExosuitCosts { get; set; }
         public bool seaGlideExpended { get; set; }
-
+        public float backgroundRads { get; set; }
+        public float fixedRadiation { get; set; }
 
         public PlayerSaveData()
         {
@@ -66,6 +67,8 @@ namespace DeathRun.Patchers
             toldSeamothCosts = false;
             toldExosuitCosts = false;
             seaGlideExpended = false;
+            backgroundRads = 0;
+            fixedRadiation = 0;
         }
     }
 
@@ -639,6 +642,47 @@ namespace DeathRun.Patchers
         public static void Postfix()
         {
             DeathRun.playerIsDead = false;
+        }
+    }
+
+
+
+    [HarmonyPatch(typeof(Player))]
+    [HarmonyPatch("UpdateRadiationSound")]
+    internal class PlayerUpdateRadiationSoundPatcher
+    {        
+        /**
+         * Player.UpdateRadiationSound -- give some radiation sounds when we're exploring the ship
+         */
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            float rads = Player.main.radiationAmount;
+
+            float backgroundRads = DeathRun.saveData.playerSave.backgroundRads;
+
+            if (backgroundRads >= 0.4f)
+            {
+                //backgroundRads /= 2;
+                if (backgroundRads > rads)
+                {
+                    rads = backgroundRads;
+                }
+            }
+
+            if (Player.main.fmodIndexIntensity < 0)
+            {
+                Player.main.fmodIndexIntensity = Player.main.radiateSound.GetParameterIndex("intensity");
+            }
+            if (rads > 0f)
+            {
+                Player.main.radiateSound.Play();
+                Player.main.radiateSound.SetParameterValue(Player.main.fmodIndexIntensity, rads);
+                return false;
+            }
+            Player.main.radiateSound.Stop();
+
+            return false;
         }
     }
 

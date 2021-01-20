@@ -34,6 +34,20 @@ namespace DeathRun.Patchers
             if (player.IsInside() || player.precursorOutOfWater) return false;
             float depth = Ocean.main.GetDepthOf(player.gameObject);
             if (depth > 5) return false;
+
+            // After repairing radiation leaks, when inside the Aurora.
+            if (LeakingRadiation.main != null)
+            {
+                if (LeakingRadiation.main.GetNumLeaks() == 0)
+                {
+                    string LDBiome = TerrainDebugGUI.main.CalculateRawBiome(Player.main);
+                    if (LDBiome.Contains("CrashedShip_Interior"))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 

@@ -20,7 +20,7 @@ namespace DeathRun
 
     public class DeathRunUtils
     {
-        public const string VERSION = "1.9.5";
+        public const string VERSION = "1.9.7";
 
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(250f, true),
@@ -229,7 +229,8 @@ namespace DeathRun
                                                                "Repair your Escape Pod for better power generation!",
                                                                "You swim faster when on the surface.",
                                                                "Enemies only chase you if they can SEE you.",
-                                                               "Hugging the ground helps hide from enemies (and Crash Fish blasts)"
+                                                               "Hugging the ground helps hide from enemies (and Crash Fish blasts)",
+                                                               "Aurora is easier to explore AFTER you repair its radiation leaks."
                                                              };
 
         public static void InitHighScores ()
@@ -285,7 +286,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.9.5 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 1.9.7 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;

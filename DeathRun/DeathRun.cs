@@ -658,7 +658,11 @@ namespace DeathRun
 
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Seamoth, 12);
-                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsBridgeFragment, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsDockingBayFragment, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsEngineFragment, 5);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsHullFragment, 5);
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
@@ -684,7 +688,11 @@ namespace DeathRun
 
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 3);
                     PDAHandler.EditFragmentsToScan(TechType.Seamoth, 8);
-                    PDAHandler.EditFragmentsToScan(TechType.Exosuit, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsBridgeFragment, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsDockingBayFragment, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsEngineFragment, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsHullFragment, 4);
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 3);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 3);
