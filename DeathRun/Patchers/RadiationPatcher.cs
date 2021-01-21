@@ -226,7 +226,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static bool Update(RadiationsScreenFXController __instance)
         {
-            if ((Player.main == null) || (LeakingRadiation.main == null))
+            if ((Player.main == null) || (LeakingRadiation.main == null) || Config.FX_NORMAL.Equals(DeathRun.config.radiationFX))
             {
                 DeathRun.saveData.playerSave.backgroundRads = 0;
                 return true;
@@ -256,6 +256,7 @@ namespace DeathRun.Patchers
             }
             DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
 
+
             // In the moments right after we fix the leaks, the visible radiation fades back a bit.
             float fixFactor = 1.0f;
             if (LeakingRadiation.main.GetNumLeaks() == 0)
@@ -277,54 +278,75 @@ namespace DeathRun.Patchers
             // If we're inside the ship (or near it), and radiation leaks aren't fixed yet, we show quite a bit more radiation effects
             if (fixFactor > 0)
             {
-                if (LDBiome.Contains("CrashedShip")) {
+                if (Config.FX_CHERNOBYL.Equals(DeathRun.config.radiationFX))
+                {
+                    if (LDBiome.Contains("CrashedShip"))
+                    {
+                        if (LDBiome.Contains("Interior_Power") && !LDBiome.Contains("Corridor"))
+                        {
+                            if (Player.main.IsSwimming())
+                            {
+                                backgroundRads = 2.0f;
+                            }
+                            else
+                            {
+                                backgroundRads = 1.6f;
+                            }
+                        }
+                        else if (LDBiome.Contains("PowerCorridor"))
+                        {
+                            if (distance <= 32)
+                            {
+                                backgroundRads = 1.4f;
+                            }
+                            else
+                            {
+                                backgroundRads = 1.2f;
+                            }
+                        }
+                        else if (LDBiome.Contains("Elevator") || LDBiome.Contains("Locker") || LDBiome.Contains("Seamoth"))
+                        {
+                            backgroundRads = 1.0f;
+                        }
+                        else if (LDBiome.Contains("Exo") || LDBiome.Contains("Living") || LDBiome.Contains("Cargo"))
+                        {
+                            backgroundRads = 0.8f;
+                        }
+                        else if (LDBiome.Contains("Entrance_03") || LDBiome.Contains("Entrance_01_01"))
+                        {
+                            backgroundRads = 0.7f;
+                        }
+                        else if (LDBiome.Contains("THallway_Lower") || LDBiome.Contains("Entrance_01"))
+                        {
+                            backgroundRads = 0.6f;
+                        }
+                        else if (LDBiome.Contains("THallway") || LDBiome.Contains("Entrance"))
+                        {
+                            backgroundRads = 0.5f;
+                        }
+                        else if (PlayerBiome.Contains("crashedShip") || PlayerBiome.Contains("generatorRoom"))
+                        {
+                            backgroundRads = 0.4f;
+                        }
+                        else if (PlayerBiome.Contains("CrashZone") || PlayerBiome.Contains("crashZone"))
+                        {
+                            backgroundRads = 0.3f;
+                        }
+                    }
+                } 
+                else 
+                {
                     if (LDBiome.Contains("Interior_Power") && !LDBiome.Contains("Corridor"))
                     {
                         if (Player.main.IsSwimming())
                         {
-                            backgroundRads = 2.0f;
+                            backgroundRads = 0.5f;
                         }
                         else
                         {
-                            backgroundRads = 1.6f;
+                            backgroundRads = 0.4f;
                         }
-                    }
-                    else if (LDBiome.Contains("PowerCorridor")) 
-                    {
-                        if (distance <= 32)
-                        {
-                            backgroundRads = 1.4f;
-                        }
-                        else
-                        {
-                            backgroundRads = 1.2f;
-                        }
-                    } 
-                    else if (LDBiome.Contains("Elevator") || LDBiome.Contains("Locker") || LDBiome.Contains("Seamoth"))
-                    {
-                        backgroundRads = 1.0f;
-                    }
-                    else if (LDBiome.Contains("Exo") || LDBiome.Contains("Living") || LDBiome.Contains("Cargo"))
-                    {
-                        backgroundRads = 0.8f;
-                    }
-                    else if (LDBiome.Contains("Entrance_03") || LDBiome.Contains("Entrance_01_01"))
-                    {
-                        backgroundRads = 0.7f;
-                    }
-                    else if (LDBiome.Contains("THallway_Lower") || LDBiome.Contains("Entrance_01"))
-                    {
-                        backgroundRads = 0.6f;
-                    }
-                    else if (LDBiome.Contains("THallway") || LDBiome.Contains("Entrance"))
-                    {
-                        backgroundRads = 0.5f;
-                    }
-                    else if (PlayerBiome.Contains("crashedShip") || PlayerBiome.Contains("generatorRoom"))
-                    {
-                        backgroundRads = 0.4f;
-                    }
-                    else if (PlayerBiome.Contains("CrashZone") || PlayerBiome.Contains("crashZone"))
+                    } else if (PlayerBiome.Contains("CrashZone") || PlayerBiome.Contains("crashZone") || PlayerBiome.Contains("crashedShip") || PlayerBiome.Contains("generatorRoom"))
                     {
                         backgroundRads = 0.3f;
                     }

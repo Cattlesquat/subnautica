@@ -176,13 +176,14 @@ namespace DeathRun.Patchers
                     if (Config.DEATHRUN.Equals(DeathRun.config.nitrogenBends))
                     {
                         baselineSafe = (depth < 0) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
-                    } else
+                    } 
+                    else
                     {
-                        baselineSafe = ((depth < 0) || !isSwimming) ? 0 : depth / 2; // At any given depth our safe equilibrium gradually approaches 1/2 of current depth
+                        baselineSafe = ((depth < 0) || !isSwimming) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
                     }
 
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
-                    if (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather)) 
+                    if ((baselineSafe > 0) && (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather))) 
                     {
                         float adjustment = depth * (2 + (!isSwimming ? 1 : 0) + (isSeaglide ? 1 : 0)) / 8;
 
@@ -212,7 +213,7 @@ namespace DeathRun.Patchers
 
                     // This little % buffer helps introduce the concept of N2 (both initially and as a positive feedback reminder)
                     float target;
-                    if (Player.main.precursorOutOfWater)
+                    if (Player.main.precursorOutOfWater || (baselineSafe <= 0))
                     {
                         target = 0;
                     } else if ((DeathRun.saveData.nitroSave.safeDepth > 10f) || (depth >= 20)) {
@@ -379,6 +380,14 @@ namespace DeathRun.Patchers
                 }
 
                 HUDController(__instance, false); // (DeathRun.saveData.nitroSave.ascentRate >= 5) && (DeathRun.saveData.nitroSave.ascentWarning >= 30));
+            } else
+            {
+                if (Time.timeScale > 0f)
+                {
+                    __instance.nitrogenLevel = 0;
+                    DeathRun.saveData.nitroSave.safeDepth = 0;
+                    BendsHUDController.SetActive(false, false);
+                }
             }
 
             return false;

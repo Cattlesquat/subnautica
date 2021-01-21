@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.9.7 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 1.9.8 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -19,6 +19,10 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 1.9.8 - First Aid Kits can be placed in a Quick Slot, and when "held" can be "used" instead of "dropped"
+• 1.9.8 - "Chernobyl" Aurora interior FX moved to an optional setting, w/ scoring adjustments.
+• 1.9.8 - When repair Aurora and "Surface Air" set to "Hard", all surface air immediately breathable.
+• 1.9.8 - Tweaks to "Hard" setting for Nitrogen.
 • 1.9.7 - Aurora interior is more Chernobyl-ish before repair, but AFTER repair the air inside it works again
 • 1.9.7 - Nitrogen/Bends on "Hard" level falls toward 0 when you go inside a base/vehicle
 • 1.9.7 - Setting Batteries to "Worse than Deathrun" gives appropriate scoring credit

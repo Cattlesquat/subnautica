@@ -40,6 +40,7 @@ namespace DeathRun.Patchers
             {
                 if (LeakingRadiation.main.GetNumLeaks() == 0)
                 {
+                    if (Config.IRRADIATED.Equals(DeathRun.config.surfaceAir)) return false;
                     string LDBiome = TerrainDebugGUI.main.CalculateRawBiome(Player.main);
                     if (LDBiome.Contains("CrashedShip_Interior"))
                     {

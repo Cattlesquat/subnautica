@@ -821,6 +821,9 @@ namespace DeathRun
                     KnownTechHandler.Main.UnlockOnStart(TechType.Copper);
                 }
 
+                CraftDataHandler.SetQuickSlotType(TechType.FirstAidKit, QuickSlotType.Selectable);
+                CraftDataHandler.SetEquipmentType(TechType.FirstAidKit, EquipmentType.Hand);
+
                 Console.WriteLine("[DeathRun] Patched");
 
             }

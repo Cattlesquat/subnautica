@@ -72,6 +72,10 @@ namespace DeathRun
         public const string MURK_DARKEST = "Darkest";
         public const string MURK_CLEAR = "Crazy Clear";
 
+        public const string FX_CHERNOBYL = "Aurora-as-Chernobyl";
+        public const string FX_REMINDER = "Mild Reminder";
+        public const string FX_NORMAL = "Disable";
+
         public const string WHENEVER = "Whenever Encountered";
         public const string OCCASIONAL = "Occasional Reminders (> 5 min)";
         public const string INTRODUCTORY = "Introducing Concept Only";
@@ -156,6 +160,9 @@ namespace DeathRun
 
         [Choice("Water Murkiness (Optional)", new string[] { MURK_NORMAL, MURK_DARK, MURK_DARKER, MURK_DARKEST, MURK_CLEAR }), OnChange(nameof(ChangedMurkiness))]
         public string murkiness = MURK_NORMAL;
+
+        [Choice("Radiation FX if Immune (Optional)", new string[] { FX_CHERNOBYL, FX_REMINDER, FX_NORMAL }), OnChange(nameof(ChangedChoice))]
+        public string radiationFX = FX_CHERNOBYL;
 
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
@@ -353,6 +360,11 @@ namespace DeathRun
             }
 
             if (EXORBITANT.Equals(batteryCosts))
+            {
+                bonuses++;
+            }
+
+            if (FX_CHERNOBYL.Equals(radiationFX))
             {
                 bonuses++;
             }

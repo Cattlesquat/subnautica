@@ -210,4 +210,46 @@ namespace DeathRun.Patchers
             }
         }
     }
+
+    /**
+     * Allows using a first aid it from "held in the hand" mode (so it can be in a quick slot)
+     */
+    [HarmonyPatch(typeof(QuickSlots))]
+    [HarmonyPatch("Drop")]
+    internal class DropToolPatcher
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(QuickSlots __instance)
+        {
+            if (__instance._heldItem == null)
+            {
+                return true;
+            }
+
+            Pickupable item = __instance._heldItem.item;
+
+            if (item.GetTechType() != TechType.FirstAidKit)
+            {
+                return true;
+            }
+
+            Survival component = Player.main.GetComponent<Survival>();
+            if (component != null)
+            {
+                if (component.Use(item.gameObject))
+                {
+                    __instance.refillTechType = item.GetTechType();
+                    __instance.refillSlot = __instance.GetSlotByItem(__instance._heldItem);
+                    __instance.desiredSlot = __instance.refillSlot;
+
+                    UnityEngine.Object.Destroy(item.gameObject);
+                    return false;
+                }
+            }
+
+            return false;
+        }
+    }
+
+
 }
