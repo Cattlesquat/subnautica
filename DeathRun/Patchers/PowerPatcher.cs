@@ -112,7 +112,7 @@ namespace DeathRun.Patchers
                 }
             }
             else if (isBase ||
-                     (DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore || DeathRun.filterSemaphore))
+                     (DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore /* || DeathRun.filterSemaphore */))
             {
                 if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
                 {

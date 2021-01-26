@@ -177,6 +177,9 @@ namespace DeathRun
         [Toggle("Show Tips w/ High Scores"), OnChange(nameof(ChangedTips))]
         public bool showTips = true;
 
+        [Toggle("Allow First Aid in Quickslots")]
+        public bool firstAidQuickSlot = true;
+
         [Toggle("Don't Tip Escape Pod Over"), OnChange(nameof(ChangedTipOver))]
         public bool podStayUpright = false;
 

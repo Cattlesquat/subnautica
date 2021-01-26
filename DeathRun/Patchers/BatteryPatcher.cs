@@ -342,7 +342,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static void OnCraftEndPrefix(EnergyMixin __instance, TechType techType)
         {
-            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts) && !GameModeUtils.IsOptionActive(GameModeOption.Creative))
             {
                 if (techType != TechType.MapRoomCamera)
                 {

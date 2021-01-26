@@ -221,7 +221,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(QuickSlots __instance)
         {
-            if (__instance._heldItem == null)
+            if ((__instance._heldItem == null) || !DeathRun.config.firstAidQuickSlot)
             {
                 return true;
             }

@@ -32,6 +32,17 @@ namespace DeathRun
             }
         }
 
+
+        public static bool isRadiationFixed()
+        {
+            if (LeakingRadiation.main == null)
+            {
+                return false;
+            }
+
+            return (LeakingRadiation.main.GetNumLeaks() == 0);
+        }
+
         /**
          * How deep into the ocean the radiation can currently penetrate (1 to X)
         */
@@ -40,8 +51,19 @@ namespace DeathRun
             // A % of how strong the radiation is compared to max radiation
             float radiationStrengthPerc = LeakingRadiation.main.currentRadius / LeakingRadiation.main.kMaxRadius;
 
+            // If leaks are repaired, accelerate the depth phase-out
+            if (isRadiationFixed())
+            {
+                radiationStrengthPerc *= radiationStrengthPerc;
+                //radiationStrengthPerc = (float)Math.Sqrt((double)radiationStrengthPerc * radiationStrengthPerc * radiationStrengthPerc);
+
+                //ErrorMessage.AddMessage("base: " + (LeakingRadiation.main.currentRadius / LeakingRadiation.main.kMaxRadius) +  "  percent: " + radiationStrengthPerc + "   Depth: " + (getRadiationMaxDepth() * radiationStrengthPerc));
+            }
+
             // How deep the radiation can reach
-            return getRadiationMaxDepth() * radiationStrengthPerc;
+            float depth = getRadiationMaxDepth() * radiationStrengthPerc;
+
+            return depth;
         }
 
         /**
@@ -102,6 +124,34 @@ namespace DeathRun
             float depth = getRadiationDepth();
 
             return depth > 1 && transform.position.y >= -depth;
+        }
+
+        public static string getPlayerBiome()
+        {
+            string s;
+
+            AtmosphereDirector atmosphereDirector = AtmosphereDirector.main;
+            if (atmosphereDirector)
+            {
+                string biomeOverride = atmosphereDirector.GetBiomeOverride();
+                if (!string.IsNullOrEmpty(biomeOverride))
+                {
+                    return biomeOverride;
+                }
+            }
+            LargeWorld largeWorld = LargeWorld.main;
+            if (largeWorld && (Player.main != null))
+            {
+                s = largeWorld.GetBiome(Player.main.transform.position);
+                if (s == null)
+                {
+                    return "<none>";
+                } else
+                {
+                    return s;
+                }
+            }
+            return "<unknown>";
         }
     }
 }

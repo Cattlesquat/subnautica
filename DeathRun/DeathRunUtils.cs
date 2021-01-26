@@ -20,7 +20,7 @@ namespace DeathRun
 
     public class DeathRunUtils
     {
-        public const string VERSION = "1.9.8";
+        public const string VERSION = "2.0.0";
 
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(250f, true),
@@ -286,7 +286,7 @@ namespace DeathRun
             }
 
             highScoreLabel.setAlign(TextAnchor.MiddleCenter);
-            highScoreLabel.ShowMessage("Death Run 1.9.8 - Best Scores");
+            highScoreLabel.ShowMessage("Death Run 2.0.0 - Best Scores");
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;

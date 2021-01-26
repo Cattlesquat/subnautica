@@ -1,4 +1,4 @@
-﻿DEATH RUN - 1.9.8 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 2.0.0 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -18,6 +18,15 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Power costs much steeper
 • Vehicles and the Habitat Builder much more expensive
 
+-------------------------------------------------------------------------------------------------------------
+• 2.0.0 - After Aurora repaired, can build "Integrated Filter Chip" to allow breathing surface air
+• 2.0.0 - "Hull Reinforcement Module" lowers the EXTRA damage caused to vehicles by creatures (stacking 3 removes it)
+• 2.0.0 - Stasis Rifle & Propulsion Rifle scans & costs slightly increased (too important a tool not to be made harder!)
+• 2.0.0 - "Chernobyl" FX decrease somewhat as you repair each leak
+• 2.0.0 - After radiation repair, depth-based radiation phases out more quickly
+• 2.0.0 - In "Creative" difficulty mode, tools will spawn with batteries
+• 2.0.0 - First Aid Kit going in Quick Slot can be disabled from Options menu (then restart Subnautica)
+• 2.0.0 - Adjusted Water Filtration machine energy consumption
 -------------------------------------------------------------------------------------------------------------
 • 1.9.8 - First Aid Kits can be placed in a Quick Slot, and when "held" can be "used" instead of "dropped"
 • 1.9.8 - "Chernobyl" Aurora interior FX moved to an optional setting, w/ scoring adjustments.

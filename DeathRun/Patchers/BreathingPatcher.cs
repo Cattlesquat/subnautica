@@ -21,7 +21,15 @@ namespace DeathRun.Patchers
         public static bool isSurfaceAirPoisoned ()
         {
             if (Config.BREATHABLE.Equals(DeathRun.config.surfaceAir)) return false;
-            if (Config.POISONED.Equals(DeathRun.config.surfaceAir)) return true;
+            if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+            {
+                Inventory main2 = Inventory.main;
+                if (main2 != null && main2.equipment != null && main2.equipment.GetCount(DeathRun.filterChip.TechType) > 0)
+                {
+                    return false;
+                }
+                return true;
+            }
             return RadiationUtils.isRadiationActive();
         }
 
@@ -41,7 +49,7 @@ namespace DeathRun.Patchers
                 if (LeakingRadiation.main.GetNumLeaks() == 0)
                 {
                     if (Config.IRRADIATED.Equals(DeathRun.config.surfaceAir)) return false;
-                    string LDBiome = TerrainDebugGUI.main.CalculateRawBiome(Player.main);
+                    string LDBiome = RadiationUtils.getPlayerBiome();
                     if (LDBiome.Contains("CrashedShip_Interior"))
                     {
                         return false;

@@ -49,6 +49,8 @@ namespace DeathRun
         public static global::Utils.ScalarMonitor countdownMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
         public static global::Utils.ScalarMonitor playerMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
 
+        public static Items.FilterChip filterChip = new Items.FilterChip();
+
         //public static bool podGravity  = true;
         public static float configDirty = 0;
 
@@ -89,7 +91,7 @@ namespace DeathRun
         public static void Patch()
         {
             CattleLogger.setModName(modName);
-            CattleLogger.PatchStart("1.4.1");
+            CattleLogger.PatchStart("1.9.9");
 
             try
             {
@@ -120,6 +122,10 @@ namespace DeathRun
                 {
                     O2TanksCore.PatchTanks();
                 }
+
+                CattleLogger.Message("Items - Filter Chip");
+                filterChip.Patch();
+                KnownTechHandler.SetAnalysisTechEntry(filterChip.TechType, new List<TechType> { filterChip.TechType }, "Blueprint Unlocked");
 
                 //Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
 
@@ -554,7 +560,6 @@ namespace DeathRun
                 }
 
 
-
                 // CYCLOPS Depth Modules
                 CattleLogger.Message("Cyclops Depth Modules");
                 if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
@@ -619,6 +624,31 @@ namespace DeathRun
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.UraniniteCrystal, 2),
+                            new Ingredient(TechType.Benzene, 1),
+                        };
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.Lead, 2),
+                        };
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 1),
                             new Ingredient(TechType.FiberMesh, 4),
                             new Ingredient(TechType.Silver, 1),
                             new Ingredient(TechType.Titanium, 1)
@@ -639,6 +669,30 @@ namespace DeathRun
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
                     techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.UraniniteCrystal, 1),
+                        };
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.Magnetite, 1),
+                            new Ingredient(TechType.Lead, 2),
+                        };
+                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    {
+                        ingredients.Add(new Ingredient(TechType.Battery, 1));
+                    }
+                    techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
 
                     ingredients = new List<Ingredient>
                         {
@@ -666,8 +720,8 @@ namespace DeathRun
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
-                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 4);
-                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 6);
                     PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 6);
                     PDAHandler.EditFragmentsToScan(TechType.LaserCutterFragment, 6);
                     PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 6);
@@ -679,8 +733,6 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.BaseMoonpool, 5);
                     PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 2);
                     PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 5);
-                    //PDAHandler.EditFragmentsToScan(TechType.BaseWaterPark, 4);
-                    //PDAHandler.EditFragmentsToScan(TechType.Spotlight, 3);
                 }
                 else if (Config.HARD.Equals(DeathRun.config.scansRequired))
                 {
@@ -696,9 +748,8 @@ namespace DeathRun
 
                     PDAHandler.EditFragmentsToScan(TechType.Beacon, 3);
                     PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 3);
-                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 3);
-                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 3);
-                    PDAHandler.EditFragmentsToScan(TechType.RepulsionCannon, 3);
+                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 4);
                     PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 4);
                     PDAHandler.EditFragmentsToScan(TechType.LaserCutterFragment, 4);
                     PDAHandler.EditFragmentsToScan(TechType.Welder, 4);
@@ -711,8 +762,6 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.BaseMoonpool, 4);
                     PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 2);
                     PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 4);
-                    //PDAHandler.EditFragmentsToScan(TechType.BaseWaterPark, 3);
-                    //PDAHandler.EditFragmentsToScan(TechType.Spotlight, 2);
                 }
 
 
@@ -773,21 +822,6 @@ namespace DeathRun
 
                     ingredients = new List<Ingredient>
                         {
-                            new Ingredient(TechType.ComputerChip, 1),
-                            new Ingredient(TechType.Magnetite, 2),
-                            new Ingredient(TechType.Titanium, 1),
-                        };
-                    techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
-
-                    ingredients = new List<Ingredient>
-                        {
-                            new Ingredient(TechType.WiringKit, 1),
-                            new Ingredient(TechType.Titanium, 1),
-                        };
-                    techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
-
-                    ingredients = new List<Ingredient>
-                        {
                             new Ingredient(TechType.Diamond, 2),
                             new Ingredient(TechType.Titanium, 1),
                             new Ingredient(TechType.CrashPowder, 1)
@@ -821,8 +855,13 @@ namespace DeathRun
                     KnownTechHandler.Main.UnlockOnStart(TechType.Copper);
                 }
 
-                CraftDataHandler.SetQuickSlotType(TechType.FirstAidKit, QuickSlotType.Selectable);
-                CraftDataHandler.SetEquipmentType(TechType.FirstAidKit, EquipmentType.Hand);
+                CattleLogger.Message("First Aid Kits => Quick Slots");
+
+                if (DeathRun.config.firstAidQuickSlot)
+                {
+                    CraftDataHandler.SetQuickSlotType(TechType.FirstAidKit, QuickSlotType.Selectable);
+                    CraftDataHandler.SetEquipmentType(TechType.FirstAidKit, EquipmentType.Hand);
+                }
 
                 Console.WriteLine("[DeathRun] Patched");
 
@@ -887,7 +926,7 @@ namespace DeathRun
             if (DeathRun.patchFailed)
             {
                 ErrorMessage.AddMessage("PATCH FAILED - Death Run patch failed to complete. See errorlog (Logoutput.Log) for details.");
-                DeathRunUtils.CenterMessage("PATCH FAILED", 10, 4);
+                DeathRunUtils.CenterMessage("PATCH FAILED", 10, 6);
             }
 
             DeathRunUtils.ShowHighScores(true);

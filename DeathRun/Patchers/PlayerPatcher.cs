@@ -160,7 +160,12 @@ namespace DeathRun.Patchers
                 new PDAEncyclopedia.EntryData
                 {
                     key = "ExitVehicles", nodes = new string[] { "Death" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "FilterChip", nodes = new string[] { "Tech", "Equipment" }
                 }
+
             };
 
             foreach (PDAEncyclopedia.EntryData entry in entryData)
@@ -218,6 +223,9 @@ namespace DeathRun.Patchers
             original = Language.main.Get("EncyDesc_ReinforcedSuit");
             updated = original.Replace("wearing this suit", "wearing this suit\n- Mark 2 and Mark 3 suits available\n- Scan DEEP life forms to make Mark 2 and Mark 3 suits available.");
             LanguageHandler.Main.SetLanguageLine("EncyDesc_ReinforcedSuit", updated);
+
+            LanguageHandler.SetLanguageLine("Ency_FilterChip", "Integrated Filter Chip");
+            LanguageHandler.SetLanguageLine("EncyDesc_FilterChip", "Provides bloodstream filtering render surface air breathable. Comes with a free Compass.");
 
             return true;
         }

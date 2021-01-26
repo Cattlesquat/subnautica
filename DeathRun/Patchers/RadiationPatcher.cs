@@ -202,8 +202,19 @@ namespace DeathRun.Patchers
                 return tracker.distanceToPlayer;
             }
 
+            // When radiation is fixed, avoid a "long tail-off" near the surface
+            if (RadiationUtils.isRadiationFixed())
+            {
+                if (radiationDepth <= 15)
+                {
+                    return tracker.distanceToPlayer;
+                }
+            }
+
             // A % of how close they are to getting out of radiation
             float playerRadiationStrength = playerDepth / radiationDepth;
+
+            //ErrorMessage.AddMessage("Player: " + playerDepth + "   RadDepth: " + radiationDepth + "   RadStr: " + playerRadiationStrength + "   Dist: " + Math.Min(tracker.distanceToPlayer, tracker.maxDistance * playerRadiationStrength));
 
             return Math.Min(tracker.distanceToPlayer, tracker.maxDistance * playerRadiationStrength);
         }
@@ -236,9 +247,6 @@ namespace DeathRun.Patchers
             float distance = (Player.main.transform.position - reactorRoom).magnitude; //LeakingRadiation.main.transform.position
             float backgroundRads;
 
-            string LDBiome     = TerrainDebugGUI.main.CalculateRawBiome(Player.main);
-            string PlayerBiome = Player.main.GetBiomeString();
-
             //ErrorMessage.AddMessage("LDBiome=" + LDBiome + "  PlayerBiome=" + PlayerBiome);
 
 
@@ -255,6 +263,14 @@ namespace DeathRun.Patchers
                 backgroundRads = 0;
             }
             DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
+
+            if (Player.main == null)
+            {
+                return true;
+            }
+
+            string LDBiome = RadiationUtils.getPlayerBiome();
+            string PlayerBiome = Player.main.GetBiomeString();
 
 
             // In the moments right after we fix the leaks, the visible radiation fades back a bit.
@@ -306,10 +322,12 @@ namespace DeathRun.Patchers
                         }
                         else if (LDBiome.Contains("Elevator") || LDBiome.Contains("Locker") || LDBiome.Contains("Seamoth"))
                         {
+
                             backgroundRads = 1.0f;
                         }
                         else if (LDBiome.Contains("Exo") || LDBiome.Contains("Living") || LDBiome.Contains("Cargo"))
                         {
+
                             backgroundRads = 0.8f;
                         }
                         else if (LDBiome.Contains("Entrance_03") || LDBiome.Contains("Entrance_01_01"))
@@ -332,6 +350,12 @@ namespace DeathRun.Patchers
                         {
                             backgroundRads = 0.3f;
                         }
+                    }
+
+                    if (backgroundRads > 0.8f)
+                    {
+                        backgroundRads = backgroundRads * LeakingRadiation.main.GetNumLeaks() / 11;
+                        if (backgroundRads < 0.8f) backgroundRads = 0.8f;
                     }
                 } 
                 else 
@@ -357,7 +381,7 @@ namespace DeathRun.Patchers
                 {
                     DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
                 }
-            }            
+            }
 
             //ErrorMessage.AddMessage("Dist=" + distance + "  Rads=" + backgroundRads + "  Leaks="+ LeakingRadiation.main.GetNumLeaks());
 
@@ -391,4 +415,20 @@ namespace DeathRun.Patchers
             return false;
         }
     }
+
+    [HarmonyPatch(typeof(LeakingRadiation))]
+    [HarmonyPatch("Update")]
+    public class LeakingRadiationPatcher
+    {
+        [HarmonyPostfix]
+        private static void UpdatePostfix(LeakingRadiation __instance)
+        {
+            if (__instance.radiationFixed && !CrafterLogic.IsCraftRecipeUnlocked(DeathRun.filterChip.TechType) && Config.POISONED.Equals(DeathRun.config.surfaceAir))
+            {
+                PDAEncyclopedia.Add("FilterChip", true);
+                KnownTech.Add(DeathRun.filterChip.TechType, true);
+            }
+        }
+    }
+
 }

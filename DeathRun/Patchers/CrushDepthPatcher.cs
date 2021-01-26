@@ -17,7 +17,7 @@ namespace DeathRun.Patchers
 
     [HarmonyPatch(typeof(NitrogenLevel))]
     [HarmonyPatch("OnTookBreath")]
-    internal class BreathPatcher
+    internal class CrushDepthPatcher
     {
         private static bool crushEnabled = true;
         private static bool crushed = false;

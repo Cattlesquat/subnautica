@@ -60,18 +60,44 @@ namespace DeathRun.Patchers
                         break;
 
                     case DamageType.Collide:
-                        __result *= big;
+                        if (target.GetComponent<Player>())
+                        {
+                            __result *= big;
+                        }
                         break;
 
                     case DamageType.Normal:
-                        if ((__result < 35) || 
+                        Vehicle veh = target.GetComponent<Vehicle>();
+                        int modules = (veh == null) ? 0 : veh.modules.GetCount(TechType.VehicleArmorPlating);
+                        if (modules > 0)
+                        {
+                            if (modules < 3)
+                            {
+                                float littler = 1 + ((little - 1) / 2);
+                                if (modules == 1)
+                                {
+                                    __result *= UnityEngine.Random.Range(little, littler);
+                                }
+                                else if (modules == 2)
+                                {
+                                    __result *= UnityEngine.Random.Range(1, littler);
+                                }
+                            }
+                        }
+                        else if ((__result < 35) || 
                             (target.GetComponent<Player>() && (__result < 70) && Player.main.HasReinforcedSuit()))
                         {
                             __result *= UnityEngine.Random.Range(little, big);
                         }
                         else 
                         {
-                            __result *= little;
+                            if ((__result * little > 95) && !Player.main.HasReinforcedSuit() && ((Inventory.main.equipment.GetCount(TechType.RadiationSuit) > 0) || (Inventory.main.equipment.GetCount(TechType.Stillsuit) > 0)))
+                            {
+                                __result = 95;
+                            } else
+                            {
+                                __result *= little;
+                            }                            
                         }
                         break;
 
