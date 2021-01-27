@@ -1,10 +1,12 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * From libraryaddict's Radiation Challenge mod -- used w/ permission.
+ * Much of this is from libraryaddict's Radiation Challenge mod -- used w/ permission.
  * 
- * I've added code to make the radiation warning appear in the upper right corner, and more subdued, when the player
- * is actually fully immune to radiation, but is still in the radiated area.
+ * I've added:
+ *  * Code to make the radiation warning appear in the upper right corner, and more subdued, when the player is actually fully immune to radiation, but is still in the radiated area.
+ *  * "Chernobyl" FX while inside the Aurora trying to repair it
+ *  * Code to support the "Integrated Filter Chip" being unlocked when all the radiation is repaired (lets you breathe surface air again)
  */
 
 using Common;
@@ -427,6 +429,7 @@ namespace DeathRun.Patchers
             {
                 PDAEncyclopedia.Add("FilterChip", true);
                 KnownTech.Add(DeathRun.filterChip.TechType, true);
+                //DeathRun.saveData.playerSave.setCue("FilterChip", 5);
             }
         }
     }

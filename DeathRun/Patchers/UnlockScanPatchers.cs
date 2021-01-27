@@ -98,6 +98,16 @@ namespace DeathRun.Patchers
                     ErrorMessage.AddMessage("Added blueprint for chemosynthesis oxygen tank to database");
                 }
             }
+
+            if ((entryData.key == TechType.CaveSkeleton) || (entryData.key == TechType.GhostRayBlue) || (entryData.key == TechType.GhostRayRed))
+            {
+                if (!KnownTech.Contains(DeathRun.decoModule.TechType))
+                {
+                    DeathRun.saveData.playerSave.setCue("DecoModule", 5);
+                    //PDAEncyclopedia.Add("DecoModule", true);
+                    KnownTech.Add(DeathRun.decoModule.TechType, true);
+                }
+            }
             return true;
         }
     }

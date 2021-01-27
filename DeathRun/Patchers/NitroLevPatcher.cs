@@ -121,9 +121,11 @@ namespace DeathRun.Patchers
 
                 bool isSwimming = Player.main.IsSwimming();
 
+                Vehicle vehicle = Player.main.GetVehicle();
+
                 bool isInVehicle = Player.main.GetCurrentSub()?.isCyclops == true ||
-                                   Player.main.GetVehicle() is SeaMoth ||
-                                   Player.main.GetVehicle() is Exosuit;
+                                   vehicle is SeaMoth ||
+                                   vehicle is Exosuit;
 
                 bool isInBase = Player.main.IsInside() && !isInVehicle; //!isSwimming && (depth > 10) && !GameModeUtils.RequiresOxygen();
 
@@ -182,13 +184,28 @@ namespace DeathRun.Patchers
                         baselineSafe = ((depth < 0) || !isSwimming) ? 0 : depth * 3 / 4; // At any given depth our safe equilibrium gradually approaches 3/4 of current depth
                     }
 
+                    // "Deco Module" vehicle upgrade
+                    if (vehicle != null)
+                    {
+                        int deco = vehicle.modules.GetCount(DeathRun.decoModule.TechType);
+                        if (deco > 0)
+                        {
+                            baselineSafe = ((deco < 2) && (DeathRun.saveData.nitroSave.safeDepth >= 10)) ? 1 : 0;
+                            //CattleLogger.Message("baselineSafe = " + baselineSafe + "    deco=" + deco);
+                        }
+                    }
+
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
                     if ((baselineSafe > 0) && (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather))) 
                     {
                         float adjustment = depth * (2 + (!isSwimming ? 1 : 0) + (isSeaglide ? 1 : 0)) / 8;
 
-                        if (baselineSafe - adjustment <= DeathRun.saveData.nitroSave.safeDepth) { 
+                        if ((baselineSafe - adjustment <= DeathRun.saveData.nitroSave.safeDepth) && (baselineSafe > 1)) { 
                             baselineSafe = baselineSafe - adjustment;
+                            if (baselineSafe < 1)
+                            {
+                                baselineSafe = 1;
+                            }
                         }
 
                         if (DeathRun.saveData.nitroSave.atPipe)

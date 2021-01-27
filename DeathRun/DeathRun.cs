@@ -50,6 +50,7 @@ namespace DeathRun
         public static global::Utils.ScalarMonitor playerMonitor { get; set; } = new global::Utils.ScalarMonitor(0f);
 
         public static Items.FilterChip filterChip = new Items.FilterChip();
+        public static Items.DecoModule decoModule = new Items.DecoModule();
 
         //public static bool podGravity  = true;
         public static float configDirty = 0;
@@ -126,6 +127,10 @@ namespace DeathRun
                 CattleLogger.Message("Items - Filter Chip");
                 filterChip.Patch();
                 KnownTechHandler.SetAnalysisTechEntry(filterChip.TechType, new List<TechType> { filterChip.TechType }, "Blueprint Unlocked");
+
+                CattleLogger.Message("Items - Deco Module");
+                decoModule.Patch();
+                KnownTechHandler.SetAnalysisTechEntry(TechType.GhostRayBlue, new List<TechType> { decoModule.TechType }, "Blueprint Unlocked");
 
                 //Console.WriteLine(typeof(NitroDamagePatcher).AssemblyQualifiedName);
 
@@ -410,6 +415,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.TitaniumIngot, 1),
                                             new Ingredient(TechType.Magnetite, 2),
+                                            new Ingredient(TechType.AluminumOxide, 2),
                                             new Ingredient(TechType.EnameledGlass, 1)
                                         }
                                     });
@@ -422,7 +428,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.VehicleHullModule1, 1),
                                             new Ingredient(TechType.PlasteelIngot, 1),
-                                            new Ingredient(TechType.AluminumOxide, 3),
+                                            new Ingredient(TechType.Aerogel, 3),
                                             new Ingredient(TechType.EnameledGlass, 1)
                                         }
                                     });
@@ -435,7 +441,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.VehicleHullModule2, 1),
                                             new Ingredient(TechType.PlasteelIngot, 1),
-                                            new Ingredient(TechType.Aerogel, 3),
+                                            new Ingredient(TechType.Sulphur, 3),
                                             new Ingredient(TechType.EnameledGlass, 1)
                                         }
                                     });

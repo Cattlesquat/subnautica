@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Items\ChemosynthesisTank.cs" />
+    <Compile Include="Items\DecoModule.cs" />
     <Compile Include="Items\DummySuitItems.cs" />
     <Compile Include="Items\FilterChip.cs" />
     <Compile Include="Items\O2TanksCore.cs" />

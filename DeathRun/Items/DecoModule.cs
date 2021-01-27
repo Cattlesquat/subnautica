@@ -1,7 +1,7 @@
 ﻿/**
  * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
  * 
- * A "chip slot" item that allows breathing surface air (combined with compass function)
+ * A vehicle upgrade that reduces power-consumption-on-exit and nitrogen issues.
  */
 
 using System.Collections.Generic;
@@ -13,35 +13,35 @@ using UWE;
 
 namespace DeathRun.Items
 {
-    public class FilterChip : Equipable
+    public class DecoModule : Equipable
     {
-        public FilterChip() : base(
-            "FilterChip",
-            "Integrated Air Filter",
-            "Makes surface air breathable. Comes with a free Compass.")
+        public DecoModule() : base(
+            "DecoModule",
+            "Nano Decompression Module",
+            "Eliminates nitrogen from the bloodstream of vehicle pilot. Reduces energy expended when exiting the vehicle. Stacking multiple modules increases the benefit.")
         {
         }
 
-        public override EquipmentType EquipmentType => EquipmentType.Chip;
+        public override EquipmentType EquipmentType => EquipmentType.VehicleModule;
 
-        public override TechType RequiredForUnlock => TechType.Cyclops; //this.TechType;
+        public override TechType RequiredForUnlock => TechType.Cyclops; 
 
-        public override TechGroup GroupForPDA => TechGroup.Personal;
+        public override TechGroup GroupForPDA => TechGroup.VehicleUpgrades;
 
-        public override TechCategory CategoryForPDA => TechCategory.Equipment;
+        public override TechCategory CategoryForPDA => TechCategory.VehicleUpgrades;
 
-        public override CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
+        public override CraftTree.Type FabricatorType => CraftTree.Type.SeamothUpgrades;
 
         public override string DiscoverMessage => $"{this.FriendlyName} Unlocked!";
         //public override bool AddScannerEntry => true;
 
-        public override string[] StepsToFabricatorTab => new string[] { "Personal", "Equipment" };
+        public override string[] StepsToFabricatorTab => new string[] { "CommonModules" };
 
-        public override QuickSlotType QuickSlotType => QuickSlotType.None;
+        public override QuickSlotType QuickSlotType => QuickSlotType.Passive;
 
         public override GameObject GetGameObject()
         {
-            string classid = CraftData.GetClassIdForTechType(TechType.Compass);
+            string classid = CraftData.GetClassIdForTechType(TechType.VehicleArmorPlating);
             if (PrefabDatabase.TryGetPrefabFilename(classid, out string filename))
             {
                 var prefab = Resources.Load<GameObject>(filename);
@@ -99,17 +99,18 @@ namespace DeathRun.Items
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>()
                 {
-                    new Ingredient(TechType.Compass, 1),
                     new Ingredient(TechType.ComputerChip, 1),
-                    new Ingredient(TechType.Polyaniline, 1),
-                    new Ingredient(TechType.AramidFibers, 1),
+                    new Ingredient(TechType.Aerogel, 2),
+                    new Ingredient(TechType.Sulphur, 2),
+                    new Ingredient(TechType.Lithium, 2),
+                    new Ingredient(TechType.Lead, 4),
                 }
             };
-        }        
+        }
 
         protected override Atlas.Sprite GetItemSprite()
         {
-            return SpriteManager.Get(TechType.ComputerChip);
+            return SpriteManager.Get(TechType.PowerUpgradeModule);
         }
     }
 }

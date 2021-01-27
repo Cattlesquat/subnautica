@@ -14,9 +14,9 @@ namespace DeathRun.Patchers
     using System;
     using UnityEngine.UI;
 
-     /**
-     * Data that is saved/restored with saved games is here (DeathRun.saveData.playerSave)
-     */
+    /**
+    * Data that is saved/restored with saved games is here (DeathRun.saveData.playerSave)
+    */
     public class PlayerSaveData
     {
         public float startedGame { get; set; }
@@ -34,6 +34,10 @@ namespace DeathRun.Patchers
         public bool seaGlideExpended { get; set; }
         public float backgroundRads { get; set; }
         public float fixedRadiation { get; set; }
+
+
+        public float cueTime { get; set; }
+        public string cueKey { get; set; }
 
         public PlayerSaveData()
         {
@@ -69,6 +73,16 @@ namespace DeathRun.Patchers
             seaGlideExpended = false;
             backgroundRads = 0;
             fixedRadiation = 0;
+
+            cueTime = 0;
+            cueKey = "";
+        }
+
+
+        public void setCue (string key, float delay)
+        {
+            cueKey = key;
+            cueTime = DayNightCycle.main.timePassedAsFloat + delay;
         }
     }
 
@@ -107,19 +121,67 @@ namespace DeathRun.Patchers
 
 
     /**
+     * This zany patch gets a handle for the normal unlock sound
+     */
+    [HarmonyPatch(typeof(KnownTech))]
+    [HarmonyPatch("Initialize")]
+    public class KnownTechInitPatcher
+    {
+        public static bool initialized = false;
+        static public FMODAsset UnlockSound = null;
+
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (initialized) return;
+
+            initialized = true;
+
+            if (KnownTech.analysisTech != null)
+            {
+                foreach (KnownTech.AnalysisTech tech in KnownTech.analysisTech)
+                {
+                    if (tech == null) continue;
+                    if (tech.unlockSound != null && tech.techType == TechType.BloodOil)
+                    {
+                        UnlockSound = tech.unlockSound;
+                    }
+                }
+            }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(KnownTech))]
+    [HarmonyPatch("Deinitialize")]
+    public class KnownTechDeInitPatcher
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            KnownTechInitPatcher.initialized = false;
+        }
+    }
+
+
+
+
+    /**
      * Player.Awake -- our patch changes the "tooltip" and "encyclopedia" entries for existing items, in order to enhance them with our own
      * mod-related tooltip info.
      */
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("Awake")]
     internal class PlayerAwakePatcher
-    {
+    {        
         /**
          * Encyclopedia entries need to go in the prefix, because SMLHelper's EncyclopediaHandler runs in a Player postfix too.
          */
         [HarmonyPrefix]
         public static bool Prefix ()
         {
+            //List<KnownTech.AnalysisTech> analysisTech = KnownTech.analysisTech;
+
             PDAEncyclopedia.EntryData[] entryData = new PDAEncyclopedia.EntryData[] {
                 new PDAEncyclopedia.EntryData
                 {
@@ -164,8 +226,11 @@ namespace DeathRun.Patchers
                 new PDAEncyclopedia.EntryData
                 {
                     key = "FilterChip", nodes = new string[] { "Tech", "Equipment" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "DecoModule", nodes = new string[] { "Tech", "Vehicles" }
                 }
-
             };
 
             foreach (PDAEncyclopedia.EntryData entry in entryData)
@@ -227,6 +292,11 @@ namespace DeathRun.Patchers
             LanguageHandler.SetLanguageLine("Ency_FilterChip", "Integrated Filter Chip");
             LanguageHandler.SetLanguageLine("EncyDesc_FilterChip", "Provides bloodstream filtering render surface air breathable. Comes with a free Compass.");
 
+            LanguageHandler.SetLanguageLine("Ency_DecoModule", "Nano Decompression Module");
+            LanguageHandler.SetLanguageLine("EncyDesc_DecoModule", "Purges nitrogen from the pilot's bloodstream, and reduces the energy costs for exiting the vehicle. Can be stacked for additional improvement.");
+
+            LanguageHandler.SetLanguageLine("DecoModule_DiscoverMessage", "VEHICLE UPGRADE UNLOCKED");
+
             return true;
         }
 
@@ -238,72 +308,116 @@ namespace DeathRun.Patchers
 
             // First aid kit -- Nitrogen effects
             string original = Language.main.Get("Tooltip_FirstAidKit");
-            string updated = original + " Also cleans nitrogen from the bloodstream to prevent 'The Bends'.";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.FirstAidKit, updated);
+            string add = " Also cleans nitrogen from the bloodstream to prevent 'The Bends'.";
+            string updated;
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.FirstAidKit, updated);
+            }
 
             // Pipe! 
             original = Language.main.Get("Tooltip_Pipe");
-            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. Thus, 'Safe Depth' will decrease more quickly when breathing at a pipe.";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.Pipe, updated);
+            add = " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. Thus, 'Safe Depth' will decrease more quickly when breathing at a pipe.";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.Pipe, updated);
+            }
 
             // Floating Air Pump
             original = Language.main.Get("Tooltip_PipeSurfaceFloater");
-            updated = original + " Renders surface air BREATHABLE. Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.PipeSurfaceFloater, updated);
+            add = " Renders surface air BREATHABLE. Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.PipeSurfaceFloater, updated);
+            }
 
             // Base Air Pump
             original = Language.main.Get("Tooltip_PipeSurfaceFloater");
-            updated = original + " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.BasePipeConnector, updated);
+            add = " Supplies 'trimix' or 'nitrox' as appropriate to help clean nitrogen from the bloodstream. ";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.BasePipeConnector, updated);
+            }
 
             // Boomerang
             original = Language.main.Get("Tooltip_Boomerang");
-            updated = original + " Seems to have unusual nitrogen-filtering blood chemistry.";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.Boomerang, updated);
+            add = " Seems to have unusual nitrogen-filtering blood chemistry.";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.Boomerang, updated);
+            }
 
             // Lava Boomerang
             original = Language.main.Get("Tooltip_LavaBoomerang");
-            updated = original + " Seems to have unusual nitrogen-filtering blood chemistry.";
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.LavaBoomerang, updated);
+            add = " Seems to have unusual nitrogen-filtering blood chemistry.";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.LavaBoomerang, updated);
+            }
 
             // Reinforced Dive Suit - personal depth limit
             original = Language.main.Get("Tooltip_ReinforcedDiveSuit");
-            if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+            if (!original.Contains("Personal diving"))
             {
-                updated = original + " Personal depth limit 800m.";
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    updated = original + " Personal diving depth limit 800m.";
+                }
+                else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    updated = original + " Personal diving depth unlimited.";
+                } else
+                {
+                    updated = original;
+                }
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.ReinforcedDiveSuit, updated);
             }
-            else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
-            {
-                updated = original + " Personal diving depth unlimited.";
-            }
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.ReinforcedDiveSuit, updated);
 
             // Radiation Suit - personal depth limit
             original = Language.main.Get("Tooltip_RadiationSuit");
-            if (!Config.NORMAL.Equals(DeathRun.config.personalCrushDepth))
-            {
-                updated = original + " Personal depth limit 500m.";
+            add = " Personal depth limit 500m.";
+            if (!original.Contains(add)) {
+                if (!Config.NORMAL.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    updated = original + add;
+                    LanguageHandler.Main.SetTechTypeTooltip(TechType.RadiationSuit, updated);
+                }
             }
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.RadiationSuit, updated);
 
             // StillSuit - personal depth limit
             original = Language.main.Get("Tooltip_Stillsuit");
-            if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+            if (!original.Contains("Personal depth"))
             {
-                updated = original + " Personal depth limit 800m.";
+                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    updated = original + " Personal depth limit 800m.";
+                }
+                else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
+                {
+                    updated = original + " Personal depth limit 1300m.";
+                } else
+                {
+                    updated = original;
+                }
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.Stillsuit, updated);
             }
-            else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
-            {
-                updated = original + " Personal depth limit 1300m.";
-            }
-            LanguageHandler.Main.SetTechTypeTooltip(TechType.Stillsuit, updated);
 
             // Habitat Builder if we're doing underwater explosions
             if (!Config.NORMAL.Equals(DeathRun.config.explodeDepth) || !Config.NORMAL.Equals(DeathRun.config.radiationDepth))
             {
                 original = Language.main.Get("Tooltip_Builder");
-                updated = original + " Build DEEP if you're expecting any big explosions or radiation!";
-                LanguageHandler.Main.SetTechTypeTooltip(TechType.Builder, updated);
+                add = " Build DEEP if you're expecting any big explosions or radiation!";
+                if (!original.Contains(add))
+                {
+                    updated = original + add;
+                    LanguageHandler.Main.SetTechTypeTooltip(TechType.Builder, updated);
+                }
             }
 
             if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
@@ -318,6 +432,14 @@ namespace DeathRun.Patchers
             // Update Escape pod "status screen text" for new situation
             // ... post-secondary-system fix
             LanguageHandler.SetLanguageLine("IntroEscapePod4Header", "CONDITION YELLOW");
+
+            original = Language.main.Get("Tooltip_VehicleArmorPlating");
+            add = " REDUCES 'EXTRA' DEATH RUN DAMAGE FROM CREATURES.";
+            if (!original.Contains(add))
+            {
+                updated = original + add;
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.VehicleArmorPlating, updated);
+            }
 
             // Forces the language handler to restart with our updates
             Language.main.SetCurrentLanguage(Language.main.GetCurrentLanguage());
@@ -406,6 +528,28 @@ namespace DeathRun.Patchers
             if ((DeathRun.saveData.playerSave.timeOfDeath > 0) && ((DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.timeOfDeath < 200))) 
             {
                 doRespawnMessages();
+            }
+
+            // Delayed encyclopedia entries
+            if ((DeathRun.saveData.playerSave.cueTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.playerSave.cueTime))
+            {
+                if (!"".Equals(DeathRun.saveData.playerSave.cueKey))
+                {
+                    PDAEncyclopedia.Add(DeathRun.saveData.playerSave.cueKey, true);
+
+                    if (KnownTechInitPatcher.UnlockSound != null)
+                    {
+                        try
+                        {
+                            PDASounds.queue.PlayQueued(KnownTechInitPatcher.UnlockSound);
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.LogException(exception);
+                        }
+                    }
+                }
+                DeathRun.saveData.playerSave.cueTime = 0;
             }
         }
 
@@ -836,6 +980,23 @@ namespace DeathRun.Patchers
             else
             {
                 return;
+            }
+
+            int deco = vehicle.modules.GetCount(DeathRun.decoModule.TechType);
+            if (deco > 2)
+            {
+                energyCost = 0;
+            }
+            else
+            {
+                for (int dec = 0; dec < deco; dec++)
+                {
+                    energyCost /= 2;
+                    if (energyCost < 1)
+                    {
+                        return;
+                    }
+                }
             }
 
             if (energyCost > 0)
