@@ -1,4 +1,4 @@
-﻿DEATH RUN - 2.1.0 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 2.1.1 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -19,6 +19,7 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 2.1.1 - My earlier adjustment to Water Filtration balance didn't take, so have NOW fixed :)
 • 2.1.0 - "Decompression Module" vehicle upgrade for Seamoth/Prawn lowers exit cost & speeds bends recovery
 • 2.1.0 - "Decompression Module" unlocks when you scan "The Big Alien Skull" or completely unlock Cyclops
 • 2.1.0 - In case you've already scanned the big skull, you can also scan a Ghost Ray in same "room".

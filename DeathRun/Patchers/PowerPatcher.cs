@@ -111,8 +111,7 @@ namespace DeathRun.Patchers
                     amount *= 3;
                 }
             }
-            else if (isBase ||
-                     (DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore /* || DeathRun.filterSemaphore */))
+            else if ((DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore /* || DeathRun.filterSemaphore */))
             {
                 if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
                 {
@@ -123,6 +122,11 @@ namespace DeathRun.Patchers
                     amount *= 2;
                 }
             }
+
+            //if (DeathRun.filterSemaphore)
+            //{
+            //    ErrorMessage.AddMessage("Filtering " + amount + "  isBase=" + isBase + "   charging=" + DeathRun.chargingSemaphore + "  Crafting=" + DeathRun.craftingSemaphore + "   Scanner="+DeathRun.scannerSemaphore);
+            //}
 
             return amount;
         }
