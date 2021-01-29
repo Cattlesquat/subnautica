@@ -111,7 +111,10 @@
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\AggressionPatcher.cs" />
+    <Compile Include="Patchers\KnifePatcher.cs" />
     <Compile Include="Patchers\CompassPatcher.cs" />
+    <Compile Include="Patchers\GrowingPlantPatcher.cs" />
+    <Compile Include="Patchers\FoodPatcher.cs" />
     <Compile Include="Patchers\SeaglidePatcher.cs" />
     <Compile Include="Patchers\BatteryPatcher.cs" />
     <Compile Include="Patchers\CrushDepthPatcher.cs" />

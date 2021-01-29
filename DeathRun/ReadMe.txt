@@ -1,4 +1,4 @@
-﻿DEATH RUN - 2.1.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 2.2.0 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -18,6 +18,14 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Power costs much steeper
 • Vehicles and the Habitat Builder much more expensive
 
+-------------------------------------------------------------------------------------------------------------
+• 2.2.0 - Integrated Filter Chip now purges nitrogen while you're inside a base
+• 2.2.0 - Worse-than-DeathRun "Challenge" option for Radiation to go to 200m implemented
+• 2.2.0 - Challenge options for Filter Pump (to not work "in" the Aurora, or optionally "near" it)
+• 2.2.0 - Challenge options farming (growing plants) to be 3x or 6x slower
+• 2.2.0 - Challenge options "Vegan" and "Vegetarian"
+• 2.2.0 - Challenge option for "Nonviolent" (knife does no damage - only collects samples where relevant)
+• 2.2.0 - Better unlock messages for upgraded dive suits
 -------------------------------------------------------------------------------------------------------------
 • 2.1.1 - My earlier adjustment to Water Filtration balance didn't take, so have NOW fixed :)
 • 2.1.0 - "Decompression Module" vehicle upgrade for Seamoth/Prawn lowers exit cost & speeds bends recovery

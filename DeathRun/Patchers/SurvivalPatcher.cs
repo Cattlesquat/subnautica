@@ -80,6 +80,30 @@ namespace DeathRun.Patchers
     {
         static float ticksNotice = 0;
 
+        [HarmonyPrefix]
+        public static bool Prefix(Survival __instance, GameObject useObj)
+        {
+            if (useObj != null)
+            {
+                Eatable component = useObj.GetComponent<Eatable>();
+                if (component != null)
+                {
+                    if (component.GetFoodValue() == -25f)
+                    {
+                        if (Config.FOOD_VEGAN.Equals(DeathRun.config.foodChallenge))
+                        {
+                            DeathRunUtils.CenterMessage("Vegan Challenge: Negative Food Value!", 5);
+                        }
+                        else if (Config.FOOD_VEGETARIAN.Equals(DeathRun.config.foodChallenge))
+                        {
+                            DeathRunUtils.CenterMessage("Vegetarian Challenge: Negative Food Value!", 5);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         [HarmonyPostfix]
         public static void Postfix(Survival __instance, GameObject useObj, bool __result)
         {

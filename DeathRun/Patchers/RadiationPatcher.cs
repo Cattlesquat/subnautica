@@ -222,6 +222,42 @@ namespace DeathRun.Patchers
         }
     }
 
+    [HarmonyPatch(typeof(PipeSurfaceFloater))]
+    [HarmonyPatch("GetProvidesOxygen")]
+    public class PumpPatcher
+    {
+        /// Prevent PipeSurfaceFloater from providing oxygen when in close range
+        [HarmonyPrefix]
+        public static bool GetProvidesOxygen(PipeSurfaceFloater __instance, ref bool __result)
+        {
+            if (Config.FILTER_ANYWHERE.Equals(DeathRun.config.filterPumpRules))
+            {
+                return true;
+            }
+
+            if (Config.FILTER_RADIATION.Equals(DeathRun.config.filterPumpRules))
+            {
+                if (!RadiationUtils.isInShipsRadiation(__instance.floater.transform))
+                {
+                    // Not in ship's hotzone radius (fairly big -- where radiation would normally be in vanilla game)
+                    return true;
+                }
+            } else
+            {
+                // Not physically inside the Aurora
+                string LDBiome = RadiationUtils.getPlayerBiome();
+                if (!LDBiome.Contains("CrashedShip"))
+                {
+                    return true;
+                }
+            }
+
+            // Don't let it provide oxygen
+            __result = false;
+            return false;
+        }
+    }
+
 
     /**
      * RadiationFX -- shows at least some of the radiation effects even when player is immune.

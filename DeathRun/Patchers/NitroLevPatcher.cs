@@ -195,6 +195,13 @@ namespace DeathRun.Patchers
                         }
                     }
 
+                    if (isInBase || Player.main.GetCurrentSub()?.isCyclops == true)
+                    {
+                        if (Inventory.main.equipment.GetCount(DeathRun.filterChip.TechType) > 0) {
+                            baselineSafe = 0;
+                        }
+                    }
+
                     // Better dissipation when we're breathing through a pipe, or in a vehicle/base, or riding Seaglide, or wearing Rebreather
                     if ((baselineSafe > 0) && (DeathRun.saveData.nitroSave.atPipe || !isSwimming || isSeaglide || (headSlot == TechType.Rebreather))) 
                     {

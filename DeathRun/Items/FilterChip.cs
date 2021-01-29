@@ -18,7 +18,7 @@ namespace DeathRun.Items
         public FilterChip() : base(
             "FilterChip",
             "Integrated Air Filter",
-            "Makes surface air breathable. Comes with a free Compass.")
+            "Makes surface air breathable and purges nitrogen from the bloodstream while indoors. Comes with a free Compass.")
         {
         }
 

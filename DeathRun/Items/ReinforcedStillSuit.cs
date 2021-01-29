@@ -28,7 +28,7 @@ namespace DeathRun.Items
                 {
                     new Ingredient(TechType.Stillsuit, 1),
                     new Ingredient(DummySuitItems.RiverEelScaleID, 2),
-                    new Ingredient(TechType.AramidFibers, 1),
+                    new Ingredient(TechType.AramidFibers, 2),
                 }
             };
         }

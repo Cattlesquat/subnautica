@@ -230,6 +230,22 @@ namespace DeathRun.Patchers
                 new PDAEncyclopedia.EntryData
                 {
                     key = "DecoModule", nodes = new string[] { "Tech", "Vehicles" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "ReinforcedSuit2", nodes = new string[] { "Tech", "Equipment" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "ReinforcedSuit3", nodes = new string[] { "Tech", "Equipment" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "ReinforcedStillSuit", nodes = new string[] { "Tech", "Equipment" }
+                },
+                new PDAEncyclopedia.EntryData
+                {
+                    key = "ChemosynthesisTank", nodes = new string[] { "Tech", "Equipment" }
                 }
             };
 
@@ -290,10 +306,22 @@ namespace DeathRun.Patchers
             LanguageHandler.Main.SetLanguageLine("EncyDesc_ReinforcedSuit", updated);
 
             LanguageHandler.SetLanguageLine("Ency_FilterChip", "Integrated Filter Chip");
-            LanguageHandler.SetLanguageLine("EncyDesc_FilterChip", "Provides bloodstream filtering render surface air breathable. Comes with a free Compass.");
+            LanguageHandler.SetLanguageLine("EncyDesc_FilterChip", "Provides bloodstream filtering render surface air breathable, and purges nitrogen while wearer is indoors. Comes with a free Compass.");
 
             LanguageHandler.SetLanguageLine("Ency_DecoModule", "Nano Decompression Module");
             LanguageHandler.SetLanguageLine("EncyDesc_DecoModule", "Purges nitrogen from the pilot's bloodstream, and reduces the energy costs for exiting the vehicle. Can be stacked for additional improvement.");
+
+            LanguageHandler.SetLanguageLine("Ency_ReinforcedSuit2", "Reinforced Dive Suit, Mark 2");
+            LanguageHandler.SetLanguageLine("EncyDesc_ReinforcedSuit2", "Allows diving to 1300m, and protects wearer against temperatures up to 75C.");
+
+            LanguageHandler.SetLanguageLine("Ency_ReinforcedSuit3", "Reinforced Dive Suit, Mark 3");
+            LanguageHandler.SetLanguageLine("EncyDesc_ReinforcedSuit3", "Allows unlimited dive depth and protects wearer against temperatures up to 90C.");
+
+            LanguageHandler.SetLanguageLine("Ency_ReinforcedStillSuit", "Reinforced Stillsuit");
+            LanguageHandler.SetLanguageLine("EncyDesc_ReinforcedStillSuit", "An upgraded stillsuit capable of protecting the wearer at depths up to 1300m and from temperatures up to 70C.");
+
+            LanguageHandler.SetLanguageLine("Ency_ChemosynthesisTank", "Chemosynthesis Tank");
+            LanguageHandler.SetLanguageLine("EncyDesc_ChemosynthesisTank", "A lightweight air tank housing microorganisms which produce oxygen under high temperatures.");
 
             LanguageHandler.SetLanguageLine("DecoModule_DiscoverMessage", "VEHICLE UPGRADE UNLOCKED");
 

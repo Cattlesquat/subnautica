@@ -69,33 +69,37 @@ namespace DeathRun.Patchers
         // Code here is adapted from Kylinator25's Alien Rifle unlock patch https://github.com/kylinator25/SubnauticaMods/blob/master/AlienRifle/PDAScannerUnlockPatch.cs
         public static bool Prefix(PDAScanner.EntryData entryData)
         {
-            if (entryData.key == TechType.SpineEel)
+            if (entryData.key == TechType.SpineEel) // River prowler
             {
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedStillSuit))
                 {
-                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedStillSuit);
-                    ErrorMessage.AddMessage("Added blueprint for reinforced still suit to database");
+                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedStillSuit, true);
+                    DeathRun.saveData.playerSave.setCue("ReinforcedStillSuit", 10);
+                    //ErrorMessage.AddMessage("Added blueprint for reinforced still suit to database");
                 }
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedSuit2ID))
                 {
-                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit2ID);
-                    ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 2 to database");
+                    DeathRun.saveData.playerSave.setCue("ReinforcedSuit2", 5);
+                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit2ID, true);
+                    //ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 2 to database");
                 }
             }
             if (entryData.key == TechType.LavaLizard)
             {
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedSuit3ID))
                 {
-                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit3ID);
-                    ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 3 to database");
+                    DeathRun.saveData.playerSave.setCue("ReinforcedSuit3", 5);
+                    KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit3ID, true);
+                    //ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 3 to database");
                 }
             }
             if (entryData.key == TechType.LavaLarva && DeathRun.config.enableSpecialtyTanks)
             {
                 if (!KnownTech.Contains(O2TanksCore.ChemosynthesisTankID))
                 {
-                    KnownTech.Add(O2TanksCore.ChemosynthesisTankID);
-                    ErrorMessage.AddMessage("Added blueprint for chemosynthesis oxygen tank to database");
+                    DeathRun.saveData.playerSave.setCue("ChemosynthesisTank", 5);
+                    KnownTech.Add(O2TanksCore.ChemosynthesisTankID, true);
+                    //ErrorMessage.AddMessage("Added blueprint for chemosynthesis oxygen tank to database");
                 }
             }
 

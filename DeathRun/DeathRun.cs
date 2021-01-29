@@ -415,7 +415,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.TitaniumIngot, 1),
                                             new Ingredient(TechType.Magnetite, 2),
-                                            new Ingredient(TechType.AluminumOxide, 2),
+                                            new Ingredient(TechType.Aerogel, 3),
                                             new Ingredient(TechType.EnameledGlass, 1)
                                         }
                                     });
@@ -428,7 +428,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.VehicleHullModule1, 1),
                                             new Ingredient(TechType.PlasteelIngot, 1),
-                                            new Ingredient(TechType.Aerogel, 3),
+                                            new Ingredient(TechType.Nickel, 3),
                                             new Ingredient(TechType.EnameledGlass, 1)
                                         }
                                     });
@@ -470,9 +470,8 @@ namespace DeathRun
                         new Ingredient(TechType.Aerogel, 2),
                         new Ingredient(TechType.EnameledGlass, 2),
                         new Ingredient(TechType.Diamond, 2),
-                        new Ingredient(TechType.Lead, 2),
                         new Ingredient(TechType.Sulphur, 3),
-                        new Ingredient(TechType.Nickel, 1),
+                        new Ingredient(TechType.Nickel, 3),
                         new Ingredient(TechType.Lubricant, 3)
                     };
                 }
@@ -484,8 +483,8 @@ namespace DeathRun
                         new Ingredient(TechType.Aerogel, 2),
                         new Ingredient(TechType.EnameledGlass, 1),
                         new Ingredient(TechType.Diamond, 2),
-                        new Ingredient(TechType.Lead, 4),
                         new Ingredient(TechType.Sulphur, 2),
+                        new Ingredient(TechType.Nickel, 2),
                         new Ingredient(TechType.Lubricant, 2)
                     };
                 }
@@ -510,6 +509,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.PlasteelIngot, 1),
                                             new Ingredient(TechType.Nickel, 3),
+                                            new Ingredient(TechType.Sulphur, 3),
                                             new Ingredient(TechType.Kyanite, 1)
                                         }
                                     });
@@ -538,9 +538,9 @@ namespace DeathRun
                         new Ingredient(TechType.EnameledGlass, 3),
                         new Ingredient(TechType.Lubricant, 4),
                         new Ingredient(TechType.AdvancedWiringKit, 1),
-                        new Ingredient(TechType.Lead, 3),
                         new Ingredient(TechType.UraniniteCrystal, 3),
-                        new Ingredient(TechType.Nickel, 1),
+                        new Ingredient(TechType.Sulphur, 3),
+                        new Ingredient(TechType.Nickel, 3),
                     };
                 }
                 else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
@@ -553,7 +553,7 @@ namespace DeathRun
                         new Ingredient(TechType.AdvancedWiringKit, 1),
                         new Ingredient(TechType.Lead, 4),
                         new Ingredient(TechType.UraniniteCrystal, 2),
-                        new Ingredient(TechType.Sulphur, 1)
+                        new Ingredient(TechType.Nickel, 2)
                     };
                 }
                 if (ingredients != null)
@@ -590,7 +590,7 @@ namespace DeathRun
                                         {
                                             new Ingredient(TechType.CyclopsHullModule1, 1),
                                             new Ingredient(TechType.PlasteelIngot, 1),
-                                            new Ingredient(TechType.Nickel, 3),
+                                            new Ingredient(TechType.Sulphur, 3),
                                             new Ingredient(TechType.Kyanite, 1),
                                         }
                                     });
@@ -602,6 +602,7 @@ namespace DeathRun
                                         Ingredients = new List<Ingredient>
                                         {
                                             new Ingredient(TechType.CyclopsHullModule2, 1),
+                                            new Ingredient(TechType.Sulphur, 3),
                                             new Ingredient(TechType.Nickel, 3),
                                             new Ingredient(TechType.Kyanite, 5),
                                         }
@@ -613,6 +614,7 @@ namespace DeathRun
 
                 if (Config.DEATHRUN.Equals(DeathRun.config.builderCosts))
                 {
+                    // Habitat Builder
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 2),
@@ -627,10 +629,11 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Stasis Rifle
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 1),
-                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.Magnetite, 4),
                             new Ingredient(TechType.UraniniteCrystal, 2),
                             new Ingredient(TechType.Benzene, 1),
                         };
@@ -640,6 +643,7 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Propulsion Cannon
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.WiringKit, 1),
@@ -652,6 +656,16 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Repulsion Cannon
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.PropulsionCannon, 1),
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.Magnetite, 4),
+                        };
+                    techChanges.Add(TechType.RepulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // First Aid Cabinet
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 1),
@@ -663,6 +677,7 @@ namespace DeathRun
                 }
                 else if (Config.HARD.Equals(DeathRun.config.builderCosts))
                 {
+                    // Habitat Builder
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 2),
@@ -676,6 +691,7 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Stasis Rifle
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 1),
@@ -688,6 +704,7 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.StasisRifle, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Propulsion Cannon
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.WiringKit, 1),
@@ -700,6 +717,16 @@ namespace DeathRun
                     }
                     techChanges.Add(TechType.PropulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
 
+                    // Repulsion Cannon
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.PropulsionCannon, 1),
+                            new Ingredient(TechType.ComputerChip, 1),
+                            new Ingredient(TechType.Magnetite, 3),
+                        };
+                    techChanges.Add(TechType.RepulsionCannon, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // First Aid Cabinet
                     ingredients = new List<Ingredient>
                         {
                             new Ingredient(TechType.ComputerChip, 1),
@@ -708,7 +735,6 @@ namespace DeathRun
                             new Ingredient(TechType.Titanium, 1)
                         };
                     techChanges.Add(TechType.MedicalCabinet, new TechData { craftAmount = 1, Ingredients = ingredients });
-
                 }
 
                 CattleLogger.Message("Scans Required");

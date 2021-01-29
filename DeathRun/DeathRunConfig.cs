@@ -55,8 +55,24 @@ namespace DeathRun
         public const string DEATH_VEHICLES_2 = "Death Run (alternate costs)";
         public const string HARD_VEHICLES = "Hard (unusual costs)";
 
+        public const string RADIATION_WORSE = "Apocalypse (200m)";
         public const string RADIATION_DEATHRUN = "Death Run (60m)";
         public const string RADIATION_HARD = "Hard (30m)";
+
+        public const string FILTER_RADIATION = "Challenge - Not NEAR Aurora";
+        public const string FILTER_AURORA = "Challenge - Not INSIDE Aurora";
+        public const string FILTER_ANYWHERE = "Works Anywhere";
+
+        public const string FOOD_VEGAN = "Vegan (no fish or nutrient blocks)";
+        public const string FOOD_VEGETARIAN = "Vegetarian (no fish)";
+        public const string FOOD_OMNIVORE = "Disabled";
+
+        public const string FARMING_VERY_SLOW = "Very Slow (1/6 speed)";
+        public const string FARMING_SLOW = "Very Slow (1/3 speed)";
+        public const string FARMING_NORMAL = "Disabled";
+
+        public const string NONVIOLENT = "Nonviolent (no knife damage)";
+        public const string VIOLENT = "Disabled";
 
         public const string EXPLOSION_DEATHRUN = "Death Run (100m)";
         public const string EXPLOSION_HARD = "Hard (50m)";
@@ -86,7 +102,7 @@ namespace DeathRun
         [Choice("Surface Air", new string[] { POISONED, IRRADIATED, BREATHABLE }), OnChange(nameof(ChangedChoice))]
         public string surfaceAir = POISONED;
 
-        [Choice("Radiation", new string[] { RADIATION_DEATHRUN, RADIATION_HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        [Choice("Radiation", new string[] { RADIATION_WORSE, RADIATION_DEATHRUN, RADIATION_HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string radiationDepth = RADIATION_DEATHRUN;
 
         [Choice("Nitrogen and the Bends", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
@@ -163,6 +179,18 @@ namespace DeathRun
 
         [Choice("Radiation FX if Immune (Optional)", new string[] { FX_CHERNOBYL, FX_REMINDER, FX_NORMAL }), OnChange(nameof(ChangedChoice))]
         public string radiationFX = FX_CHERNOBYL;
+
+        [Choice("Filter Pump (Optional)", new string[] { FILTER_RADIATION, FILTER_AURORA, FILTER_ANYWHERE }), OnChange(nameof(ChangedChoice))]
+        public string filterPumpRules = FILTER_ANYWHERE;
+
+        [Choice("Nonviolent Challenge (Optional)", new string[] { NONVIOLENT, VIOLENT }), OnChange(nameof(ChangedChoice))]
+        public string nonViolent = VIOLENT;
+
+        [Choice("Farming Challenge (Optional)", new string[] { FARMING_VERY_SLOW, FARMING_SLOW, FARMING_NORMAL }), OnChange(nameof(ChangedChoice))]
+        public string farmingChallenge = FARMING_NORMAL;
+
+        [Choice("Food Challenge (Optional)", new string[] { FOOD_VEGAN, FOOD_VEGETARIAN, FOOD_OMNIVORE }), OnChange(nameof(ChangedChoice))]
+        public string foodChallenge = FOOD_OMNIVORE;
 
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
         public string islandFood = ALWAYS;
@@ -295,7 +323,7 @@ namespace DeathRun
                 count += 1;
             }
 
-            if (RADIATION_DEATHRUN.Equals(radiationDepth))
+            if (RADIATION_DEATHRUN.Equals(radiationDepth) || RADIATION_WORSE.Equals(radiationDepth))
             {
                 count += 2;
             } else if (RADIATION_HARD.Equals(radiationDepth))
@@ -370,6 +398,35 @@ namespace DeathRun
             if (FX_CHERNOBYL.Equals(radiationFX))
             {
                 bonuses++;
+            }
+
+            if (RADIATION_WORSE.Equals(radiationDepth))
+            {
+                bonuses++;
+            }
+
+            if (FILTER_RADIATION.Equals(filterPumpRules))
+            {
+                bonuses += 2;
+            } else if (FILTER_AURORA.Equals(filterPumpRules))
+            {
+                bonuses++;
+            }
+
+            if (FOOD_VEGAN.Equals(foodChallenge))
+            {
+                bonuses += 1;
+            } else if (FOOD_VEGETARIAN.Equals(foodChallenge))
+            {
+                bonuses += 1;
+            }
+
+            if (FARMING_VERY_SLOW.Equals(farmingChallenge))
+            {
+                bonuses += 1;
+            } else if (FARMING_SLOW.Equals(farmingChallenge))
+            {
+                bonuses += 1;
             }
 
             if (MURK_DARK.Equals(murkiness))

@@ -11,7 +11,7 @@ namespace DeathRun.Items
     class ReinforcedSuitMark3 : ReinforcedSuitsCore
     {
         public ReinforcedSuitMark3()
-            : base(classID: "reinforcedsuit3", friendlyName: "Reinforced Dive Suit Mark 3", description: "An upgraded dive suit capable of protecting the user at all depths and provides protection up to 90C.")
+            : base(classID: "reinforcedsuit3", friendlyName: "Reinforced Dive Suit Mark 3", description: "An upgraded dive suit capable of protecting the user at all depths and providing heat protection up to 90C.")
         {
             OnFinishedPatching += SetStaticTechType;
         }
@@ -27,6 +27,7 @@ namespace DeathRun.Items
                 Ingredients = new List<Ingredient>(3)
                 {
                     new Ingredient(ReinforcedSuit2ID, 1),
+                    new Ingredient(TechType.AramidFibers, 1),
                     new Ingredient(TechType.Kyanite, 2),
                     new Ingredient(DummySuitItems.LavaLizardScaleID, 2),
                 }

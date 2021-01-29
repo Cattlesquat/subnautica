@@ -11,7 +11,7 @@ namespace DeathRun.Items
     class PhotosynthesisSmallTank : O2TanksCore
     {
         public PhotosynthesisSmallTank()
-            : base(classID: "photosynthesissmalltank", friendlyName: "Small Photosynthesis Tank", description: "An O2 tank that houses microorganisms that produce oxygen in sunlight.")
+            : base(classID: "photosynthesissmalltank", friendlyName: "Small Photosynthesis Tank", description: "An air tank housing microorganisms which produce oxygen when exposed to sunlight.")
         {
             OnFinishedPatching += SetStaticTechType;
         }
