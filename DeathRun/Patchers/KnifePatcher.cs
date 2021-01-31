@@ -41,7 +41,15 @@ namespace DeathRun.Patchers
 					if (liveMixin)
 					{
 						bool wasAlive = liveMixin.IsAlive();
-						//liveMixin.TakeDamage(__instance.damage, position, __instance.damageType, null);
+						TechType t = CraftData.GetTechType(gameObject);
+						if ((t == TechType.GenericJeweledDisk) ||
+							(t == TechType.BlueJeweledDisk) ||
+							(t == TechType.GreenJeweledDisk) ||
+							(t == TechType.PurpleJeweledDisk) ||
+							(t == TechType.RedJeweledDisk))
+						{
+							liveMixin.TakeDamage(__instance.damage, position, __instance.damageType, null);
+						}
 						__instance.GiveResourceOnDamage(gameObject, liveMixin.IsAlive(), wasAlive);
 					}
 					global::Utils.PlayFMODAsset(__instance.attackSound, __instance.transform, 20f);
