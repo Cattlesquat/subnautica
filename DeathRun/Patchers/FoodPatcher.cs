@@ -24,16 +24,27 @@ namespace DeathRun.Patchers
 
             TechType t = CraftData.GetTechType(__instance.gameObject);
 
-            if (Config.FOOD_VEGAN.Equals(DeathRun.config.foodChallenge))
+            if (Config.FOOD_VEGAN.Equals(DeathRun.config.foodChallenge) || Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
             {
                 if (t == TechType.NutrientBlock)
                 {
                     __result = -25f;
+                    return;
                 }
 
                 if (t == TechType.Snack1) 
                 {
-                    __result = -5f;
+                    __result = -25f;
+                    return;
+                }
+
+                if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                {
+                    if ((t == TechType.Snack2) || (t == TechType.Snack3))
+                    {
+                        __result = -25f;
+                        return;
+                    }
                 }
             }
 
@@ -52,7 +63,17 @@ namespace DeathRun.Patchers
                 (t == TechType.CookedHoopfish) || (t == TechType.Hoopfish) || (t == TechType.CuredHoopfish) ||
                 (t == TechType.CookedSpinefish) || (t == TechType.Spinefish) || (t == TechType.CuredSpinefish))
             {
-                __result = -25f;
+                if (!Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                {
+                    __result = -25f;
+                }                
+            }
+            else
+            {
+                if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge) && (__result > 0))
+                {
+                    __result = -25f;
+                }
             }
         }
     }

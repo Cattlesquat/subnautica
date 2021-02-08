@@ -97,6 +97,10 @@ namespace DeathRun.Patchers
                         else if (Config.FOOD_VEGETARIAN.Equals(DeathRun.config.foodChallenge))
                         {
                             DeathRunUtils.CenterMessage("Vegetarian Challenge: Negative Food Value!", 5);
+                        } 
+                        else if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                        {
+                            DeathRunUtils.CenterMessage("Pescatarian Challenge: Negative Food Value!", 5);
                         }
                     }
                 }

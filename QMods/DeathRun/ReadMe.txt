@@ -1,4 +1,4 @@
-﻿DEATH RUN - 2.2.1 - by Cattlesquat "standing on the shoulders of giants"
+﻿DEATH RUN - 2.2.2 - by Cattlesquat "standing on the shoulders of giants"
 
 Turns Subnautica into a "roguelike" where everything is harder and the only real question is how LONG you can survive.
 
@@ -19,6 +19,9 @@ Turns Subnautica into a "roguelike" where everything is harder and the only real
 • Vehicles and the Habitat Builder much more expensive
 
 -------------------------------------------------------------------------------------------------------------
+• 2.2.2 - "Worse than DeathRun" option added for Scans Required
+• 2.2.2 - "Pescatarian" diet challenge (fish ONLY) added
+• 2.2.2 - Cyclops fires more likely (depending on your Damage Taken setting)
 • 2.2.1 - Patched issue where "Nonviolent" knife couldn't cut Table Coral samples
 • 2.2.0 - Integrated Filter Chip now purges nitrogen while you're inside a base
 • 2.2.0 - Worse-than-DeathRun "Challenge" option for Radiation to go to 200m implemented

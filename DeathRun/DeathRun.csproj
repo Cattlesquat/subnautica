@@ -111,6 +111,7 @@
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
     <Compile Include="Patchers\AggressionPatcher.cs" />
+    <Compile Include="Patchers\FirePatcher.cs" />
     <Compile Include="Patchers\KnifePatcher.cs" />
     <Compile Include="Patchers\CompassPatcher.cs" />
     <Compile Include="Patchers\GrowingPlantPatcher.cs" />

@@ -92,7 +92,7 @@ namespace DeathRun
         public static void Patch()
         {
             CattleLogger.setModName(modName);
-            CattleLogger.PatchStart("1.9.9");
+            CattleLogger.PatchStart(DeathRunUtils.VERSION);
 
             try
             {
@@ -516,7 +516,6 @@ namespace DeathRun
                 }
 
 
-
                 // CYCLOPS
                 CattleLogger.Message("Cyclops");
                 ingredients = null;
@@ -538,8 +537,7 @@ namespace DeathRun
                         new Ingredient(TechType.EnameledGlass, 3),
                         new Ingredient(TechType.Lubricant, 4),
                         new Ingredient(TechType.AdvancedWiringKit, 1),
-                        new Ingredient(TechType.UraniniteCrystal, 3),
-                        new Ingredient(TechType.Sulphur, 3),
+                        new Ingredient(TechType.UraniniteCrystal, 6),
                         new Ingredient(TechType.Nickel, 3),
                     };
                 }
@@ -674,6 +672,44 @@ namespace DeathRun
                             new Ingredient(TechType.Titanium, 1)
                         };
                     techChanges.Add(TechType.MedicalCabinet, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Moonpool
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 2),
+                            new Ingredient(TechType.WiringKit, 2),
+                            new Ingredient(TechType.Lubricant, 2),
+                            new Ingredient(TechType.Lead, 4),
+                        };
+                    techChanges.Add(TechType.BaseMoonpool, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Bioreactor
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 1),
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.FiberMesh, 1),
+                            new Ingredient(TechType.Lubricant, 2),
+                        };
+                    techChanges.Add(TechType.BaseBioReactor, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Thermal Plant
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 1),
+                            new Ingredient(TechType.Magnetite, 3),
+                            new Ingredient(TechType.Aerogel, 2),
+                        };
+                    techChanges.Add(TechType.ThermalPlant, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Nuclear Reactor
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.PlasteelIngot, 2),
+                            new Ingredient(TechType.AdvancedWiringKit, 2),
+                            new Ingredient(TechType.Lead, 8),
+                        };
+                    techChanges.Add(TechType.BaseNuclearReactor, new TechData { craftAmount = 1, Ingredients = ingredients });
                 }
                 else if (Config.HARD.Equals(DeathRun.config.builderCosts))
                 {
@@ -687,6 +723,7 @@ namespace DeathRun
                         };
                     if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
                     {
+                        new Ingredient(TechType.WiringKit, 1),
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
                     techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
@@ -735,10 +772,76 @@ namespace DeathRun
                             new Ingredient(TechType.Titanium, 1)
                         };
                     techChanges.Add(TechType.MedicalCabinet, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+
+                    // Moonpool
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 1),
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.Lubricant, 1),
+                            new Ingredient(TechType.Lead, 3),
+                        };
+                    techChanges.Add(TechType.BaseMoonpool, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Bioreactor
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 1),
+                            new Ingredient(TechType.WiringKit, 1),
+                            new Ingredient(TechType.FiberMesh, 1),
+                            new Ingredient(TechType.Lubricant, 1),
+                        };
+                    techChanges.Add(TechType.BaseBioReactor, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Thermal Plant
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.TitaniumIngot, 1),
+                            new Ingredient(TechType.Magnetite, 2),
+                            new Ingredient(TechType.Aerogel, 1),
+                        };
+                    techChanges.Add(TechType.ThermalPlant, new TechData { craftAmount = 1, Ingredients = ingredients });
+
+                    // Nuclear Reactor
+                    ingredients = new List<Ingredient>
+                        {
+                            new Ingredient(TechType.PlasteelIngot, 1),
+                            new Ingredient(TechType.AdvancedWiringKit, 1),
+                            new Ingredient(TechType.Lead, 8),
+                        };
+                    techChanges.Add(TechType.BaseNuclearReactor, new TechData { craftAmount = 1, Ingredients = ingredients });
+
                 }
 
                 CattleLogger.Message("Scans Required");
-                if (Config.DEATHRUN.Equals(DeathRun.config.scansRequired))
+                if (Config.EXORBITANT.Equals(DeathRun.config.scansRequired))
+                {
+                    PDAHandler.EditFragmentsToScan(TechType.Seaglide, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.Seamoth, 20);
+                    PDAHandler.EditFragmentsToScan(TechType.ExosuitFragment, 8);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsBridgeFragment, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsDockingBayFragment, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsEngineFragment, 7);
+                    PDAHandler.EditFragmentsToScan(TechType.CyclopsHullFragment, 7);
+
+                    PDAHandler.EditFragmentsToScan(TechType.Beacon, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.Gravsphere, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.StasisRifle, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.PropulsionCannon, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutter, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.LaserCutterFragment, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.BatteryCharger, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerCellCharger, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.Constructor, 10);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseBioReactor, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseNuclearReactor, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.ThermalPlant, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMoonpool, 6);
+                    PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 4);
+                    PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 6);
+                }
+                else if (Config.DEATHRUN.Equals(DeathRun.config.scansRequired))
                 {
                     CattleLogger.Message("Scans Required: DeathRun");
 

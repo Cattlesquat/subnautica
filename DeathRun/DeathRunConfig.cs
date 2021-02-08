@@ -65,6 +65,7 @@ namespace DeathRun
 
         public const string FOOD_VEGAN = "Vegan (no fish or nutrient blocks)";
         public const string FOOD_VEGETARIAN = "Vegetarian (no fish)";
+        public const string FOOD_PESCATARIAN = "Radical Pescatarian (fish ONLY)";
         public const string FOOD_OMNIVORE = "Disabled";
 
         public const string FARMING_VERY_SLOW = "Very Slow (1/6 speed)";
@@ -132,7 +133,7 @@ namespace DeathRun
         [Choice("Habitat Builder", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string builderCosts = DEATHRUN;
 
-        [Choice("Scans Required", new string[] { DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
+        [Choice("Scans Required", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
         public string scansRequired = DEATHRUN;
 
         [Choice("Creature Aggression", new string[] { EXORBITANT, DEATHRUN, HARD, NORMAL }), OnChange(nameof(ChangedChoice))]
@@ -189,7 +190,7 @@ namespace DeathRun
         [Choice("Farming Challenge (Optional)", new string[] { FARMING_VERY_SLOW, FARMING_SLOW, FARMING_NORMAL }), OnChange(nameof(ChangedChoice))]
         public string farmingChallenge = FARMING_NORMAL;
 
-        [Choice("Food Challenge (Optional)", new string[] { FOOD_VEGAN, FOOD_VEGETARIAN, FOOD_OMNIVORE }), OnChange(nameof(ChangedChoice))]
+        [Choice("Food Challenge (Optional)", new string[] { FOOD_VEGAN, FOOD_VEGETARIAN, FOOD_PESCATARIAN, FOOD_OMNIVORE }), OnChange(nameof(ChangedChoice))]
         public string foodChallenge = FOOD_OMNIVORE;
 
         [Choice("Food From Island (Optional)", new string[] { ALWAYS, BEFORE_AND_AFTER, AFTER, NEVER })]
@@ -390,6 +391,11 @@ namespace DeathRun
                 bonuses += 2;
             }
 
+            if (EXORBITANT.Equals(scansRequired))
+            {
+                bonuses++;
+            }
+
             if (EXORBITANT.Equals(batteryCosts))
             {
                 bonuses++;
@@ -417,6 +423,9 @@ namespace DeathRun
             {
                 bonuses += 1;
             } else if (FOOD_VEGETARIAN.Equals(foodChallenge))
+            {
+                bonuses += 1;
+            } else if (FOOD_PESCATARIAN.Equals(foodChallenge))
             {
                 bonuses += 1;
             }

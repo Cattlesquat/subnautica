@@ -20,7 +20,7 @@ namespace DeathRun
 
     public class DeathRunUtils
     {
-        public const string VERSION = "2.2.1";
+        public const string VERSION = "2.2.2";
 
         public static CenterText[] centerMessages = new CenterText[] {
             new CenterText(250f, true),
