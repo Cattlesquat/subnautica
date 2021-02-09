@@ -723,7 +723,6 @@ namespace DeathRun
                         };
                     if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
                     {
-                        new Ingredient(TechType.WiringKit, 1),
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
                     techChanges.Add(TechType.Builder, new TechData { craftAmount = 1, Ingredients = ingredients });
