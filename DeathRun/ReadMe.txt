@@ -136,6 +136,8 @@ REQUIRED MODS::
 
 :: SETTINGS DETAILS ::
 
+(In all cases "Easy" setting disables that part of the mod and makes it like vanilla Subnautica)
+
 1. DAMAGE TAKEN - slight variance by source of damage, but w/in these bounds.
 	a. "No Way" - Damage x2 to x3. Respawn health 10%
 	b. "Death Run" - Damage x1.5 to x2. Respawn health 25%
@@ -305,24 +307,25 @@ REQUIRED MODS::
             After 20 minutes, you are "twice as attractive" to creatures, and creatures can see you from a bit further (2x for small creatures, 1.25x for big creatures)
             After 40 minutes, you are "3x as attractive" to creatures, but aggro range does not increase
 
-15. RADIATION FX IF IMMUNE
+15. START LOCATION
+        a. BASIC GAME - Life Pod starts exactly as in regular Subnautica (floats on surface, at a location determined randomly by the basic game)
+        b. RANDOM - Life Pod sinks to the bottom at a specially chosen random location. It will also be at a funny angle until you repair its secondary systems.
+        c. Special Locations - you can choose from among the specific sink-to-the-bottom locations - in this case everything will function the same as B apart from picking your specific start point
+
+16. RADIATION FX IF IMMUNE
         a. Aurora as Chernobyl - even while wearing a radiation suit, the green radiation FX will increase as you approach the Aurora and will be drastically increased inside the Aurora (until you repair it). The difficulty of seeing while reaching and repairing the reactor is the challenge.
         b. Mild Reminder - even while wearing a radiation suit, a mild green radiation FX will appear on the screen as a reminder, but it will not ramp up as you enter the Aurora
 
-16. FILTER PUMP
+17. FILTER PUMP
         a. Challenge - not NEAR Aurora -- the filter pump will not work for breathing when within the Aurora's normal radiation radius (does not include the extra permanent depth-based radiation)
         b. Challenge - not INSIDE Aurora -- the filter pump will not work for breathing while you are inside the Aurora (until you repair the radiation leaks)
         c. Works Anywhere - Filter pump works like normal, and can filter air for you even inside the irradiated Aurora
 
-17. NONVIOLENT CHALLENGE - the knife now does 0 damage. You can still theoretically kill things by crashing your vehicle into them, hurling them into walls, etc.
+18. NONVIOLENT CHALLENGE - the knife now does 0 damage. You can still theoretically kill things by crashing your vehicle into them, hurling them into walls, etc.
 
-18. FARMING CHALLENGE - plants grow either 1/6 or 1/3 speed, so it's harder to "farm" them
+19. FARMING CHALLENGE - plants grow either 1/6 or 1/3 speed, so it's harder to "farm" them
 
-19. FOOD CHALLENGE
+20. FOOD CHALLENGE
         a. Vegetarian Challenge - you can't eat fish, only plants & nutrient blocks
         b. Vegan Challenge - you can only eat plants, no nutrient blocks
         c. Radical Pescatarian Challenge - you can only eat fish, no plants or nutrient blocks
-
-
-
-
