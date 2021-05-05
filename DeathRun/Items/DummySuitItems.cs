@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Items
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;
@@ -56,7 +61,7 @@
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => RiverEelScaleID = this.TechType;
     }
@@ -71,7 +76,7 @@
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => LavaLizardScaleID = this.TechType;
     }
@@ -86,7 +91,7 @@
 
         protected override TechType BaseType { get; } = TechType.StalkerTooth;
 
-        public override string AssetsFolder { get; } = @"NitrogenMod/Assets";
+        public override string AssetsFolder { get; } = @"DeathRun/Assets";
 
         private void SetStaticTechType() => ThermoBacteriaID = this.TechType;
     }

@@ -1,4 +1,9 @@
-﻿namespace DeathRun.NMBehaviours
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section adapted from Seraphim Risen's NitrogenMod - here I revised the text displayed on the HUD to have some additional feedback modes (see the SetDepth method)
+ */
+namespace DeathRun.NMBehaviours
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -17,7 +22,7 @@
 
         private void Awake()
         {
-            _N2HUDWarning = Instantiate<GameObject>(Main.N2HUD);
+            _N2HUDWarning = Instantiate<GameObject>(DeathRun.N2HUD);
 
             canvasTransform = _N2HUDWarning.transform;
             n2Warning = canvasTransform.GetChild(0).GetComponent<Text>();
@@ -59,13 +64,49 @@
         {
             if (main == null)
                 return;
+
             if ((n2percent >= 100) && (safeDepth >= 10))
             {
                 main.n2Depth.text = safeDepth + "m";
+
+                main.n2Depth.color = Color.white;
+                if (!Player.main.IsSwimming())
+                {
+                    main.n2Depth.text += " *";
+                }
+                else if (DeathRun.saveData.nitroSave.atPipe)
+                {
+                    if (DeathRun.saveData.nitroSave.pipeTime > DeathRun.saveData.nitroSave.bubbleTime)
+                    {
+                        main.n2Depth.text += " P*";
+                    } else
+                    {
+                        main.n2Depth.text += " B*";
+                    }
+
+                    main.n2Depth.color = Color.cyan;
+                }
+
+                int depth = (int)Ocean.main.GetDepthOf(Player.main.gameObject);
+                if (depth < safeDepth)
+                {
+                    main.n2Depth.color = Color.red;
+                } else if (depth < safeDepth + 3)
+                {
+                    main.n2Depth.color = Color.yellow;
+                }
+
             }
             else
             {
                 main.n2Depth.text = Mathf.RoundToInt(n2percent) + "%";
+
+                main.n2Depth.color = Color.white;
+
+                if (DeathRun.saveData.nitroSave.atPipe)
+                {
+                    main.n2Depth.color = Color.cyan;
+                }
             }
         }
     }

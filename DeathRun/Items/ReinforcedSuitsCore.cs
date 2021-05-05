@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Items
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;
@@ -9,7 +14,7 @@
     internal abstract class ReinforcedSuitsCore : Craftable
     {
         private const string craftTab = "ReinforcedSuits";
-        private const string Assets = @"NitrogenMod/Assets";
+        private const string Assets = @"DeathRun/Assets";
         private static readonly string[] craftPath = new[] { craftTab };
 
         public static TechType ReinforcedSuit2ID { get; protected set; }
@@ -20,7 +25,7 @@
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/SuitTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Dive Suit Upgrades", tabIcon);
-            SeraLogger.Message(Main.modName, "Creating new dive suit crafting tab");
+            CattleLogger.Message("Creating new dive suit crafting tab");
 
             var DiveSuitMk2 = new ReinforcedSuitMark2();
             var DiveSuitMk3 = new ReinforcedSuitMark3();

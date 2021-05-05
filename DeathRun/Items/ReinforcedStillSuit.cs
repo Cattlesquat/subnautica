@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Items
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Items
 {
     using System.Collections.Generic;
     using SMLHelper.V2.Crafting;
@@ -23,7 +28,7 @@
                 {
                     new Ingredient(TechType.Stillsuit, 1),
                     new Ingredient(DummySuitItems.RiverEelScaleID, 2),
-                    new Ingredient(TechType.AramidFibers, 1),
+                    new Ingredient(TechType.AramidFibers, 2),
                 }
             };
         }

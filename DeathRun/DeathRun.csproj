@@ -49,6 +49,12 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\..\Publicize\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="QModInstaller">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\QModManager\QModInstaller.dll</HintPath>
+    </Reference>
     <Reference Include="SMLHelper">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\NonMods\Modding Helper\SMLHelper.dll</HintPath>
     </Reference>
@@ -78,14 +84,22 @@
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Items\ChemosynthesisTank.cs" />
+    <Compile Include="Items\DecoModule.cs" />
     <Compile Include="Items\DummySuitItems.cs" />
+    <Compile Include="Items\FilterChip.cs" />
     <Compile Include="Items\O2TanksCore.cs" />
     <Compile Include="Items\PhotosynthesisSmallTank.cs" />
     <Compile Include="Items\PhotosynthesisTank.cs" />
@@ -93,24 +107,48 @@
     <Compile Include="Items\ReinforcedSuitMark2.cs" />
     <Compile Include="Items\ReinforcedSuitMark3.cs" />
     <Compile Include="Items\ReinforcedSuitsCore.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="NitrogenOptions.cs" />
+    <Compile Include="DeathRun.cs" />
     <Compile Include="NMBehaviours\SpecialtyTanks.cs" />
     <Compile Include="NMBehaviours\BendsHUDController.cs" />
-    <Compile Include="Patchers\BreathPatcher.cs" />
+    <Compile Include="Patchers\AggressionPatcher.cs" />
+    <Compile Include="Patchers\FirePatcher.cs" />
+    <Compile Include="Patchers\KnifePatcher.cs" />
+    <Compile Include="Patchers\CompassPatcher.cs" />
+    <Compile Include="Patchers\GrowingPlantPatcher.cs" />
+    <Compile Include="Patchers\FoodPatcher.cs" />
+    <Compile Include="Patchers\SeaglidePatcher.cs" />
+    <Compile Include="Patchers\BatteryPatcher.cs" />
+    <Compile Include="Patchers\CrushDepthPatcher.cs" />
+    <Compile Include="Patchers\CauseOfDeathPatcher.cs" />
+    <Compile Include="Patchers\CountdownPatcher.cs" />
+    <Compile Include="Patchers\DamagePatcher.cs" />
+    <Compile Include="Patchers\FleePatcher.cs" />
+    <Compile Include="Patchers\MainMenuPatcher.cs" />
+    <Compile Include="Patchers\MurkPatcher.cs" />
+    <Compile Include="Patchers\PlayerPatcher.cs" />
+    <Compile Include="Patchers\ExplosionPatcher.cs" />
+    <Compile Include="Patchers\BreathingPatcher.cs" />
     <Compile Include="Patchers\DepthClassPatchers.cs" />
     <Compile Include="Patchers\DiveSuitPatchers.cs" />
     <Compile Include="Patchers\EscapePodPatcher.cs" />
     <Compile Include="Patchers\NitroLevPatcher.cs" />
+    <Compile Include="Patchers\ItemPatcher.cs" />
+    <Compile Include="Patchers\PowerPatcher.cs" />
+    <Compile Include="Patchers\RadiationPatcher.cs" />
     <Compile Include="Patchers\RandomStartPatcher.cs" />
-    <Compile Include="Patchers\SurvivalUsePatcher.cs" />
+    <Compile Include="Patchers\SurvivalPatcher.cs" />
     <Compile Include="Patchers\UnlockScanPatchers.cs" />
+    <Compile Include="Patchers\VehiclePatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DeathRunConfig.cs" />
+    <Compile Include="DeathRunUtils.cs" />
+    <Compile Include="RadiationUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\n2warning">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="config.json" />
     <None Include="mod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -120,6 +158,9 @@
     <Content Include="Assets\chemosynthesistank.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\CraftingTabIcon.png" />
+    <Content Include="Assets\DeepBattery.png" />
+    <Content Include="Assets\DeepPowerCell.png" />
     <Content Include="Assets\lavalizardscale.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -150,9 +191,20 @@
     <Content Include="Assets\TankTabIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ReadMe.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)DeathRun.dll "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
+copy $(TargetDir)mod.json "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
+copy $(TargetDir)ReadMe.txt "C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\DeathRun"
+
+
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Microsoft.Common.targets.
 	<Target Name="BeforeBuild">

@@ -1,4 +1,9 @@
-﻿namespace DeathRun.Items
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.Items
 {
     using SMLHelper.V2.Assets;
     using SMLHelper.V2.Handlers;
@@ -20,7 +25,7 @@
         {
             var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TankTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Specialty O2 Tanks", tabIcon);
-            SeraLogger.Message(Main.modName, "Creating new O2 tank crafting tab");
+            CattleLogger.Message("Creating new O2 tank crafting tab");
 
             var smallPhotoTank = new PhotosynthesisSmallTank();
             var photoTank = new PhotosynthesisTank();

@@ -1,4 +1,9 @@
-﻿namespace DeathRun.NMBehaviours
+﻿/**
+ * DeathRun mod - Cattlesquat "but standing on the shoulders of giants"
+ * 
+ * This section taken directly from Seraphim Risen's NitrogenMod
+ */
+namespace DeathRun.NMBehaviours
 {
     using UnityEngine;
     using Common;
@@ -17,7 +22,7 @@
             cachedOxygenManager = Player.main.oxygenMgr;
             cachedDayNight = DayNightCycle.main;
             cachedTemp = WaterTemperatureSimulation.main;
-            SeraLogger.Message(Main.modName, "SpecialtyTanks is Awake() and running!");
+            CattleLogger.Message("SpecialtyTanks is Awake() and running!");
         }
 
         private void Update()
@@ -52,7 +57,7 @@
                         float waterTemp = cachedTemp.GetTemperature(Player.main.transform.position);
                         if (waterTemp > 30f)
                         {
-                            float oxygenAdded = waterTemp *Time.deltaTime * .01f;
+                            float oxygenAdded = waterTemp * Time.deltaTime * .01f;
                             cachedOxygenManager.AddOxygen(oxygenAdded);
                         }
                     }
