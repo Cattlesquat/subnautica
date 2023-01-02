@@ -25,7 +25,7 @@ namespace DeathRun.Patchers
         public static bool Prefix(ref Seaglide __instance, bool __result)
         {
             if (CraftData.GetTechType(__instance.gameObject) == TechType.PowerGlide && __instance.energyMixin.charge > 0f &&
-                (__instance.energyMixin.charge >= 1f || !DeathRun.saveData.playerSave.seaGlideExpended))
+                (__instance.energyMixin.charge >= 1f || !DeathRunPlugin.saveData.playerSave.seaGlideExpended))
             {
                 __instance.powerGlideActive = true;
             }
@@ -47,7 +47,7 @@ namespace DeathRun.Patchers
         {
             charge = __instance.energyMixin.charge;
             
-            if ((__instance.energyMixin.charge < 1f) && DeathRun.saveData.playerSave.seaGlideExpended)
+            if ((__instance.energyMixin.charge < 1f) && DeathRunPlugin.saveData.playerSave.seaGlideExpended)
             {
                 var batt = __instance.energyMixin.battery;
                 if (batt != null)
@@ -56,7 +56,7 @@ namespace DeathRun.Patchers
                 }
             } else
             {
-                DeathRun.saveData.playerSave.seaGlideExpended = false;
+                DeathRunPlugin.saveData.playerSave.seaGlideExpended = false;
             }
             
             return true;

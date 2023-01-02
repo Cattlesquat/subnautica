@@ -17,21 +17,21 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_CYCLOPS, RunData.FLAG_CYCLOPS);
+            DeathRunPlugin.saveData.runData.updateVehicle(RunData.BEST_CYCLOPS, RunData.FLAG_CYCLOPS);
         }
     }
 
 
-    [HarmonyPatch(typeof(Exosuit))]
+    /* [HarmonyPatch(typeof(Exosuit))]
     [HarmonyPatch("SubConstructionComplete")]
     internal class ExosuitDonePatcher
     {
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_EXOSUIT, RunData.FLAG_EXOSUIT);
+            DeathRunPlugin.saveData.runData.updateVehicle(RunData.BEST_EXOSUIT, RunData.FLAG_EXOSUIT);
         }
-    }
+    } */
 
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("SubConstructionComplete")]
@@ -40,7 +40,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAMOTH, RunData.FLAG_SEAMOTH);
+            DeathRunPlugin.saveData.runData.updateVehicle(RunData.BEST_SEAMOTH, RunData.FLAG_SEAMOTH);
         }
     }
 
@@ -53,58 +53,58 @@ namespace DeathRun.Patchers
         {
             if (__instance.logic.craftingTechType == TechType.Seaglide)
             {
-                DeathRun.saveData.runData.updateVehicle(RunData.BEST_SEAGLIDE, RunData.FLAG_SEAGLIDE);
+                DeathRunPlugin.saveData.runData.updateVehicle(RunData.BEST_SEAGLIDE, RunData.FLAG_SEAGLIDE);
             }
 
             if (__instance.logic.craftingTechType == TechType.Builder)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_HABITAT);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_HABITAT);
             }
 
             if (__instance.logic.craftingTechType == TechType.HatchingEnzymes)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_CURE);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_CURE);
             }
 
             if (__instance.logic.craftingTechType == TechType.Beacon)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_BEACON);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_BEACON);
             }
 
             if (__instance.logic.craftingTechType == TechType.DiveReel)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_DIVEREEL);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_DIVEREEL);
             }
 
             if (__instance.logic.craftingTechType == TechType.RadiationSuit)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_RADIATION);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_RADIATION);
             }
 
             if (__instance.logic.craftingTechType == TechType.ReinforcedDiveSuit)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_REINFORCED);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_REINFORCED);
             }
 
             if (__instance.logic.craftingTechType == TechType.LaserCutter)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_LASERCUTTER);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_LASERCUTTER);
             }
 
             if ((__instance.logic.craftingTechType == TechType.UltraGlideFins) || (__instance.logic.craftingTechType == TechType.SwimChargeFins))
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_ULTRAGLIDE);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_ULTRAGLIDE);
             }
 
 
             if (__instance.logic.craftingTechType == TechType.DoubleTank)
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_DOUBLETANK);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_DOUBLETANK);
             }
 
             if ((__instance.logic.craftingTechType == TechType.HighCapacityTank) || (__instance.logic.craftingTechType == TechType.PlasteelTank))
             {
-                DeathRun.saveData.runData.updateVehicle(0, RunData.FLAG_PLASTEEL_TANK);
+                DeathRunPlugin.saveData.runData.updateVehicle(0, RunData.FLAG_PLASTEEL_TANK);
             }
 
 

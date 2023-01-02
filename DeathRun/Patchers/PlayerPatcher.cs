@@ -15,7 +15,7 @@ namespace DeathRun.Patchers
     using UnityEngine.UI;
 
     /**
-    * Data that is saved/restored with saved games is here (DeathRun.saveData.playerSave)
+    * Data that is saved/restored with saved games is here (DeathRunPlugin.saveData.playerSave)
     */
     public class PlayerSaveData
     {
@@ -46,14 +46,14 @@ namespace DeathRun.Patchers
 
         public void AboutToSaveGame()
         {
-            currTime = DeathRun.playerMonitor.currValue; // TimeMonitor doesn't seem to serialize well, so we do this.
-            prevTime = DeathRun.playerMonitor.prevValue;
+            currTime = DeathRunPlugin.playerMonitor.currValue; // TimeMonitor doesn't seem to serialize well, so we do this.
+            prevTime = DeathRunPlugin.playerMonitor.prevValue;
         }
 
         public void JustLoadedGame()
         {
-            DeathRun.playerMonitor.currValue = currTime; // TimeMonitor doesn't seem to serialize well, so we do this.
-            DeathRun.playerMonitor.prevValue = prevTime;
+            DeathRunPlugin.playerMonitor.currValue = currTime; // TimeMonitor doesn't seem to serialize well, so we do this.
+            DeathRunPlugin.playerMonitor.prevValue = prevTime;
         }
 
         public void setDefaults()
@@ -100,19 +100,19 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Config.NO_WAY.Equals(DeathRun.config.damageTaken2))
+            if (Config.NO_WAY.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .10f;
             }
-            else if (Config.INSANITY.Equals(DeathRun.config.damageTaken2))
+            else if (Config.INSANITY.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .25f;
             }
-            else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken2))
+            else if (Config.HARDCORE.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .50f;
             }
-            else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken2))
+            else if (Config.LOVETAPS.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 Player.main.liveMixin.health = Player.main.liveMixin.maxHealth * .75f;
             }
@@ -393,11 +393,11 @@ namespace DeathRun.Patchers
             original = Language.main.Get("Tooltip_ReinforcedDiveSuit");
             if (!original.Contains("Personal diving"))
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     updated = original + " Personal diving depth limit 800m.";
                 }
-                else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     updated = original + " Personal diving depth unlimited.";
                 } else
@@ -411,7 +411,7 @@ namespace DeathRun.Patchers
             original = Language.main.Get("Tooltip_RadiationSuit");
             add = " Personal depth limit 500m.";
             if (!original.Contains(add)) {
-                if (!Config.NORMAL.Equals(DeathRun.config.personalCrushDepth))
+                if (!Config.NORMAL.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     updated = original + add;
                     LanguageHandler.Main.SetTechTypeTooltip(TechType.RadiationSuit, updated);
@@ -422,22 +422,22 @@ namespace DeathRun.Patchers
             original = Language.main.Get("Tooltip_Stillsuit");
             if (!original.Contains("Personal depth"))
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     updated = original + " Personal depth limit 800m.";
                 }
-                else if (Config.HARD.Equals(DeathRun.config.personalCrushDepth))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     updated = original + " Personal depth limit 1300m.";
                 } else
                 {
                     updated = original;
                 }
-                LanguageHandler.Main.SetTechTypeTooltip(TechType.Stillsuit, updated);
+                LanguageHandler.Main.SetTechTypeTooltip(TechType.WaterFiltrationSuit, updated);
             }
 
             // Habitat Builder if we're doing underwater explosions
-            if (!Config.NORMAL.Equals(DeathRun.config.explodeDepth) || !Config.NORMAL.Equals(DeathRun.config.radiationDepth))
+            if (!Config.NORMAL.Equals(DeathRunPlugin.config.explodeDepth) || !Config.NORMAL.Equals(DeathRunPlugin.config.radiationDepth))
             {
                 original = Language.main.Get("Tooltip_Builder");
                 add = " Build DEEP if you're expecting any big explosions or radiation!";
@@ -448,7 +448,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            if (!Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 LanguageHandler.Main.SetLanguageLine("Battery", "Lithium Battery");
                 LanguageHandler.Main.SetLanguageLine("PowerCell", "Lithium Cell");
@@ -472,7 +472,7 @@ namespace DeathRun.Patchers
             // Forces the language handler to restart with our updates
             Language.main.SetCurrentLanguage(Language.main.GetCurrentLanguage());
 
-            DeathRun.encyclopediaAdded = false; // Have not yet added the DeathRun encyclopedia entries
+            DeathRunPlugin.encyclopediaAdded = false; // Have not yet added the DeathRun encyclopedia entries
         }
     }
 
@@ -497,9 +497,9 @@ namespace DeathRun.Patchers
             }
 
             // Adds our "Data Bank" entries
-            if (!DeathRun.encyclopediaAdded && (DeathRun.saveData.playerSave.startedGame > 0)) 
+            if (!DeathRunPlugin.encyclopediaAdded && (DeathRunPlugin.saveData.playerSave.startedGame > 0)) 
             {
-                DeathRun.encyclopediaAdded = true;
+                DeathRunPlugin.encyclopediaAdded = true;
                 PDAEncyclopedia.Add("DeathRun", false);
                 PDAEncyclopedia.Add("Aggression", false);
                 PDAEncyclopedia.Add("Atmosphere", false);
@@ -513,57 +513,57 @@ namespace DeathRun.Patchers
             }
 
             // Officially start our mod's timer/monitor, if we haven't
-            if (DeathRun.saveData.playerSave.startedGame == 0)
+            if (DeathRunPlugin.saveData.playerSave.startedGame == 0)
             {
-                DeathRun.saveData.playerSave.startedGame = DayNightCycle.main.timePassedAsFloat;
-                DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
-                DeathRun.playerIsDead = false;
+                DeathRunPlugin.saveData.playerSave.startedGame = DayNightCycle.main.timePassedAsFloat;
+                DeathRunPlugin.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
+                DeathRunPlugin.playerIsDead = false;
                 return;
             }
 
-            if (DeathRun.saveData.podSave.spotPicked)
+            if (DeathRunPlugin.saveData.podSave.spotPicked)
             {
-                DeathRun.saveData.runData.startNewRun();
-                DeathRun.saveData.podSave.spotPicked = false;
-                DeathRun.playerIsDead = false;
+                DeathRunPlugin.saveData.runData.startNewRun();
+                DeathRunPlugin.saveData.podSave.spotPicked = false;
+                DeathRunPlugin.playerIsDead = false;
             }
 
             // If any difficulty settings have changed, make sure we register any lower ones against the score stats
-            if ((DeathRun.configDirty > 0) && (Time.time > DeathRun.configDirty + 5)) 
+            if ((DeathRunPlugin.configDirty > 0) && (Time.time > DeathRunPlugin.configDirty + 5)) 
             {
-                DeathRun.saveData.runData.countSettings();
-                DeathRun.configDirty = 0;
+                DeathRunPlugin.saveData.runData.countSettings();
+                DeathRunPlugin.configDirty = 0;
             }
 
-            DeathRun.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
-            float interval = DeathRun.playerMonitor.currValue - DeathRun.playerMonitor.prevValue;
+            DeathRunPlugin.playerMonitor.Update(DayNightCycle.main.timePassedAsFloat);
+            float interval = DeathRunPlugin.playerMonitor.currValue - DeathRunPlugin.playerMonitor.prevValue;
 
             // Update our "time alive"
-            DeathRun.saveData.playerSave.currentLife += interval;
-            DeathRun.saveData.playerSave.allLives += interval;
+            DeathRunPlugin.saveData.playerSave.currentLife += interval;
+            DeathRunPlugin.saveData.playerSave.allLives += interval;
 
             // Roll the "Mod Intro" messages
-            if (!DeathRun.saveData.playerSave.killOpening && (DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.startedGame < 200))
+            if (!DeathRunPlugin.saveData.playerSave.killOpening && (DayNightCycle.main.timePassedAsFloat - DeathRunPlugin.saveData.playerSave.startedGame < 200))
             {
                 doIntroMessages();
             } 
             else
             {
-                DeathRun.saveData.playerSave.killOpening = true;
+                DeathRunPlugin.saveData.playerSave.killOpening = true;
             }
 
             // Respawn messages
-            if ((DeathRun.saveData.playerSave.timeOfDeath > 0) && ((DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.timeOfDeath < 200))) 
+            if ((DeathRunPlugin.saveData.playerSave.timeOfDeath > 0) && ((DayNightCycle.main.timePassedAsFloat - DeathRunPlugin.saveData.playerSave.timeOfDeath < 200))) 
             {
                 doRespawnMessages();
             }
 
             // Delayed encyclopedia entries
-            if ((DeathRun.saveData.playerSave.cueTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.playerSave.cueTime))
+            if ((DeathRunPlugin.saveData.playerSave.cueTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.saveData.playerSave.cueTime))
             {
-                if (!"".Equals(DeathRun.saveData.playerSave.cueKey))
+                if (!"".Equals(DeathRunPlugin.saveData.playerSave.cueKey))
                 {
-                    PDAEncyclopedia.Add(DeathRun.saveData.playerSave.cueKey, true);
+                    PDAEncyclopedia.Add(DeathRunPlugin.saveData.playerSave.cueKey, true);
 
                     if (KnownTechInitPatcher.UnlockSound != null)
                     {
@@ -577,14 +577,14 @@ namespace DeathRun.Patchers
                         }
                     }
                 }
-                DeathRun.saveData.playerSave.cueTime = 0;
+                DeathRunPlugin.saveData.playerSave.cueTime = 0;
             }
         }
 
 
         private static void timedMessage(string message, float delta)
         {
-            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.startedGame + delta))
+            if (DeathRunPlugin.playerMonitor.JustWentAbove(DeathRunPlugin.saveData.playerSave.startedGame + delta))
             {
                 DeathRunUtils.CenterMessage(message, 5);
             }
@@ -593,43 +593,43 @@ namespace DeathRun.Patchers
 
         private static void doRespawnMessages()
         {
-            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 10))
+            if (DeathRunPlugin.playerMonitor.JustWentAbove(DeathRunPlugin.saveData.playerSave.timeOfDeath + 10))
             {
-                DeathRun.playerIsDead = false;
+                DeathRunPlugin.playerIsDead = false;
             }
 
-            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 15))
+            if (DeathRunPlugin.playerMonitor.JustWentAbove(DeathRunPlugin.saveData.playerSave.timeOfDeath + 15))
             {
                 ErrorMessage.AddMessage(DeathRunUtils.centerMessages[0].getText());
 
-                if (DeathRun.saveData.playerSave.numDeaths > 1)
+                if (DeathRunPlugin.saveData.playerSave.numDeaths > 1)
                 {
-                    TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.spanAtDeath);
+                    TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRunPlugin.saveData.playerSave.spanAtDeath);
                     string text;
-                    if (DeathRun.saveData.playerSave.numDeaths == 2)
+                    if (DeathRunPlugin.saveData.playerSave.numDeaths == 2)
                     {
                         text = "Both Lives: ";
                     } 
                     else
                     {
-                        text = "All " + DeathRun.saveData.playerSave.numDeaths + " Lives: ";
+                        text = "All " + DeathRunPlugin.saveData.playerSave.numDeaths + " Lives: ";
                     }
                     text +=  DeathRunUtils.sayTime(timeSpan2);
                     DeathRunUtils.CenterMessage(text, 10);
                 }
             }
 
-            if (DeathRun.playerMonitor.JustWentAbove(DeathRun.saveData.playerSave.timeOfDeath + 25))
+            if (DeathRunPlugin.playerMonitor.JustWentAbove(DeathRunPlugin.saveData.playerSave.timeOfDeath + 25))
             {
-                TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.spanAtDeath);
+                TimeSpan timeSpan2 = TimeSpan.FromSeconds((double)DeathRunPlugin.saveData.playerSave.spanAtDeath);
                 string text;
-                if (DeathRun.saveData.playerSave.numDeaths == 2)
+                if (DeathRunPlugin.saveData.playerSave.numDeaths == 2)
                 {
                     text = "Both Lives: ";
                 }
                 else
                 {
-                    text = "All " + DeathRun.saveData.playerSave.numDeaths + " Lives: ";
+                    text = "All " + DeathRunPlugin.saveData.playerSave.numDeaths + " Lives: ";
                 }
                 text += DeathRunUtils.sayTime(timeSpan2);
                 ErrorMessage.AddMessage(text);
@@ -666,7 +666,7 @@ namespace DeathRun.Patchers
             float time = 10;
             foreach (string message in messages)
             {
-                string display = message.Replace("*", DeathRun.saveData.startSave.message);
+                string display = message.Replace("*", DeathRunPlugin.saveData.startSave.message);
                 timedMessage(display, time);
                 time += 8;
             }
@@ -688,17 +688,17 @@ namespace DeathRun.Patchers
             {
                 setCauseOfDeath(damageType);
 
-                DeathRun.saveData.playerSave.numDeaths++;
+                DeathRunPlugin.saveData.playerSave.numDeaths++;
 
-                DeathRun.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
-                DeathRun.saveData.playerSave.spanAtDeath = DeathRun.saveData.playerSave.allLives;
+                DeathRunPlugin.saveData.playerSave.timeOfDeath = DayNightCycle.main.timePassedAsFloat;
+                DeathRunPlugin.saveData.playerSave.spanAtDeath = DeathRunPlugin.saveData.playerSave.allLives;
 
-                TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.currentLife);
+                TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRunPlugin.saveData.playerSave.currentLife);
 
                 string text = "Time of Death";
-                if (DeathRun.saveData.playerSave.numDeaths > 1)
+                if (DeathRunPlugin.saveData.playerSave.numDeaths > 1)
                 {
-                    text += " #" + DeathRun.saveData.playerSave.numDeaths;
+                    text += " #" + DeathRunPlugin.saveData.playerSave.numDeaths;
                 }
                 text += ": ";
 
@@ -707,17 +707,17 @@ namespace DeathRun.Patchers
                 DeathRunUtils.CenterMessage(text, 10);
                 CattleLogger.Message(text);
 
-                text = "Cause of Death: " + DeathRun.cause;
+                text = "Cause of Death: " + DeathRunPlugin.cause;
                 DeathRunUtils.CenterMessage(text, 10, 1);
 
                 //ErrorMessage.AddMessage(text);            
 
-                DeathRun.saveData.playerSave.killOpening = true;
-                DeathRun.saveData.runData.updateVitals(false);
+                DeathRunPlugin.saveData.playerSave.killOpening = true;
+                DeathRunPlugin.saveData.runData.updateVitals(false);
 
-                DeathRun.saveData.nitroSave.setDefaults(); // Reset all nitrogen state
+                DeathRunPlugin.saveData.nitroSave.setDefaults(); // Reset all nitrogen state
 
-                DeathRun.playerIsDead = true;
+                DeathRunPlugin.playerIsDead = true;
             }
             catch (Exception ex)
             {
@@ -734,64 +734,64 @@ namespace DeathRun.Patchers
                 switch (damageType)
                 {
                     case DamageType.Acid:
-                        DeathRun.setCause("Acid");
+                        DeathRunPlugin.setCause("Acid");
                         break;
 
                     case DamageType.Collide:
-                        DeathRun.setCause("Collision");
+                        DeathRunPlugin.setCause("Collision");
                         break;
 
                     case DamageType.Electrical:
-                        DeathRun.setCause("Electrocution");
+                        DeathRunPlugin.setCause("Electrocution");
                         break;
 
                     case DamageType.Explosive:
-                        DeathRun.setCause("Explosion");
+                        DeathRunPlugin.setCause("Explosion");
                         break;
 
                     case DamageType.Fire:
-                        DeathRun.setCause("Burned to Death");
+                        DeathRunPlugin.setCause("Burned to Death");
                         break;
 
                     case DamageType.Heat:
-                        DeathRun.setCause("Extreme Heat");
+                        DeathRunPlugin.setCause("Extreme Heat");
                         break;
 
                     case DamageType.Poison:
-                        DeathRun.setCause("Poison");
+                        DeathRunPlugin.setCause("Poison");
                         break;
 
                     case DamageType.Pressure:
-                        DeathRun.setCause("Pressure");
+                        DeathRunPlugin.setCause("Pressure");
                         break;
 
                     case DamageType.Puncture:
-                        DeathRun.setCause("Puncture Wounds");
+                        DeathRunPlugin.setCause("Puncture Wounds");
                         break;
 
                     case DamageType.Radiation:
-                        DeathRun.setCause("Radiation");
+                        DeathRunPlugin.setCause("Radiation");
                         break;
 
                     case DamageType.Smoke:
-                        DeathRun.setCause("Smoke Asphyxiation");
+                        DeathRunPlugin.setCause("Smoke Asphyxiation");
                         break;
 
                     //case DamageType.Starve:
                     //case DamageType.Normal:
                     default:
-                        if (DeathRun.CAUSE_UNKNOWN_CREATURE.Equals(DeathRun.cause))
+                        if (DeathRunPlugin.CAUSE_UNKNOWN_CREATURE.Equals(DeathRunPlugin.cause))
                         {
-                            if (DeathRun.causeObject != null)
+                            if (DeathRunPlugin.causeObject != null)
                             {
                                 GameObject go;
-                                TechType t = CraftData.GetTechType(DeathRun.causeObject, out go);
+                                TechType t = CraftData.GetTechType(DeathRunPlugin.causeObject, out go);
 
                                 if (t != TechType.None)
                                 {
-                                    DeathRun.setCause(Language.main.Get(t.AsString(false)));
+                                    DeathRunPlugin.setCause(Language.main.Get(t.AsString(false)));
 
-                                    CattleLogger.Message("Cause of Death: " + DeathRun.cause);
+                                    CattleLogger.Message("Cause of Death: " + DeathRunPlugin.cause);
                                 }
                                 else
                                 {
@@ -821,7 +821,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix()
         {
-            DeathRun.playerIsDead = false;
+            DeathRunPlugin.playerIsDead = false;
         }
     }
 
@@ -839,7 +839,7 @@ namespace DeathRun.Patchers
         {
             float rads = Player.main.radiationAmount;
 
-            float backgroundRads = DeathRun.saveData.playerSave.backgroundRads;
+            float backgroundRads = DeathRunPlugin.saveData.playerSave.backgroundRads;
 
             if (backgroundRads >= 0.4f)
             {
@@ -850,7 +850,7 @@ namespace DeathRun.Patchers
                 }
             }
 
-            if (Player.main.fmodIndexIntensity < 0)
+            if (Player.main.fmodIndexIntensity.data1 < 0)
             {
                 Player.main.fmodIndexIntensity = Player.main.radiateSound.GetParameterIndex("intensity");
             }
@@ -889,16 +889,16 @@ namespace DeathRun.Patchers
                 {
                     if (component.charge >= 1)
                     {
-                        DeathRun.saveData.playerSave.seaGlideExpended = false;
+                        DeathRunPlugin.saveData.playerSave.seaGlideExpended = false;
                         flag = true;
                     }
-                    else if (DeathRun.saveData.playerSave.seaGlideExpended || (component.charge <= 0f)) 
+                    else if (DeathRunPlugin.saveData.playerSave.seaGlideExpended || (component.charge <= 0f)) 
                     {
                         flag = false;
-                        DeathRun.saveData.playerSave.seaGlideExpended = true;
+                        DeathRunPlugin.saveData.playerSave.seaGlideExpended = true;
                     } else
                     {
-                        flag = !DeathRun.saveData.playerSave.seaGlideExpended;
+                        flag = !DeathRunPlugin.saveData.playerSave.seaGlideExpended;
                     }
                 }
             }
@@ -963,15 +963,15 @@ namespace DeathRun.Patchers
             }
 
             float divisor;
-            if (Config.DEATHRUN.Equals(DeathRun.config.powerExitVehicles))
+            if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerExitVehicles))
             {
                 divisor = 1;
             }
-            else if (Config.HARD.Equals(DeathRun.config.powerExitVehicles))
+            else if (Config.HARD.Equals(DeathRunPlugin.config.powerExitVehicles))
             {
                 divisor = 2;
             } 
-            else if (Config.EXORBITANT.Equals(DeathRun.config.powerExitVehicles))
+            else if (Config.EXORBITANT.Equals(DeathRunPlugin.config.powerExitVehicles))
             {
                 divisor = 0.25f;
             }
@@ -995,7 +995,7 @@ namespace DeathRun.Patchers
             }
 
             int energyCost;
-            float depth = Ocean.main.GetDepthOf(vehicle.gameObject);
+            float depth = Ocean.GetDepthOf(vehicle.gameObject);
 
             if (factor > 0)
             {
@@ -1010,7 +1010,7 @@ namespace DeathRun.Patchers
                 return;
             }
 
-            int deco = vehicle.modules.GetCount(DeathRun.decoModule.TechType);
+            int deco = vehicle.modules.GetCount(DeathRunPlugin.decoModule.TechType);
             if (deco > 2)
             {
                 energyCost = 0;
@@ -1034,17 +1034,17 @@ namespace DeathRun.Patchers
 
                 ErrorMessage.AddMessage(name + " power cell drained of " + energyCost + " energy for exit at depth " + (int)depth + "m.");
 
-                if ((vehicle is SeaMoth) && !DeathRun.saveData.playerSave.toldSeamothCosts)
+                if ((vehicle is SeaMoth) && !DeathRunPlugin.saveData.playerSave.toldSeamothCosts)
                 {
-                    DeathRun.saveData.playerSave.toldSeamothCosts = true;
+                    DeathRunPlugin.saveData.playerSave.toldSeamothCosts = true;
 
                     DeathRunUtils.CenterMessage("Exiting the Seamoth underwater causes battery drain.", 10);
                     DeathRunUtils.CenterMessage("Exit at surface or Moon Bay for optimum power use.", 10, 1);                                               
                 }
 
-                if ((vehicle is Exosuit) && !DeathRun.saveData.playerSave.toldExosuitCosts)
+                if ((vehicle is Exosuit) && !DeathRunPlugin.saveData.playerSave.toldExosuitCosts)
                 {
-                    DeathRun.saveData.playerSave.toldExosuitCosts = true;
+                    DeathRunPlugin.saveData.playerSave.toldExosuitCosts = true;
 
                     DeathRunUtils.CenterMessage("Although more efficient than the Seamoth, the Prawn suit", 10);
                     DeathRunUtils.CenterMessage("does draw power when exited at depth.", 10, 1);
@@ -1081,13 +1081,13 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static void Prefix(uGUI_HardcoreGameOver __instance)
         {
-            DeathRun.setCause("Victory");
-            DeathRun.saveData.runData.updateVitals(true);
-            DeathRun.statsData.SaveStats();
+            DeathRunPlugin.setCause("Victory");
+            DeathRunPlugin.saveData.runData.updateVitals(true);
+            DeathRunPlugin.statsData.SaveStats();
 
-            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRun.saveData.playerSave.allLives);
-            string text = "Victory! In " + DeathRunUtils.sayTime(timeSpan) + " (" + (DeathRun.saveData.playerSave.numDeaths + 1) + " ";
-            if (DeathRun.saveData.playerSave.numDeaths == 0)
+            TimeSpan timeSpan = TimeSpan.FromSeconds((double)DeathRunPlugin.saveData.playerSave.allLives);
+            string text = "Victory! In " + DeathRunUtils.sayTime(timeSpan) + " (" + (DeathRunPlugin.saveData.playerSave.numDeaths + 1) + " ";
+            if (DeathRunPlugin.saveData.playerSave.numDeaths == 0)
             {
                 text += "life";
             }
@@ -1101,7 +1101,7 @@ namespace DeathRun.Patchers
             DeathRunUtils.CenterMessage(text, 10);
             CattleLogger.Message(text);
 
-            string text2 = "Score: " + DeathRun.saveData.runData.Score;
+            string text2 = "Score: " + DeathRunPlugin.saveData.runData.Score;
             DeathRunUtils.CenterMessage(text, 10, 1);
             CattleLogger.Message(text);
 

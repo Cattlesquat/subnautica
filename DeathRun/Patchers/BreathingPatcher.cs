@@ -20,11 +20,11 @@ namespace DeathRun.Patchers
 
         public static bool isSurfaceAirPoisoned ()
         {
-            if (Config.BREATHABLE.Equals(DeathRun.config.surfaceAir)) return false;
-            if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+            if (Config.BREATHABLE.Equals(DeathRunPlugin.config.surfaceAir)) return false;
+            if (Config.POISONED.Equals(DeathRunPlugin.config.surfaceAir))
             {
                 Inventory main2 = Inventory.main;
-                if (main2 != null && main2.equipment != null && main2.equipment.GetCount(DeathRun.filterChip.TechType) > 0)
+                if (main2 != null && main2.equipment != null && main2.equipment.GetCount(DeathRunPlugin.filterChip.TechType) > 0)
                 {
                     return false;
                 }
@@ -40,7 +40,7 @@ namespace DeathRun.Patchers
         {
             if (!isSurfaceAirPoisoned()) return false;
             if (player.IsInside() || player.precursorOutOfWater) return false;
-            float depth = Ocean.main.GetDepthOf(player.gameObject);
+            float depth = Ocean.GetDepthOf(player.gameObject);
             if (depth > 5) return false;
 
             // After repairing radiation leaks, when inside the Aurora.
@@ -48,7 +48,7 @@ namespace DeathRun.Patchers
             {
                 if (LeakingRadiation.main.GetNumLeaks() == 0)
                 {
-                    if (Config.IRRADIATED.Equals(DeathRun.config.surfaceAir)) return false;
+                    if (Config.IRRADIATED.Equals(DeathRunPlugin.config.surfaceAir)) return false;
                     string LDBiome = RadiationUtils.getPlayerBiome();
                     if (LDBiome.Contains("CrashedShip_Interior"))
                     {
@@ -86,7 +86,7 @@ namespace DeathRun.Patchers
         {
             if (!isAirPoisoned(Player.main))
             {
-                if (!isSurfaceAirPoisoned() && !Player.main.IsInside() && (Ocean.main.GetDepthOf(Player.main.gameObject) < 5))
+                if (!isSurfaceAirPoisoned() && !Player.main.IsInside() && (Ocean.GetDepthOf(Player.main.gameObject) < 5))
                 {
                     if (warnedNotBreathable)
                     {
@@ -100,7 +100,7 @@ namespace DeathRun.Patchers
             }
 
             // If we're at a pipe so we can actually breathe, treat it normally.
-            if (DeathRun.saveData.nitroSave.atPipe)
+            if (DeathRunPlugin.saveData.nitroSave.atPipe)
             {
                 return true;
             }
@@ -117,18 +117,18 @@ namespace DeathRun.Patchers
                 s.painSmoke.Play();
             }
 
-            if (!Config.NEVER.Equals(DeathRun.config.showWarnings))
+            if (!Config.NEVER.Equals(DeathRunPlugin.config.showWarnings))
             {
                 if (!warnedNotBreathable ||
-                    Config.WHENEVER.Equals(DeathRun.config.showWarnings) ||
-                    (Config.OCCASIONAL.Equals(DeathRun.config.showWarnings) && (Time.time > warningTime + 300)))
+                    Config.WHENEVER.Equals(DeathRunPlugin.config.showWarnings) ||
+                    (Config.OCCASIONAL.Equals(DeathRunPlugin.config.showWarnings) && (Time.time > warningTime + 300)))
                 {
 
                     if (!warnedNotBreathable || (Time.time > warningTime + 30f))
                     {
                         warnedNotBreathable = true;
                         warningTime = Time.time;
-                        if (Config.POISONED.Equals(DeathRun.config.surfaceAir))
+                        if (Config.POISONED.Equals(DeathRunPlugin.config.surfaceAir))
                         {
                             DeathRunUtils.CenterMessage("WARNING! Surface air not breathable!", 5);
                             DeathRunUtils.CenterMessage("A Floating Pump could filter it.", 5, 1);
@@ -214,19 +214,9 @@ namespace DeathRun.Patchers
         {
             if (Language.main.Get("SwimToSurface").Equals(message))
             {
-                if (BreathingPatcher.isSurfaceAirPoisoned() || (Ocean.main.GetDepthOf(Player.main.gameObject) > 100))
+                if (BreathingPatcher.isSurfaceAirPoisoned() || (Ocean.GetDepthOf(Player.main.gameObject) > 100))
                 {
                     message = "Out of Air!";
-                    if (hinter != null)
-                    {
-                        hinter.messageHash = message.GetHashCode(); // This is so the hinter will clear the message eventually
-                    }
-                } else
-                {
-                    if (hinter != null)
-                    {
-                        hinter.messageHash = hinter.message.GetHashCode(); // Put hinter back to its own hashcode.
-                    }
                 }
             }
             return true;

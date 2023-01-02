@@ -90,20 +90,20 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance, ref Vector3 __result)
         {
-            DeathRun.playerIsDead = false;
+            DeathRunPlugin.playerIsDead = false;
 
-            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
-                DeathRun.saveData.podSave.podGravity  = false;
-                DeathRun.saveData.podSave.podSinking  = false;
-                DeathRun.saveData.podSave.podAnchored = false;
-                DeathRun.saveData.podSave.spotPicked  = true;
-                DeathRun.saveData.startSave = new StartSpot(0, 0, "Safe Shallows");
+                DeathRunPlugin.saveData.podSave.podGravity  = false;
+                DeathRunPlugin.saveData.podSave.podSinking  = false;
+                DeathRunPlugin.saveData.podSave.podAnchored = false;
+                DeathRunPlugin.saveData.podSave.spotPicked  = true;
+                DeathRunPlugin.saveData.startSave = new StartSpot(0, 0, "Safe Shallows");
 
                 DeathRunUtils.CenterMessage("DEATH RUN", 10, 2);
-                DeathRunUtils.CenterMessage("Start: \"" + DeathRun.saveData.startSave.message + "\"", 10, 3);
+                DeathRunUtils.CenterMessage("Start: \"" + DeathRunPlugin.saveData.startSave.message + "\"", 10, 3);
 
-                CattleLogger.Message("Start: " + DeathRun.saveData.startSave.message);
+                CattleLogger.Message("Start: " + DeathRunPlugin.saveData.startSave.message);
 
                 return true;
             }
@@ -113,18 +113,18 @@ namespace DeathRun.Patchers
 
             // If a specific spot was specified in the config, use that instead.
             foreach (StartSpot s in spots) {
-                if (s.message.Equals(DeathRun.config.startLocation))
+                if (s.message.Equals(DeathRunPlugin.config.startLocation))
                 {
                     spot = s;
                     break;
                 }
             }
 
-            DeathRun.saveData.podSave.podGravity  = true;  // Pod should sink
-            DeathRun.saveData.podSave.podSinking  = false; // ... but isn't sinking yet
-            DeathRun.saveData.podSave.podAnchored = false; // ... and hasn't come to rest on the bottom
-            DeathRun.saveData.podSave.spotPicked  = true;   // But we have picked the spot for it
-            DeathRun.saveData.startSave           = spot;  // Here's where we started
+            DeathRunPlugin.saveData.podSave.podGravity  = true;  // Pod should sink
+            DeathRunPlugin.saveData.podSave.podSinking  = false; // ... but isn't sinking yet
+            DeathRunPlugin.saveData.podSave.podAnchored = false; // ... and hasn't come to rest on the bottom
+            DeathRunPlugin.saveData.podSave.spotPicked  = true;   // But we have picked the spot for it
+            DeathRunPlugin.saveData.startSave           = spot;  // Here's where we started
 
             //ErrorMessage.AddMessage("\"" + spot.message + "\"");
             DeathRunUtils.CenterMessage("DEATH RUN", 10, 2);

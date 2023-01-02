@@ -52,10 +52,10 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(ref Ocean.DepthClass __result)
         {
-            float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
+            float depth = Ocean.GetDepthOf(Player.main.gameObject);
             __result = Ocean.DepthClass.Safe;
 
-            if (Player.main.IsSwimming() && depth >= DeathRun.saveData.playerSave.crushDepth)
+            if (Player.main.IsSwimming() && depth >= DeathRunPlugin.saveData.playerSave.crushDepth)
                 __result = Ocean.DepthClass.Crush;
         }
     }

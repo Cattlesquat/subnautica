@@ -218,14 +218,14 @@ namespace DeathRun
 
         private void ChangedChoice(ChoiceChangedEventArgs e)
         {
-            DeathRun.configDirty = Time.time;
+            DeathRunPlugin.configDirty = Time.time;
         }
 
 
         private void ChangedMurkiness(ChoiceChangedEventArgs e)
         {
-            DeathRun.murkinessDirty = true;
-            DeathRun.configDirty = Time.time;
+            DeathRunPlugin.murkinessDirty = true;
+            DeathRunPlugin.configDirty = Time.time;
         }
 
 
@@ -262,31 +262,31 @@ namespace DeathRun
 
         private void ChangedTipOver(ToggleChangedEventArgs e)
         {
-            if (DeathRun.saveData == null) return;
-            if (DeathRun.saveData.podSave == null) return;
-            if (DeathRun.saveData.podSave.podStraight == null) return;
-            if (DeathRun.saveData.podSave.podTipped == null) return;
+            if (DeathRunPlugin.saveData == null) return;
+            if (DeathRunPlugin.saveData.podSave == null) return;
+            if (DeathRunPlugin.saveData.podSave.podStraight == null) return;
+            if (DeathRunPlugin.saveData.podSave.podTipped == null) return;
             if (EscapePod.main == null) return;
 
-            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (DeathRun.Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
                 return;
             }
 
             if (podStayUpright)
             {
-                if (DeathRun.saveData.podSave.podStraight.isInitialized())
+                if (DeathRunPlugin.saveData.podSave.podStraight.isInitialized())
                 {
-                    DeathRun.saveData.podSave.podStraight.copyTo(DeathRun.saveData.podSave.podTransform);
-                    DeathRun.saveData.podSave.podStraight.copyTo(EscapePod.main.transform);
+                    DeathRunPlugin.saveData.podSave.podStraight.copyTo(DeathRunPlugin.saveData.podSave.podTransform);
+                    DeathRunPlugin.saveData.podSave.podStraight.copyTo(EscapePod.main.transform);
                 }
             } 
             else
             {
-                if (DeathRun.saveData.podSave.podTipped.isInitialized())
+                if (DeathRunPlugin.saveData.podSave.podTipped.isInitialized())
                 {
-                    DeathRun.saveData.podSave.podTipped.copyTo(DeathRun.saveData.podSave.podTransform);
-                    DeathRun.saveData.podSave.podTipped.copyTo(EscapePod.main.transform);
+                    DeathRunPlugin.saveData.podSave.podTipped.copyTo(DeathRunPlugin.saveData.podSave.podTransform);
+                    DeathRunPlugin.saveData.podSave.podTipped.copyTo(EscapePod.main.transform);
                 }
             }
         }

@@ -17,14 +17,14 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(Eatable __instance, ref float __result)
         {
-            if (Config.FOOD_OMNIVORE.Equals(DeathRun.config.foodChallenge))
+            if (Config.FOOD_OMNIVORE.Equals(DeathRunPlugin.config.foodChallenge))
             {
                 return;
             }
 
             TechType t = CraftData.GetTechType(__instance.gameObject);
 
-            if (Config.FOOD_VEGAN.Equals(DeathRun.config.foodChallenge) || Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+            if (Config.FOOD_VEGAN.Equals(DeathRunPlugin.config.foodChallenge) || Config.FOOD_PESCATARIAN.Equals(DeathRunPlugin.config.foodChallenge))
             {
                 if (t == TechType.NutrientBlock)
                 {
@@ -38,7 +38,7 @@ namespace DeathRun.Patchers
                     return;
                 }
 
-                if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                if (Config.FOOD_PESCATARIAN.Equals(DeathRunPlugin.config.foodChallenge))
                 {
                     if ((t == TechType.Snack2) || (t == TechType.Snack3))
                     {
@@ -63,14 +63,14 @@ namespace DeathRun.Patchers
                 (t == TechType.CookedHoopfish) || (t == TechType.Hoopfish) || (t == TechType.CuredHoopfish) ||
                 (t == TechType.CookedSpinefish) || (t == TechType.Spinefish) || (t == TechType.CuredSpinefish))
             {
-                if (!Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                if (!Config.FOOD_PESCATARIAN.Equals(DeathRunPlugin.config.foodChallenge))
                 {
                     __result = -25f;
                 }                
             }
             else
             {
-                if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge) && (__result > 0))
+                if (Config.FOOD_PESCATARIAN.Equals(DeathRunPlugin.config.foodChallenge) && (__result > 0))
                 {
                     __result = -25f;
                 }

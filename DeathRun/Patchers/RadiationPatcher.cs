@@ -230,12 +230,12 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool GetProvidesOxygen(PipeSurfaceFloater __instance, ref bool __result)
         {
-            if (Config.FILTER_ANYWHERE.Equals(DeathRun.config.filterPumpRules))
+            if (Config.FILTER_ANYWHERE.Equals(DeathRunPlugin.config.filterPumpRules))
             {
                 return true;
             }
 
-            if (Config.FILTER_RADIATION.Equals(DeathRun.config.filterPumpRules))
+            if (Config.FILTER_RADIATION.Equals(DeathRunPlugin.config.filterPumpRules))
             {
                 if (!RadiationUtils.isInShipsRadiation(__instance.floater.transform))
                 {
@@ -275,9 +275,9 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static bool Update(RadiationsScreenFXController __instance)
         {
-            if ((Player.main == null) || (LeakingRadiation.main == null) || Config.FX_NORMAL.Equals(DeathRun.config.radiationFX))
+            if ((Player.main == null) || (LeakingRadiation.main == null) || Config.FX_NORMAL.Equals(DeathRunPlugin.config.radiationFX))
             {
-                DeathRun.saveData.playerSave.backgroundRads = 0;
+                DeathRunPlugin.saveData.playerSave.backgroundRads = 0;
                 return true;
             }
 
@@ -300,7 +300,7 @@ namespace DeathRun.Patchers
             {
                 backgroundRads = 0;
             }
-            DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
+            DeathRunPlugin.saveData.playerSave.backgroundRads = backgroundRads;
 
             if (Player.main == null)
             {
@@ -315,24 +315,24 @@ namespace DeathRun.Patchers
             float fixFactor = 1.0f;
             if (LeakingRadiation.main.GetNumLeaks() == 0)
             {
-                if (DeathRun.saveData.playerSave.fixedRadiation == 0)
+                if (DeathRunPlugin.saveData.playerSave.fixedRadiation == 0)
                 {
-                    DeathRun.saveData.playerSave.fixedRadiation = DayNightCycle.main.timePassedAsFloat;
+                    DeathRunPlugin.saveData.playerSave.fixedRadiation = DayNightCycle.main.timePassedAsFloat;
                 } 
-                else if (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.playerSave.fixedRadiation + FIX_PERIOD)
+                else if (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.saveData.playerSave.fixedRadiation + FIX_PERIOD)
                 {
                     fixFactor = 0.0f;
                 } 
                 else
                 {
-                    fixFactor = 1 - ((DayNightCycle.main.timePassedAsFloat - DeathRun.saveData.playerSave.fixedRadiation) / FIX_PERIOD);
+                    fixFactor = 1 - ((DayNightCycle.main.timePassedAsFloat - DeathRunPlugin.saveData.playerSave.fixedRadiation) / FIX_PERIOD);
                 }                
             }
 
             // If we're inside the ship (or near it), and radiation leaks aren't fixed yet, we show quite a bit more radiation effects
             if (fixFactor > 0)
             {
-                if (Config.FX_CHERNOBYL.Equals(DeathRun.config.radiationFX))
+                if (Config.FX_CHERNOBYL.Equals(DeathRunPlugin.config.radiationFX))
                 {
                     if (LDBiome.Contains("CrashedShip"))
                     {
@@ -415,9 +415,9 @@ namespace DeathRun.Patchers
                 }
 
                 backgroundRads = backgroundRads * fixFactor;
-                if (backgroundRads > DeathRun.saveData.playerSave.backgroundRads)
+                if (backgroundRads > DeathRunPlugin.saveData.playerSave.backgroundRads)
                 {
-                    DeathRun.saveData.playerSave.backgroundRads = backgroundRads;
+                    DeathRunPlugin.saveData.playerSave.backgroundRads = backgroundRads;
                 }
             }
 
@@ -461,11 +461,11 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         private static void UpdatePostfix(LeakingRadiation __instance)
         {
-            if (__instance.radiationFixed && !CrafterLogic.IsCraftRecipeUnlocked(DeathRun.filterChip.TechType) && Config.POISONED.Equals(DeathRun.config.surfaceAir))
+            if (__instance.radiationFixed && !CrafterLogic.IsCraftRecipeUnlocked(DeathRunPlugin.filterChip.TechType) && Config.POISONED.Equals(DeathRunPlugin.config.surfaceAir))
             {
                 PDAEncyclopedia.Add("FilterChip", true);
-                KnownTech.Add(DeathRun.filterChip.TechType, true);
-                //DeathRun.saveData.playerSave.setCue("FilterChip", 5);
+                KnownTech.Add(DeathRunPlugin.filterChip.TechType, true);
+                //DeathRunPlugin.saveData.playerSave.setCue("FilterChip", 5);
             }
         }
     }

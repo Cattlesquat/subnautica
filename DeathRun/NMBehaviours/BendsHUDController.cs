@@ -22,7 +22,7 @@ namespace DeathRun.NMBehaviours
 
         private void Awake()
         {
-            _N2HUDWarning = Instantiate<GameObject>(DeathRun.N2HUD);
+            _N2HUDWarning = Instantiate<GameObject>(DeathRunPlugin.N2HUD);
 
             canvasTransform = _N2HUDWarning.transform;
             n2Warning = canvasTransform.GetChild(0).GetComponent<Text>();
@@ -74,9 +74,9 @@ namespace DeathRun.NMBehaviours
                 {
                     main.n2Depth.text += " *";
                 }
-                else if (DeathRun.saveData.nitroSave.atPipe)
+                else if (DeathRunPlugin.saveData.nitroSave.atPipe)
                 {
-                    if (DeathRun.saveData.nitroSave.pipeTime > DeathRun.saveData.nitroSave.bubbleTime)
+                    if (DeathRunPlugin.saveData.nitroSave.pipeTime > DeathRunPlugin.saveData.nitroSave.bubbleTime)
                     {
                         main.n2Depth.text += " P*";
                     } else
@@ -87,7 +87,7 @@ namespace DeathRun.NMBehaviours
                     main.n2Depth.color = Color.cyan;
                 }
 
-                int depth = (int)Ocean.main.GetDepthOf(Player.main.gameObject);
+                int depth = (int)Ocean.GetDepthOf(Player.main.gameObject);
                 if (depth < safeDepth)
                 {
                     main.n2Depth.color = Color.red;
@@ -103,7 +103,7 @@ namespace DeathRun.NMBehaviours
 
                 main.n2Depth.color = Color.white;
 
-                if (DeathRun.saveData.nitroSave.atPipe)
+                if (DeathRunPlugin.saveData.nitroSave.atPipe)
                 {
                     main.n2Depth.color = Color.cyan;
                 }

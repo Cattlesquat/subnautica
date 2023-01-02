@@ -23,7 +23,7 @@ namespace DeathRun.Patchers
             if (techType == TechType.Compass)
             {
                 int count;
-                __instance.equippedCount.TryGetValue(DeathRun.filterChip.TechType, out count);
+                __instance.equippedCount.TryGetValue(DeathRunPlugin.filterChip.TechType, out count);
                 if (count > 0)
                 {
                     __result = count;

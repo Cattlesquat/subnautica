@@ -23,7 +23,7 @@ namespace DeathRun.Items
 
         internal static void PatchTanks()
         {
-            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/TankTabIcon.png");
+            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./BepInEx/plugins/" + Assets + @"/TankTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Specialty O2 Tanks", tabIcon);
             CattleLogger.Message("Creating new O2 tank crafting tab");
 
@@ -57,7 +57,7 @@ namespace DeathRun.Items
 
         public override GameObject GetGameObject()
         {
-            GameObject prefab = CraftData.GetPrefabForTechType(this.BaseType);
+            GameObject prefab = CraftData.GetPrefabForTechTypeAsync(this.BaseType).GetResult();
             var obj = GameObject.Instantiate(prefab);
 
             return obj;

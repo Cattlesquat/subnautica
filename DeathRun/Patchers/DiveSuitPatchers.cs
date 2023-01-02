@@ -40,7 +40,7 @@ namespace DeathRun.Patchers
             {
                 __instance.temperatureDamage.minDamageTemperature += 15f;
 
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     crushDepth = 800f;
                 } else
@@ -48,9 +48,9 @@ namespace DeathRun.Patchers
                     crushDepth = 8000f;
                 }
             }
-            else if (bodySlot == TechType.Stillsuit)
+            else if (bodySlot == TechType.WaterFiltrationSuit)
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     crushDepth = 800f;
                 }
@@ -63,7 +63,7 @@ namespace DeathRun.Patchers
             {
                 __instance.temperatureDamage.minDamageTemperature += 15f;
 
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     crushDepth = 1300f;
                 }
@@ -75,7 +75,7 @@ namespace DeathRun.Patchers
             else if (bodySlot == ReinforcedSuitsCore.ReinforcedSuit2ID)
             {
                 __instance.temperatureDamage.minDamageTemperature += 20f;
-                if (Config.DEATHRUN.Equals(DeathRun.config.personalCrushDepth))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.personalCrushDepth))
                 {
                     crushDepth = 1300f;
                 }
@@ -90,7 +90,7 @@ namespace DeathRun.Patchers
                 crushDepth = 8000f;
             }
 
-            if (Config.NORMAL.Equals(DeathRun.config.personalCrushDepth))
+            if (Config.NORMAL.Equals(DeathRunPlugin.config.personalCrushDepth))
             {
                 crushDepth = 8001f;
             }
@@ -100,9 +100,9 @@ namespace DeathRun.Patchers
                 __instance.temperatureDamage.minDamageTemperature += 6f;
             }
 
-            if (DeathRun.saveData.playerSave.crushDepth != crushDepth)
+            if (DeathRunPlugin.saveData.playerSave.crushDepth != crushDepth)
             {
-                DeathRun.saveData.playerSave.crushDepth = crushDepth;
+                DeathRunPlugin.saveData.playerSave.crushDepth = crushDepth;
 
                 if (crushDepth < 8000f)
                     ErrorMessage.AddMessage("Safe diving depth now " + crushDepth.ToString() + ".");

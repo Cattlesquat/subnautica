@@ -44,7 +44,7 @@ namespace DeathRun.Items
 
         public override GameObject GetGameObject()
         {
-            GameObject prefab = CraftData.GetPrefabForTechType(this.BaseType);
+            GameObject prefab = CraftData.GetPrefabForTechTypeAsync(this.BaseType).GetResult();
             var obj = GameObject.Instantiate(prefab);
 
             return obj;

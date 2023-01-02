@@ -23,7 +23,7 @@ namespace DeathRun.Items
 
         internal static void PatchSuits()
         {
-            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./Qmods/" + Assets + @"/SuitTabIcon.png");
+            var tabIcon = ImageUtils.LoadSpriteFromFile(@"./BepInEx/plugins/" + Assets + @"/SuitTabIcon.png");
             CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, craftTab, "Dive Suit Upgrades", tabIcon);
             CattleLogger.Message("Creating new dive suit crafting tab");
 
@@ -57,7 +57,7 @@ namespace DeathRun.Items
 
         public override GameObject GetGameObject()
         {
-            GameObject prefab = CraftData.GetPrefabForTechType(this.BaseType);
+            GameObject prefab = CraftData.GetPrefabForTechTypeAsync(this.BaseType).GetResult();
             var obj = GameObject.Instantiate(prefab);
 
             return obj;

@@ -21,12 +21,12 @@ namespace DeathRun
     using Items;
     using UnityEngine;
     using Patchers;
-    using QModManager.API.ModLoading;
     using SMLHelper.V2.Crafting;
     using System.Collections.Generic;
+    using BepInEx;
 
-    [QModCore]
-    public class DeathRun
+    [BepInPlugin("cattlesquat.deathrun.mod", "DeathRun", "3.0.0")]
+    public class DeathRunPlugin : BaseUnityPlugin
     {        
         public const string modID = "DeathRun";
         public const string modName = "[DeathRun]";
@@ -40,7 +40,7 @@ namespace DeathRun
         // DeathRun's "Stats" are saved and loaded in DeathRunUtils
         public static DeathRunStats statsData = new DeathRunStats();
 
-        public const string modFolder = "./QMods/DeathRun/";
+        public const string modFolder = "./BepInEx/plugins/DeathRun/";
         private const string assetFolder = modFolder + "Assets/";
         private const string assetBundle = assetFolder + "n2warning";
 
@@ -87,9 +87,9 @@ namespace DeathRun
         public static string cinematicCause = CAUSE_UNKNOWN;
         public static GameObject cinematicCauseObject = null;
 
-        internal static Config config { get; } = OptionsPanelHandler.Main.RegisterModOptions<Config>();
+        internal static DeathRun.Config config { get; } = OptionsPanelHandler.Main.RegisterModOptions<DeathRun.Config>();
 
-        public static void Patch()
+        public void Awake()
         {
             CattleLogger.setModName(modName);
             CattleLogger.PatchStart(DeathRunUtils.VERSION);
@@ -119,7 +119,7 @@ namespace DeathRun
 
                 DummySuitItems.PatchDummyItems();
                 ReinforcedSuitsCore.PatchSuits();
-                if (DeathRun.config.enableSpecialtyTanks)
+                if (DeathRunPlugin.config.enableSpecialtyTanks)
                 {
                     O2TanksCore.PatchTanks();
                 }
@@ -184,7 +184,7 @@ namespace DeathRun
 
                 CattleLogger.Message("Power Consumption");
 
-                //if (!Config.NORMAL.Equals(DeathRun.config.powerCosts)) { 
+                //if (!Config.NORMAL.Equals(DeathRunPlugin.config.powerCosts)) { 
                 harmony.Patch(AccessTools.Method(typeof(PowerSystem), "AddEnergy"),
                         new HarmonyMethod(typeof(PowerPatcher).GetMethod("AddEnergyBase")), null);
 
@@ -265,12 +265,12 @@ namespace DeathRun
                     new HarmonyMethod(typeof(ItemPatcher).GetMethod("GiveResourceOnDamage")), null);
 
 
-                CattleLogger.Message("Vehicle Costs: " + DeathRun.config.vehicleCosts);
+                CattleLogger.Message("Vehicle Costs: " + DeathRunPlugin.config.vehicleCosts);
 
                 Dictionary<TechType, TechData> techChanges = new Dictionary<TechType, TechData>();
 
                 // HATCHING ENZYMES - only changes if No Vehicles run (gives us extra copies to make vehicles after curing Kharaa)
-                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.NO_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     CattleLogger.Message("Hatching Enzymes");
 
@@ -295,7 +295,7 @@ namespace DeathRun
                 // SEAGLIDE
                 CattleLogger.Message("Seaglide");
                 ingredients = null;
-                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts) || Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.NO_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         //new Ingredient(TechType.Battery, 1),
@@ -305,7 +305,7 @@ namespace DeathRun
                         new Ingredient(TechType.Gold, 2)
                     };
                 }
-                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.HARD_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient>
                     {
@@ -328,7 +328,7 @@ namespace DeathRun
                 }
                 if (ingredients != null)
                 {
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -338,7 +338,7 @@ namespace DeathRun
 
                 // SEAMOTH
                 CattleLogger.Message("Seamoth");
-                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.NO_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.TitaniumIngot, 1),
@@ -349,7 +349,7 @@ namespace DeathRun
                         new Ingredient(TechType.HatchingEnzymes, 1)
                     };
                 }
-                else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 1),
@@ -363,7 +363,7 @@ namespace DeathRun
                         new Ingredient(TechType.EyesPlantSeed, 1)
                     };
                 }
-                else if (Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 1),
@@ -375,7 +375,7 @@ namespace DeathRun
                         new Ingredient(TechType.Aerogel, 1)
                     };
                 }
-                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.HARD_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient>
                     {
@@ -397,7 +397,7 @@ namespace DeathRun
                         new Ingredient(TechType.Lead, 1)
                     };
                 }
-                if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                 {
                     ingredients.Add(new Ingredient(TechType.PowerCell, 1));
                 }
@@ -405,7 +405,7 @@ namespace DeathRun
 
                 // SEAMOTH Depth Modules
                 CattleLogger.Message("Seamoth Depth Modules");
-                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     techChanges.Add(TechType.VehicleHullModule1,
                                     new TechData
@@ -452,7 +452,7 @@ namespace DeathRun
                 // PRAWN
                 CattleLogger.Message("Prawn");
                 ingredients = null;
-                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.NO_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 2),
@@ -463,7 +463,7 @@ namespace DeathRun
                         new Ingredient(TechType.HatchingEnzymes, 1)
                     };
                 }
-                else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 2),
@@ -475,7 +475,7 @@ namespace DeathRun
                         new Ingredient(TechType.Lubricant, 3)
                     };
                 }
-                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.HARD_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient>
                     {
@@ -490,7 +490,7 @@ namespace DeathRun
                 }
                 if (ingredients != null)
                 {
-                    //if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    //if (Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     //{
                     //    ingredients.Add(new Ingredient(TechType.PowerCell, 1));
                     //}
@@ -499,7 +499,7 @@ namespace DeathRun
 
                 // PRAWN Depth Module
                 CattleLogger.Message("Prawn Depth Modules");
-                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     techChanges.Add(TechType.ExoHullModule1,
                                     new TechData
@@ -519,7 +519,7 @@ namespace DeathRun
                 // CYCLOPS
                 CattleLogger.Message("Cyclops");
                 ingredients = null;
-                if (Config.NO_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.NO_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 3),
@@ -530,7 +530,7 @@ namespace DeathRun
                         new Ingredient(TechType.HatchingEnzymes, 1)
                     };
                 }
-                else if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient> {
                         new Ingredient(TechType.PlasteelIngot, 3),
@@ -541,7 +541,7 @@ namespace DeathRun
                         new Ingredient(TechType.Nickel, 3),
                     };
                 }
-                else if (Config.HARD_VEHICLES.Equals(DeathRun.config.vehicleCosts))
+                else if (DeathRun.Config.HARD_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     ingredients = new List<Ingredient>
                     {
@@ -556,7 +556,7 @@ namespace DeathRun
                 }
                 if (ingredients != null)
                 {
-                    //if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    //if (Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     //{
                     //    ingredients.Add(new Ingredient(TechType.PowerCell, 1));
                     //}
@@ -566,7 +566,7 @@ namespace DeathRun
 
                 // CYCLOPS Depth Modules
                 CattleLogger.Message("Cyclops Depth Modules");
-                if (Config.DEATH_VEHICLES.Equals(DeathRun.config.vehicleCosts) || Config.DEATH_VEHICLES_2.Equals(DeathRun.config.vehicleCosts))
+                if (DeathRun.Config.DEATH_VEHICLES.Equals(DeathRunPlugin.config.vehicleCosts) || DeathRun.Config.DEATH_VEHICLES_2.Equals(DeathRunPlugin.config.vehicleCosts))
                 {
                     techChanges.Add(TechType.CyclopsHullModule1,
                                     new TechData
@@ -610,7 +610,7 @@ namespace DeathRun
 
                 CattleLogger.Message("Habitat Builder Costs");
 
-                if (Config.DEATHRUN.Equals(DeathRun.config.builderCosts))
+                if (DeathRun.Config.DEATHRUN.Equals(DeathRunPlugin.config.builderCosts))
                 {
                     // Habitat Builder
                     ingredients = new List<Ingredient>
@@ -621,7 +621,7 @@ namespace DeathRun
                             new Ingredient(TechType.Lithium, 2),
                             new Ingredient(TechType.Magnetite, 1)
                         };
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -635,7 +635,7 @@ namespace DeathRun
                             new Ingredient(TechType.UraniniteCrystal, 2),
                             new Ingredient(TechType.Benzene, 1),
                         };
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -648,7 +648,7 @@ namespace DeathRun
                             new Ingredient(TechType.Magnetite, 2),
                             new Ingredient(TechType.Lead, 2),
                         };
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -711,7 +711,7 @@ namespace DeathRun
                         };
                     techChanges.Add(TechType.BaseNuclearReactor, new TechData { craftAmount = 1, Ingredients = ingredients });
                 }
-                else if (Config.HARD.Equals(DeathRun.config.builderCosts))
+                else if (DeathRun.Config.HARD.Equals(DeathRunPlugin.config.builderCosts))
                 {
                     // Habitat Builder
                     ingredients = new List<Ingredient>
@@ -721,7 +721,7 @@ namespace DeathRun
                             //new Ingredient(TechType.Battery, 1),
                             new Ingredient(TechType.Lithium, 1),
                         };
-                    if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (!DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -734,7 +734,7 @@ namespace DeathRun
                             new Ingredient(TechType.Magnetite, 2),
                             new Ingredient(TechType.UraniniteCrystal, 1),
                         };
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -747,7 +747,7 @@ namespace DeathRun
                             new Ingredient(TechType.Magnetite, 1),
                             new Ingredient(TechType.Lead, 2),
                         };
-                    if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                    if (DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                     {
                         ingredients.Add(new Ingredient(TechType.Battery, 1));
                     }
@@ -814,7 +814,7 @@ namespace DeathRun
                 }
 
                 CattleLogger.Message("Scans Required");
-                if (Config.EXORBITANT.Equals(DeathRun.config.scansRequired))
+                if (DeathRun.Config.EXORBITANT.Equals(DeathRunPlugin.config.scansRequired))
                 {
                     PDAHandler.EditFragmentsToScan(TechType.Seaglide, 6);
                     PDAHandler.EditFragmentsToScan(TechType.Seamoth, 20);
@@ -840,7 +840,7 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 4);
                     PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 6);
                 }
-                else if (Config.DEATHRUN.Equals(DeathRun.config.scansRequired))
+                else if (DeathRun.Config.DEATHRUN.Equals(DeathRunPlugin.config.scansRequired))
                 {
                     CattleLogger.Message("Scans Required: DeathRun");
 
@@ -868,7 +868,7 @@ namespace DeathRun
                     PDAHandler.EditFragmentsToScan(TechType.PowerTransmitter, 2);
                     PDAHandler.EditFragmentsToScan(TechType.BaseMapRoom, 5);
                 }
-                else if (Config.HARD.Equals(DeathRun.config.scansRequired))
+                else if (DeathRun.Config.HARD.Equals(DeathRunPlugin.config.scansRequired))
                 {
                     CattleLogger.Message("Scans Required: Hard");
 
@@ -901,7 +901,7 @@ namespace DeathRun
 
                 CattleLogger.Message("Battery Costs");
 
-                if (Config.DEATHRUN.Equals(DeathRun.config.batteryCosts) || Config.EXORBITANT.Equals(DeathRun.config.batteryCosts))
+                if (DeathRun.Config.DEATHRUN.Equals(DeathRunPlugin.config.batteryCosts) || DeathRun.Config.EXORBITANT.Equals(DeathRunPlugin.config.batteryCosts))
                 {
                     ingredients = new List<Ingredient>
                         {
@@ -914,7 +914,7 @@ namespace DeathRun
 
                     KnownTechHandler.Main.SetAnalysisTechEntry(TechType.Lithium, new List<TechType>() { TechType.Battery });
                 }
-                else if (Config.HARD.Equals(DeathRun.config.batteryCosts))
+                else if (DeathRun.Config.HARD.Equals(DeathRunPlugin.config.batteryCosts))
                 {
                     ingredients = new List<Ingredient>
                         {
@@ -932,7 +932,7 @@ namespace DeathRun
 
                 CattleLogger.Message("Remove Batteries from Recipes");
 
-                if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                if (!DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                 {
                     ingredients = new List<Ingredient>
                         {
@@ -983,7 +983,7 @@ namespace DeathRun
                     }
                 }
 
-                if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+                if (!DeathRun.Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
                 {
                     CattleLogger.Message("Unlock copper recycling");
                     KnownTechHandler.Main.UnlockOnStart(TechType.Copper);
@@ -991,7 +991,7 @@ namespace DeathRun
 
                 CattleLogger.Message("First Aid Kits => Quick Slots");
 
-                if (DeathRun.config.firstAidQuickSlot)
+                if (DeathRunPlugin.config.firstAidQuickSlot)
                 {
                     CraftDataHandler.SetQuickSlotType(TechType.FirstAidKit, QuickSlotType.Selectable);
                     CraftDataHandler.SetEquipmentType(TechType.FirstAidKit, EquipmentType.Hand);
@@ -1057,7 +1057,7 @@ namespace DeathRun
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (DeathRun.patchFailed)
+            if (DeathRunPlugin.patchFailed)
             {
                 ErrorMessage.AddMessage("PATCH FAILED - Death Run patch failed to complete. See errorlog (Logoutput.Log) for details.");
                 DeathRunUtils.CenterMessage("PATCH FAILED", 10, 6);

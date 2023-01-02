@@ -20,11 +20,11 @@ namespace DeathRun.Patchers
         {
             if (Player.main.IsSwimming())
             {
-                DeathRun.setCause("Drowning");
+                DeathRunPlugin.setCause("Drowning");
             }
             else
             {
-                DeathRun.setCause("Asphyxiation");
+                DeathRunPlugin.setCause("Asphyxiation");
             }
 
             return true;
@@ -38,8 +38,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(MeleeAttack __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -51,8 +51,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(AttachAndSuck __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -65,8 +65,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(CrabsnakeMeleeAttack __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -79,8 +79,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageOnPickup __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -93,8 +93,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageOverTime __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -107,8 +107,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamagePlayerInRadius __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -121,8 +121,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageSphere __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -135,7 +135,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageOnPickup __instance)
         {
-            DeathRun.setCause("Explosion");
+            DeathRunPlugin.setCause("Explosion");
             return true;
         }
     }
@@ -148,7 +148,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(DamageOnPickup __instance)
         {
-            DeathRun.setCause("Falling Objects");
+            DeathRunPlugin.setCause("Falling Objects");
             return true;
         }
     }
@@ -162,8 +162,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(JuvenileEmperorMeleeAttack __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -176,7 +176,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(Lava __instance)
         {
-            DeathRun.setCause("Lava");
+            DeathRunPlugin.setCause("Lava");
             return true;
         }
     }
@@ -189,7 +189,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(MagmaBlob __instance)
         {
-            DeathRun.setCause("Chunk of Magma");
+            DeathRunPlugin.setCause("Chunk of Magma");
             return true;
         }
     }
@@ -202,8 +202,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(RangeAttacker __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -216,8 +216,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ReaperMeleeAttack __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -231,7 +231,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(Projectile __instance)
         {
-            DeathRun.setCause("Projectile");
+            DeathRunPlugin.setCause("Projectile");
             return true;
         }
     }
@@ -243,8 +243,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
             public static bool Prefix(SeaDragonMeleeAttack __instance)
             {
-                DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-                DeathRun.setCauseObject(__instance.gameObject);
+                DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+                DeathRunPlugin.setCauseObject(__instance.gameObject);
                 return true;
             }
         }
@@ -256,8 +256,8 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(SeaDragonMeleeAttack __instance)
         {
-            DeathRun.setCause(DeathRun.CAUSE_UNKNOWN_CREATURE);
-            DeathRun.setCauseObject(__instance.gameObject);
+            DeathRunPlugin.setCause(DeathRunPlugin.CAUSE_UNKNOWN_CREATURE);
+            DeathRunPlugin.setCauseObject(__instance.gameObject);
             return true;
         }
     }
@@ -270,7 +270,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(SeaDragonMeleeAttack __instance)
         {
-            DeathRun.setCause("Stomped by Treader");
+            DeathRunPlugin.setCause("Stomped by Treader");
             return true;
         }
     }
@@ -283,7 +283,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(WarpBall  __instance)
         {
-            DeathRun.setCause("Warp Ball");
+            DeathRunPlugin.setCause("Warp Ball");
             return true;
         }
     }
@@ -296,7 +296,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(CyclopsDestructionEvent __instance)
         {
-            DeathRun.setCause("Went Down w/ Cyclops");
+            DeathRunPlugin.setCause("Went Down w/ Cyclops");
             return true;
         }
     }
@@ -309,7 +309,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRun.setCause("Console Command");
+            DeathRunPlugin.setCause("Console Command");
             return true;
         }
     }
@@ -322,20 +322,20 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRun.setCause("Console Command");
+            DeathRunPlugin.setCause("Console Command");
             return true;
         }
     }
 
 
     [HarmonyPatch(typeof(Rocket))]
-    [HarmonyPatch("FixedUpdate")]
+    [HarmonyPatch("Update")]
     internal class RocketKillPatch
     {
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            DeathRun.setCause("Elevator Accident");
+            DeathRunPlugin.setCause("Elevator Accident");
             return true;
         }
     }
@@ -350,10 +350,10 @@ namespace DeathRun.Patchers
         {
             if (__instance.water <= 0)
             {
-                DeathRun.setCause("Dehydration");
+                DeathRunPlugin.setCause("Dehydration");
             } else
             {
-                DeathRun.setCause("Starvation");
+                DeathRunPlugin.setCause("Starvation");
             }            
             return true;
         }
@@ -390,8 +390,8 @@ namespace DeathRun.Patchers
                 // If we just got put into "cinematic kill sequence", remember our kill object for future frames.
                 if (__instance.cinematicModeActive && !wasCinematic)
                 {
-                    DeathRun.cinematicCause       = DeathRun.cause;
-                    DeathRun.cinematicCauseObject = DeathRun.causeObject;
+                    DeathRunPlugin.cinematicCause       = DeathRunPlugin.cause;
+                    DeathRunPlugin.cinematicCauseObject = DeathRunPlugin.causeObject;
                 }
             }
         }
@@ -411,8 +411,8 @@ namespace DeathRun.Patchers
         {
             if (__instance.player && __instance.cinematicModeActive)
             {
-                DeathRun.cause       = DeathRun.cinematicCause;
-                DeathRun.causeObject = DeathRun.cinematicCauseObject;
+                DeathRunPlugin.cause       = DeathRunPlugin.cinematicCause;
+                DeathRunPlugin.causeObject = DeathRunPlugin.cinematicCauseObject;
             }
             return true;
         }

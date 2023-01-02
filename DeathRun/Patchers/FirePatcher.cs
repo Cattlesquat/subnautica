@@ -18,19 +18,19 @@ namespace DeathRun.Patchers
         public static void Postfix(ref SubFire __instance, ref bool __result, float chance)
         {
             float fire;
-            if (Config.NO_WAY.Equals(DeathRun.config.damageTaken2))
+            if (Config.NO_WAY.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 fire = .5f;
             }
-            else if (Config.INSANITY.Equals(DeathRun.config.damageTaken2))
+            else if (Config.INSANITY.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 fire = .25f;
             }
-            else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken2))
+            else if (Config.HARDCORE.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 fire = .125f;
             } 
-            else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken2))
+            else if (Config.LOVETAPS.Equals(DeathRunPlugin.config.damageTaken2))
             {
                 fire = .0625f;
             } else

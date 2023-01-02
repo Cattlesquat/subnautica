@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Oculus.Newtonsoft.Json;
+using Newtonsoft.Json;
 using SMLHelper.V2.Utility;
 using Common;
 
@@ -30,7 +30,7 @@ namespace DeathRun
             new CenterText(100f)
         };
 
-        public class CenterText : BasicText
+        public class CenterText : Common.BasicText
         {
             public CenterText(float set_y) : base()
             {
@@ -196,8 +196,8 @@ namespace DeathRun
 
         public static int HIGH_SCORE_ROWS = DeathRunStats.MAX_HIGH_SCORES + 2;
 
-        public static BasicText highScoreLabel = new BasicText(-544,  150, 30);
-        public static BasicText highScoreTag   = new BasicText(-544, -200, 20);
+        public static Common.BasicText highScoreLabel = new Common.BasicText(-544,  150, 30);
+        public static Common.BasicText highScoreTag   = new Common.BasicText(-544, -200, 20);
 
         public static HighScoreText[] highScoreNumbers  = new HighScoreText[HIGH_SCORE_ROWS];
         public static HighScoreText[] highScoreStarts   = new HighScoreText[HIGH_SCORE_ROWS];
@@ -255,6 +255,12 @@ namespace DeathRun
                 InitHighScores();
             }
 
+            if (highScoreLabel == null)
+                highScoreLabel = new Common.BasicText(-544, 150, 30);
+        
+            if (highScoreTag == null)
+                highScoreTag = new Common.BasicText(-544, -200, 20);
+
             // When "should" is false, it means we're being called because of an Options/Preference change, not a menu state change
             if (!should && !wouldBeShowing) {
                 return;
@@ -262,7 +268,7 @@ namespace DeathRun
 
             wouldBeShowing = true;
 
-            if (!DeathRun.config.showHighScores)
+            if (!DeathRunPlugin.config.showHighScores)
             {
                 return;
             }
@@ -290,9 +296,9 @@ namespace DeathRun
             highScoreTag.setAlign(TextAnchor.MiddleCenter);
 
             int pick;
-            if (DeathRun.statsData.VeryFirstTime || !DeathRun.config.showTips)
+            if (DeathRunPlugin.statsData.VeryFirstTime || !DeathRunPlugin.config.showTips)
             {
-                DeathRun.statsData.VeryFirstTime = false;
+                DeathRunPlugin.statsData.VeryFirstTime = false;
                 pick = 0;
             } else
             {
@@ -302,7 +308,7 @@ namespace DeathRun
             highScoreTag.ShowMessage(tips[pick]); // "How long can YOU survive?"
 
             int index = 0;
-            foreach (RunData score in DeathRun.statsData.HighScores)
+            foreach (RunData score in DeathRunPlugin.statsData.HighScores)
             {
                 highScoreNumbers[index].ShowMessage("" + (index + 1));
                 highScoreStarts[index].ShowMessage(score.Start);
@@ -324,7 +330,7 @@ namespace DeathRun
 
                 highScoreScores[index].ShowMessage("" + score.Score);
 
-                if (index == DeathRun.statsData.RecentIndex)
+                if (index == DeathRunPlugin.statsData.RecentIndex)
                 {
                     Color c = (index == DeathRunStats.MAX_HIGH_SCORES) ? Color.red : Color.green;
                     highScoreNumbers[index].setColor(c);
@@ -482,8 +488,8 @@ namespace DeathRun
 
         public void startNewRun()
         {
-            ID    = DeathRun.statsData.getNewRunID();
-            Start = DeathRun.saveData.startSave.message;
+            ID    = DeathRunPlugin.statsData.getNewRunID();
+            Start = DeathRunPlugin.saveData.startSave.message;
             Version = DeathRunUtils.VERSION;
 
             CattleLogger.Message("Starting new run - " + ID + " " + Start);
@@ -497,8 +503,8 @@ namespace DeathRun
          */
         public void countSettings()
         {
-            int count   = DeathRun.config.countDeathRunSettings();
-            int bonuses = DeathRun.config.countDeathRunBonuses();
+            int count   = DeathRunPlugin.config.countDeathRunSettings();
+            int bonuses = DeathRunPlugin.config.countDeathRunBonuses();
 
             if ("".Equals(Version))
             {
@@ -531,15 +537,15 @@ namespace DeathRun
 
         public void updateVitals (bool victory)
         {
-            Cause = DeathRun.cause;
-            RunTime = DeathRun.saveData.playerSave.allLives;
-            Deaths = DeathRun.saveData.playerSave.numDeaths;
+            Cause = DeathRunPlugin.cause;
+            RunTime = DeathRunPlugin.saveData.playerSave.allLives;
+            Deaths = DeathRunPlugin.saveData.playerSave.numDeaths;
             Victory = victory;
 
             countSettings();
             calcScore();
 
-            DeathRun.statsData.addRun(this);
+            DeathRunPlugin.statsData.addRun(this);
         }
 
 
@@ -753,8 +759,8 @@ namespace DeathRun
         {
             string saveDirectory = SaveUtils.GetCurrentSaveDataDir();
 
-            DeathRun.saveData.countSave.AboutToSaveGame();
-            DeathRun.saveData.playerSave.AboutToSaveGame();
+            DeathRunPlugin.saveData.countSave.AboutToSaveGame();
+            DeathRunPlugin.saveData.playerSave.AboutToSaveGame();
 
             try
             {
@@ -772,7 +778,7 @@ namespace DeathRun
                     Directory.CreateDirectory(saveDirectory);
                 }
 
-                File.WriteAllText(Path.Combine(saveDirectory, DeathRun.SaveFile), saveDataJson);
+                File.WriteAllText(Path.Combine(saveDirectory, DeathRunPlugin.SaveFile), saveDataJson);
             }
             catch (Exception e)
             {
@@ -783,7 +789,7 @@ namespace DeathRun
 
         public void Load() 
         {
-            var path = Path.Combine(SaveUtils.GetCurrentSaveDataDir(), DeathRun.SaveFile);
+            var path = Path.Combine(SaveUtils.GetCurrentSaveDataDir(), DeathRunPlugin.SaveFile);
 
             if (!File.Exists(path))
             {
@@ -802,16 +808,16 @@ namespace DeathRun
                     NullValueHandling = NullValueHandling.Ignore,
                     //PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 };
-               
+
                 //var json = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
                 //this.exampleString = json.exampleString;
                 //this.exampleData = json.exampleData;
 
                 // This deserializes the whole saveData object all at once.
-                DeathRun.saveData = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
+                DeathRunPlugin.saveData = JsonConvert.DeserializeObject<DeathRunSaveData>(save, jsonSerializerSettings);
 
-                DeathRun.saveData.countSave.JustLoadedGame();
-                DeathRun.saveData.playerSave.JustLoadedGame();
+                DeathRunPlugin.saveData.countSave.JustLoadedGame();
+                DeathRunPlugin.saveData.playerSave.JustLoadedGame();
 
                 // Special escape-pod re-adjustments
                 EscapePod_FixedUpdate_Patch.JustLoadedGame();
@@ -870,12 +876,12 @@ namespace DeathRun
     {
         public void OnProtoDeserialize(ProtobufSerializer serializer)
         {
-            DeathRun.saveData.Load();
+            DeathRunPlugin.saveData.Load();
         }
 
         public void OnProtoSerialize(ProtobufSerializer serializer)
         {
-            DeathRun.saveData.Save();
+            DeathRunPlugin.saveData.Save();
         }
     }
 
@@ -913,7 +919,7 @@ namespace DeathRun
          */
         public int getNewRunID()
         {
-            if (DeathRun.patchFailed) return -1;
+            if (DeathRunPlugin.patchFailed) return -1;
 
             RunCounter++;
 
@@ -1011,7 +1017,7 @@ namespace DeathRun
 
         public void SaveStats()
         {
-            if (DeathRun.patchFailed) return;
+            if (DeathRunPlugin.patchFailed) return;
 
             Version = DeathRunUtils.VERSION;
 
@@ -1026,7 +1032,7 @@ namespace DeathRun
 
                 var statsDataJson = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
 
-                File.WriteAllText(Path.Combine(DeathRun.modFolder, DeathRun.StatsFile), statsDataJson);
+                File.WriteAllText(Path.Combine(DeathRunPlugin.modFolder, DeathRunPlugin.StatsFile), statsDataJson);
             }
             catch (Exception e)
             {
@@ -1037,7 +1043,7 @@ namespace DeathRun
 
         public void LoadStats()
         {
-            var path = Path.Combine(DeathRun.modFolder, DeathRun.StatsFile);
+            var path = Path.Combine(DeathRunPlugin.modFolder, DeathRunPlugin.StatsFile);
 
             if (!File.Exists(path))
             {
@@ -1059,9 +1065,9 @@ namespace DeathRun
                 };
 
                 // This deserializes the whole statsData object all at once.
-                DeathRun.statsData = JsonConvert.DeserializeObject<DeathRunStats>(save, jsonSerializerSettings);
+                DeathRunPlugin.statsData = JsonConvert.DeserializeObject<DeathRunStats>(save, jsonSerializerSettings);
 
-                DeathRun.statsData.JustLoadedStats();
+                DeathRunPlugin.statsData.JustLoadedStats();
             }
             catch (Exception e)
             {
@@ -1077,7 +1083,7 @@ namespace DeathRun
 
 
 
-    public class HighScoreText : BasicText
+    public class HighScoreText : Common.BasicText
     {
         public HighScoreText() : base(20)
         {            

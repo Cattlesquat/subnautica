@@ -18,7 +18,7 @@ using UnityEngine;
 namespace DeathRun.Patchers   
 {
     /**
-     * Data that is saved/restored with saved games is here (DeathRun.saveData.podSave)
+     * Data that is saved/restored with saved games is here (DeathRunPlugin.saveData.podSave)
      */
     public class PodSaveData
     {
@@ -71,7 +71,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]            
         public static bool Prefix(ref Vector3 position, EscapePod __instance) 
         {
-            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
                 return true;
             }
@@ -96,11 +96,11 @@ namespace DeathRun.Patchers
         public static void Postfix()
         {
             float restore;
-            if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+            if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
             {
                 restore = 5;   // Recharge each cell by 5 (total of 15)
             } 
-            else if (Config.HARDCORE.Equals(DeathRun.config.powerCosts))
+            else if (Config.HARDCORE.Equals(DeathRunPlugin.config.powerCosts))
             {
                 restore = 10;  // Recharge each cell by 10 (total of 30)
             } 
@@ -132,29 +132,29 @@ namespace DeathRun.Patchers
 
         public static bool isRighting()
         {
-            return DeathRun.saveData.podSave.podRepaired && !DeathRun.saveData.podSave.podRighted && !DeathRun.config.podStayUpright;
+            return DeathRunPlugin.saveData.podSave.podRepaired && !DeathRunPlugin.saveData.podSave.podRighted && !DeathRunPlugin.config.podStayUpright;
         }
 
 
         [HarmonyPrefix]
         public static bool Prefix(EscapePod __instance)
         {
-            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
                 return true;
             }
 
             WorldForces wf = __instance.GetComponent<WorldForces>();
-            float depth = Ocean.main.GetDepthOf(__instance.gameObject);
+            float depth = Ocean.GetDepthOf(__instance.gameObject);
 
             // Copy our current transform
-            if (!DeathRun.saveData.podSave.podAnchored || isRighting())                
+            if (!DeathRunPlugin.saveData.podSave.podAnchored || isRighting())                
             {
-                DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
+                DeathRunPlugin.saveData.podSave.podTransform.copyFrom(__instance.transform);
             }
 
             // This block makes sure the pod doesn't sink *during* the opening cinematic etc.
-            if (!DeathRun.saveData.podSave.podSinking)
+            if (!DeathRunPlugin.saveData.podSave.podSinking)
             {
                 frozen = false;
 
@@ -165,9 +165,9 @@ namespace DeathRun.Patchers
                 }
 
                 // Otherwise, "turn on gravity" for the pod
-                if (DeathRun.saveData.podSave.podGravity)
+                if (DeathRunPlugin.saveData.podSave.podGravity)
                 {
-                    DeathRun.saveData.podSave.podSinking = true;
+                    DeathRunPlugin.saveData.podSave.podSinking = true;
                     wf.underwaterGravity = 9.81f;
                     if (depth <= 0)
                     {
@@ -187,14 +187,14 @@ namespace DeathRun.Patchers
             }
 
             // Give player some early feedback the lifepod is sinking
-            if (DeathRun.saveData.podSave.podGravity && (depth > 6) && (DeathRun.saveData.podSave.lastDepth < 6))
+            if (DeathRunPlugin.saveData.podSave.podGravity && (depth > 6) && (DeathRunPlugin.saveData.podSave.lastDepth < 6))
             {
                 ErrorMessage.AddMessage("The Life Pod is sinking!");
                 DeathRunUtils.CenterMessage("The Life Pod is sinking!", 6);
             }
 
             int secs = (int)DayNightCycle.main.timePassedAsFloat;
-            if (secs != DeathRun.saveData.podSave.prevSecs)
+            if (secs != DeathRunPlugin.saveData.podSave.prevSecs)
             {
                 // Note if we've recently been frozen in place by cut scene or player distance
                 if (frozen || __instance.rigidbodyComponent.isKinematic) 
@@ -203,15 +203,15 @@ namespace DeathRun.Patchers
                 }
 
                 // Check when pod hits bottom so we can stop processing it.
-                if (!DeathRun.saveData.podSave.podRepaired && (DeathRun.saveData.podSave.prevSecs > 0) && (secs - frozenSecs > 2) && (depth > 20))
+                if (!DeathRunPlugin.saveData.podSave.podRepaired && (DeathRunPlugin.saveData.podSave.prevSecs > 0) && (secs - frozenSecs > 2) && (depth > 20))
                 {
-                    float dist = Vector3.Distance(DeathRun.saveData.podSave.podPrev.position, DeathRun.saveData.podSave.podTransform.position);
+                    float dist = Vector3.Distance(DeathRunPlugin.saveData.podSave.podPrev.position, DeathRunPlugin.saveData.podSave.podTransform.position);
 
-                    if (!DeathRun.saveData.podSave.podAnchored && (dist < 0.5))
+                    if (!DeathRunPlugin.saveData.podSave.podAnchored && (dist < 0.5))
                     {
                         ErrorMessage.AddMessage("The Escape Pod has struck bottom!");
                         DeathRunUtils.CenterMessage("The Escape Pod has struck bottom!", 6);
-                        DeathRun.saveData.podSave.podAnchored = true;
+                        DeathRunPlugin.saveData.podSave.podAnchored = true;
                         float random = UnityEngine.Random.value;
                         float angle;
                         float up = 2;
@@ -259,29 +259,29 @@ namespace DeathRun.Patchers
                         }
 
                         // Make a copy of our "upright state"
-                        DeathRun.saveData.podSave.podStraight.copyFrom(__instance.transform);
+                        DeathRunPlugin.saveData.podSave.podStraight.copyFrom(__instance.transform);
 
                         // Now tip the pod over and copy that
                         __instance.transform.Rotate(Vector3.forward, angle); // Jolt at bottom!
-                        DeathRun.saveData.podSave.podTipped.copyFrom(__instance.transform);
+                        DeathRunPlugin.saveData.podSave.podTipped.copyFrom(__instance.transform);
 
                         // If we're supposed to (based on preferences) stay straight up, copy THAT back
-                        if (DeathRun.config.podStayUpright)
+                        if (DeathRunPlugin.config.podStayUpright)
                         {
-                            DeathRun.saveData.podSave.podStraight.copyTo(__instance.transform);
+                            DeathRunPlugin.saveData.podSave.podStraight.copyTo(__instance.transform);
                         }
 
                         // Finally, store the stable transform we're supposed to use.
-                        DeathRun.saveData.podSave.podTransform.copyFrom(__instance.transform);
+                        DeathRunPlugin.saveData.podSave.podTransform.copyFrom(__instance.transform);
                     }
                 }
-                DeathRun.saveData.podSave.prevSecs = secs;
-                DeathRun.saveData.podSave.podPrev.copyFrom(DeathRun.saveData.podSave.podTransform);
+                DeathRunPlugin.saveData.podSave.prevSecs = secs;
+                DeathRunPlugin.saveData.podSave.podPrev.copyFrom(DeathRunPlugin.saveData.podSave.podTransform);
             }
 
             // If player is away from the pod, stop gravity so that it doesn't fall through the world when the geometry unloads
             frozen = (Vector3.Distance(__instance.transform.position, Player.main.transform.position) > 20) ||
-                     (DeathRun.saveData.podSave.podAnchored && !isRighting());
+                     (DeathRunPlugin.saveData.podSave.podAnchored && !isRighting());
             if (frozen)
             {
                 wf.underwaterGravity = 0.0f;
@@ -294,14 +294,14 @@ namespace DeathRun.Patchers
             // Once pod is repaired, we give it a little time to right itself and then restore kinematic mode "for safety"
             if (isRighting())
             {
-                if ((DeathRun.saveData.podSave.podRightingTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRun.saveData.podSave.podRightingTime + 15))
+                if ((DeathRunPlugin.saveData.podSave.podRightingTime > 0) && (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.saveData.podSave.podRightingTime + 15))
                 {
-                    DeathRun.saveData.podSave.podRighted = true;
+                    DeathRunPlugin.saveData.podSave.podRighted = true;
                     __instance.rigidbodyComponent.isKinematic = true;
                 }
             }
 
-            DeathRun.saveData.podSave.lastDepth = depth;
+            DeathRunPlugin.saveData.podSave.lastDepth = depth;
             return true;
         }
 
@@ -310,26 +310,26 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(EscapePod __instance)
         {
-            if (Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
                 return;
             }
 
-            if (!DeathRun.saveData.podSave.podGravity || (DeathRun.saveData.podSave.podAnchored && !isRighting())) 
+            if (!DeathRunPlugin.saveData.podSave.podGravity || (DeathRunPlugin.saveData.podSave.podAnchored && !isRighting())) 
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
             }
-            else if (DeathRun.playerIsDead)
+            else if (DeathRunPlugin.playerIsDead)
             {
                 __instance.rigidbodyComponent.isKinematic = true; // Make sure pod stays in place (turns off physics effects)
                 wasDead = true;
             }
             else
             {
-                if (wasDead && !DeathRun.playerIsDead)
+                if (wasDead && !DeathRunPlugin.playerIsDead)
                 {
                     wasDead = false;
-                    if (!DeathRun.saveData.podSave.podAnchored && DeathRun.saveData.podSave.podGravity)
+                    if (!DeathRunPlugin.saveData.podSave.podAnchored && DeathRunPlugin.saveData.podSave.podGravity)
                     {
                         __instance.rigidbodyComponent.isKinematic = false;
                     }
@@ -337,7 +337,7 @@ namespace DeathRun.Patchers
 
                 if (frozen)
                 {
-                    DeathRun.saveData.podSave.podTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
+                    DeathRunPlugin.saveData.podSave.podTransform.copyTo(__instance.transform); // Teleport pod back to where it was at beginning of frame (temporary "frozen" behavior)
                 }
             }
         }
@@ -364,7 +364,7 @@ namespace DeathRun.Patchers
                 setRegenerateInterval(20);
             } else 
             {
-                if (DayNightCycle.main.timePassedAsFloat < DeathRun.saveData.podSave.podRepairTime + 45*60)
+                if (DayNightCycle.main.timePassedAsFloat < DeathRunPlugin.saveData.podSave.podRepairTime + 45*60)
                 {
                     setRegenerateInterval(7.5f);
                 }
@@ -383,19 +383,19 @@ namespace DeathRun.Patchers
          */
         public static void JustLoadedGame()
         {
-            if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+            if (!Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
             {
                 WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
-                float depth = Ocean.main.GetDepthOf(EscapePod.main.gameObject);
+                float depth = Ocean.GetDepthOf(EscapePod.main.gameObject);
 
-                if (DeathRun.saveData.podSave.podSinking)
+                if (DeathRunPlugin.saveData.podSave.podSinking)
                 {
                     wf.aboveWaterGravity = 9.81f;
                 }
 
-                if (DeathRun.saveData.podSave.podAnchored)
+                if (DeathRunPlugin.saveData.podSave.podAnchored)
                 {
-                    DeathRun.saveData.podSave.podTransform.copyTo(EscapePod.main.transform);
+                    DeathRunPlugin.saveData.podSave.podTransform.copyTo(EscapePod.main.transform);
                     EscapePod.main.rigidbodyComponent.isKinematic = true;
                     wf.underwaterGravity = 0.0f;
                 }
@@ -454,19 +454,19 @@ namespace DeathRun.Patchers
         public static void Postfix()
         {
             // Check if we've repaired the pod
-            if (!EscapePod.main.damageEffectsShowing && !DeathRun.saveData.podSave.podRepaired)
+            if (!EscapePod.main.damageEffectsShowing && !DeathRunPlugin.saveData.podSave.podRepaired)
             {
                 if (EscapePod.main.liveMixin.GetHealthFraction() > 0.99f)
                 {
-                    DeathRun.saveData.podSave.podRepaired = true;
-                    DeathRun.saveData.podSave.podRepairTime = DayNightCycle.main.timePassedAsFloat;
+                    DeathRunPlugin.saveData.podSave.podRepaired = true;
+                    DeathRunPlugin.saveData.podSave.podRepairTime = DayNightCycle.main.timePassedAsFloat;
                 }
             }
 
             // This just fixes a situation that 1.7.1 screwed up for some people
-            if (EscapePod.main.damageEffectsShowing && DeathRun.saveData.podSave.podRepaired) { 
-                DeathRun.saveData.podSave.podRepaired = false;
-                DeathRun.saveData.podSave.podRepairTime = 0;
+            if (EscapePod.main.damageEffectsShowing && DeathRunPlugin.saveData.podSave.podRepaired) { 
+                DeathRunPlugin.saveData.podSave.podRepaired = false;
+                DeathRunPlugin.saveData.podSave.podRepairTime = 0;
             }
 
             // If we've repaired the pod but it hasn't right itself yet, let it off the kinematic leash to turn itself upright
@@ -474,9 +474,9 @@ namespace DeathRun.Patchers
             {
                 if (Vector3.Distance(EscapePod.main.transform.position, Player.main.transform.position) < 15)
                 {
-                    if (DeathRun.saveData.podSave.podRightingTime <= 0)
+                    if (DeathRunPlugin.saveData.podSave.podRightingTime <= 0)
                     {
-                        DeathRun.saveData.podSave.podRightingTime = DayNightCycle.main.timePassedAsFloat;
+                        DeathRunPlugin.saveData.podSave.podRightingTime = DayNightCycle.main.timePassedAsFloat;
                     }
                     EscapePod.main.rigidbodyComponent.isKinematic = false;
                     WorldForces wf = EscapePod.main.GetComponent<WorldForces>();
@@ -531,13 +531,13 @@ namespace DeathRun.Patchers
                     string content = Language.main.Get("IntroEscapePod3Content");
                     string bonus;
 
-                    if (DeathRun.saveData.podSave.podAnchored || Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+                    if (DeathRunPlugin.saveData.podSave.podAnchored || Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
                     {
-                        if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+                        if (!Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
                         {
                             content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: FAILED");
 
-                            if (DeathRun.config.podStayUpright || DeathRun.saveData.podSave.podRepaired)
+                            if (DeathRunPlugin.config.podStayUpright || DeathRunPlugin.saveData.podSave.podRepaired)
                             {
                                 content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
                             }
@@ -557,7 +557,7 @@ namespace DeathRun.Patchers
                         content = content.Replace("Radio: OFFLINE", "Radio: INCOMING ONLY");
                     }
 
-                    if (!Config.NORMAL.Equals(DeathRun.config.creatureAggression))
+                    if (!Config.NORMAL.Equals(DeathRunPlugin.config.creatureAggression))
                     {
                         content = content.Replace("Uncharted ocean planet 4546B", "Planet 4546B: HOSTILE FAUNA");
                     }
@@ -596,7 +596,7 @@ namespace DeathRun.Patchers
                         content = content.Replace("Incoming radio communication: ONLINE", "Incoming radio communication: OFFLINE");
                     }
 
-                    if (!Config.NORMAL.Equals(DeathRun.config.creatureAggression))
+                    if (!Config.NORMAL.Equals(DeathRunPlugin.config.creatureAggression))
                     {
                         content = content.Replace("Uncharted ocean planet 4546B", (blinkOn ? "Planet 4546B: HOSTILE FAUNA" : "Planet 4546B: "));
                     }
@@ -606,11 +606,11 @@ namespace DeathRun.Patchers
                         content = content.Replace("Oxygen/nitrogen atmosphere", "Atmosphere: requires filtration");
                     }
 
-                    if (!Config.BASIC_GAME.Equals(DeathRun.config.startLocation))
+                    if (!Config.BASIC_GAME.Equals(DeathRunPlugin.config.startLocation))
                     {
                         content = content.Replace("Flotation Devices: DEPLOYED", "Flotation Devices: FAILED");
 
-                        if (DeathRun.config.podStayUpright || DeathRun.saveData.podSave.podRepaired)
+                        if (DeathRunPlugin.config.podStayUpright || DeathRunPlugin.saveData.podSave.podRepaired)
                         {
                             content = content.Replace("Hull Integrity: OK", "Inertial Stabilizers: DEPLOYED");
                         } else
@@ -633,7 +633,7 @@ namespace DeathRun.Patchers
 
                     if (RadiationUtils.isRadiationActive())
                     {
-                        if (Config.NORMAL.Equals(DeathRun.config.radiationDepth))
+                        if (Config.NORMAL.Equals(DeathRunPlugin.config.radiationDepth))
                         {
                             bonus += "\n    - Radiation Hazard: Aurora";
                         }
@@ -660,7 +660,7 @@ namespace DeathRun.Patchers
             // This adds a listener to the Escape Pod's game object, entirely for the purpose of letting the whole mod know
             // when the player is saving/loading the game so that we will save and load our part.
 
-            DeathRun.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
+            DeathRunPlugin.saveListener = EscapePod.main.gameObject.AddComponent<DeathRunSaveListener>();
         }
     }
 }
