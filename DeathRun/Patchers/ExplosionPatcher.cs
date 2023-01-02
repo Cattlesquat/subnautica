@@ -28,7 +28,7 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void CreateExplosiveForce() // Should only be called when Aurora explodes
         {
-            float depth = Ocean.main.GetDepthOf(Player.main.gameObject);
+            float depth = Ocean.GetDepthOf(Player.main.gameObject);
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
             if (component == null)
             {
@@ -36,11 +36,11 @@ namespace DeathRun.Patchers
             }
 
             float damage;
-            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRun.config.explodeDepth))
+            if (Config.EXPLOSION_DEATHRUN.Equals(DeathRunPlugin.config.explodeDepth))
             {
                 damage = 500f;
             }
-            else if (Config.EXPLOSION_HARD.Equals(DeathRun.config.explodeDepth))
+            else if (Config.EXPLOSION_HARD.Equals(DeathRunPlugin.config.explodeDepth))
             {
                 damage = 300f;
             }

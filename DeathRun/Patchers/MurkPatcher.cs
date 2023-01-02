@@ -21,21 +21,21 @@ namespace DeathRun.Patchers
         {            
             var t = __instance;
 
-            if (Config.MURK_NORMAL.Equals(DeathRun.config.murkiness)) 
+            if (Config.MURK_NORMAL.Equals(DeathRunPlugin.config.murkiness)) 
             {
                 return true;
             }
 
             float murkerizer;
-            if (Config.MURK_DARK.Equals(DeathRun.config.murkiness))
+            if (Config.MURK_DARK.Equals(DeathRunPlugin.config.murkiness))
             {
                 murkerizer = 1.5f;   
             }
-            else if (Config.MURK_DARKER.Equals(DeathRun.config.murkiness))
+            else if (Config.MURK_DARKER.Equals(DeathRunPlugin.config.murkiness))
             {
                 murkerizer = 2f;
             }
-            else if(Config.MURK_DARKEST.Equals(DeathRun.config.murkiness))
+            else if(Config.MURK_DARKEST.Equals(DeathRunPlugin.config.murkiness))
             {
                 murkerizer = 5f; // These people just want pain.
             } else

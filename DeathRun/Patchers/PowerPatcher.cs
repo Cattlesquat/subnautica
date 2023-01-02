@@ -73,20 +73,20 @@ namespace DeathRun.Patchers
         {
             if (radiation)
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount /= 10;
                 }
-                else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount /= 6;
                 } 
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+            else if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
             {
                 amount /= 6;
             }
-            else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+            else if (Config.HARD.Equals(DeathRunPlugin.config.powerCosts))
             {
                 amount /= 3;
             }
@@ -102,22 +102,22 @@ namespace DeathRun.Patchers
         {
             if (radiation)
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount *= 5;
                 }
-                else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount *= 3;
                 }
             }
-            else if ((DeathRun.chargingSemaphore || DeathRun.craftingSemaphore || DeathRun.scannerSemaphore /* || DeathRun.filterSemaphore */))
+            else if ((DeathRunPlugin.chargingSemaphore || DeathRunPlugin.craftingSemaphore || DeathRunPlugin.scannerSemaphore /* || DeathRun.filterSemaphore */))
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount *= 3;
                 }
-                else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount *= 2;
                 }
@@ -144,7 +144,7 @@ namespace DeathRun.Patchers
             // fail but also lose your 4 power. That was already a little bit irritating, but it becomes grotesque and
             // feels unfair when power requirements are e.g. 15. This next block prevents the not-actually-enough power
             // from being lost, merely doesn't produce the item.
-            if (DeathRun.craftingSemaphore && (powerInterface.GetPower() < amount))
+            if (DeathRunPlugin.craftingSemaphore && (powerInterface.GetPower() < amount))
             {
                 ErrorMessage.AddMessage("Not Enough Power"); 
                 __result = false;
@@ -197,7 +197,7 @@ namespace DeathRun.Patchers
         public static void AddEnergyTool(EnergyMixin __instance, ref float amount)
         {
             // Acid Battery is not chargeable by any method (e.g. Swim Charge Fins)
-            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            /* if (!Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 var batt = __instance.GetBattery();
                 if (batt != null) 
@@ -209,21 +209,21 @@ namespace DeathRun.Patchers
                         return;
                     }
                 }
-            }
+            } */
 
             if (isTransformInRadiation(Player.main.transform))
             {
-                if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+                if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount /= 4;
                 }
-                else if (Config.HARD.Equals(DeathRun.config.powerCosts))
+                else if (Config.HARD.Equals(DeathRunPlugin.config.powerCosts))
                 {
                     amount /= 2;
                 }
 
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.powerCosts) || Config.EXORBITANT.Equals(DeathRun.config.powerCosts))
+            else if (Config.DEATHRUN.Equals(DeathRunPlugin.config.powerCosts) || Config.EXORBITANT.Equals(DeathRunPlugin.config.powerCosts))
             {
                 amount /= 2;
             }
@@ -252,53 +252,53 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool ConsumeEnergyFabricatorPrefix(PowerRelay powerRelay, ref float amount, ref bool __result)
         {
-            DeathRun.craftingSemaphore = true; // Raises our crafting semaphore before consuming energy at a fabricator
+            DeathRunPlugin.craftingSemaphore = true; // Raises our crafting semaphore before consuming energy at a fabricator
             return true;
         }
 
         [HarmonyPostfix]
         public static void ConsumeEnergyFabricatorPostfix(PowerRelay powerRelay, ref float amount, ref bool __result)
         {
-            DeathRun.craftingSemaphore = false; // Lowers our crafting semaphore after consuming energy at a fabricator
+            DeathRunPlugin.craftingSemaphore = false; // Lowers our crafting semaphore after consuming energy at a fabricator
         }
 
         [HarmonyPrefix]
         public static bool ConsumeEnergyFiltrationPrefix()
         {
-            DeathRun.filterSemaphore = true  ; // Raises our filter semaphore before consuming energy at a filtration machine
+            DeathRunPlugin.filterSemaphore = true  ; // Raises our filter semaphore before consuming energy at a filtration machine
             return true;
         }
 
         [HarmonyPostfix]
         public static void ConsumeEnergyFiltrationPostfix()
         {
-            DeathRun.filterSemaphore = false; // Lowers our filter semaphore after consuming energy at a filtration machine
+            DeathRunPlugin.filterSemaphore = false; // Lowers our filter semaphore after consuming energy at a filtration machine
         }
 
         [HarmonyPrefix]
         public static bool ConsumeEnergyScanningPrefix()
         {
-            DeathRun.scannerSemaphore = true; // Raises our scanner semaphore before consuming energy at a scanning room
+            DeathRunPlugin.scannerSemaphore = true; // Raises our scanner semaphore before consuming energy at a scanning room
             return true;
         }
 
         [HarmonyPostfix]
         public static void ConsumeEnergyScanningPostfix()
         {
-            DeathRun.scannerSemaphore = false; // Lowers our scanner semaphore after consuming energy at a scanning room
+            DeathRunPlugin.scannerSemaphore = false; // Lowers our scanner semaphore after consuming energy at a scanning room
         }
 
         [HarmonyPrefix]
         public static bool ConsumeEnergyChargingPrefix()
         {
-            DeathRun.chargingSemaphore = true; // Raises our charging semaphore before consuming energy at a charger
+            DeathRunPlugin.chargingSemaphore = true; // Raises our charging semaphore before consuming energy at a charger
             return true;
         }
 
         [HarmonyPostfix]
         public static void ConsumeEnergyChargingPostfix()
         {
-            DeathRun.chargingSemaphore = false; // Lowers our charging semaphore after consuming energy at a charger
+            DeathRunPlugin.chargingSemaphore = false; // Lowers our charging semaphore after consuming energy at a charger
         }
 
 

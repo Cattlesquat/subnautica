@@ -24,22 +24,22 @@ namespace DeathRun.Patchers
             {
                 float big;
                 float little;
-                if (Config.NO_WAY.Equals(DeathRun.config.damageTaken2))
+                if (Config.NO_WAY.Equals(DeathRunPlugin.config.damageTaken2))
                 {
                     big = 3;
                     little = 2;
                 }
-                else if (Config.INSANITY.Equals(DeathRun.config.damageTaken2))
+                else if (Config.INSANITY.Equals(DeathRunPlugin.config.damageTaken2))
                 {
                     big = 2;
                     little = 1.5f;
                 } 
-                else if (Config.HARDCORE.Equals(DeathRun.config.damageTaken2))
+                else if (Config.HARDCORE.Equals(DeathRunPlugin.config.damageTaken2))
                 {
                     big    = 1.5f;
                     little = 1.25f;
                 }
-                else if (Config.LOVETAPS.Equals(DeathRun.config.damageTaken2))
+                else if (Config.LOVETAPS.Equals(DeathRunPlugin.config.damageTaken2))
                 {
                     big = 1.25f;
                     little = 1.10f;
@@ -91,7 +91,7 @@ namespace DeathRun.Patchers
                         }
                         else 
                         {
-                            if ((__result * little > 95) && !Player.main.HasReinforcedSuit() && ((Inventory.main.equipment.GetCount(TechType.RadiationSuit) > 0) || (Inventory.main.equipment.GetCount(TechType.Stillsuit) > 0)))
+                            if ((__result * little > 95) && !Player.main.HasReinforcedSuit() && ((Inventory.main.equipment.GetCount(TechType.RadiationSuit) > 0) || (Inventory.main.equipment.GetCount(TechType.WaterFiltrationSuit) > 0)))
                             {
                                 __result = 95;
                             } else

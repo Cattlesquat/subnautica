@@ -18,15 +18,15 @@ namespace DeathRun
 
         public static float getRadiationMaxDepth()
         {
-            if (Config.RADIATION_WORSE.Equals(DeathRun.config.radiationDepth))
+            if (DeathRun.Config.RADIATION_WORSE.Equals(DeathRunPlugin.config.radiationDepth))
             {
                 return 200;
             }
-            else if (Config.RADIATION_DEATHRUN.Equals(DeathRun.config.radiationDepth))
+            else if (DeathRun.Config.RADIATION_DEATHRUN.Equals(DeathRunPlugin.config.radiationDepth))
             {
                 return 60;
             }
-            else if (Config.RADIATION_HARD.Equals(DeathRun.config.radiationDepth))
+            else if (DeathRun.Config.RADIATION_HARD.Equals(DeathRunPlugin.config.radiationDepth))
             {
                 return 30;
             }

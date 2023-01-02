@@ -33,9 +33,9 @@ namespace DeathRun.Patchers
                 {
                     NitrogenLevel nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
 
-                    if (DeathRun.saveData.nitroSave.safeDepth > 10f)
+                    if (DeathRunPlugin.saveData.nitroSave.safeDepth > 10f)
                     {
-                        DeathRun.saveData.nitroSave.safeDepth /= 2;
+                        DeathRunPlugin.saveData.nitroSave.safeDepth /= 2;
                         usedSemaphore = true;
 
                         if (Time.time - ticksNotice > 60)
@@ -44,9 +44,9 @@ namespace DeathRun.Patchers
                             ErrorMessage.AddMessage("First Aid Kit helps purge Nitrogen from your bloodstream.");
                         }
 
-                        if (DeathRun.saveData.nitroSave.safeDepth < 10f)
+                        if (DeathRunPlugin.saveData.nitroSave.safeDepth < 10f)
                         {
-                            nitrogenLevel.nitrogenLevel = DeathRun.saveData.nitroSave.safeDepth * 10;
+                            nitrogenLevel.nitrogenLevel = DeathRunPlugin.saveData.nitroSave.safeDepth * 10;
                         }
                     }
                     else
@@ -90,15 +90,15 @@ namespace DeathRun.Patchers
                 {
                     if (component.GetFoodValue() == -25f)
                     {
-                        if (Config.FOOD_VEGAN.Equals(DeathRun.config.foodChallenge))
+                        if (Config.FOOD_VEGAN.Equals(DeathRunPlugin.config.foodChallenge))
                         {
                             DeathRunUtils.CenterMessage("Vegan Challenge: Negative Food Value!", 5);
                         }
-                        else if (Config.FOOD_VEGETARIAN.Equals(DeathRun.config.foodChallenge))
+                        else if (Config.FOOD_VEGETARIAN.Equals(DeathRunPlugin.config.foodChallenge))
                         {
                             DeathRunUtils.CenterMessage("Vegetarian Challenge: Negative Food Value!", 5);
                         } 
-                        else if (Config.FOOD_PESCATARIAN.Equals(DeathRun.config.foodChallenge))
+                        else if (Config.FOOD_PESCATARIAN.Equals(DeathRunPlugin.config.foodChallenge))
                         {
                             DeathRunUtils.CenterMessage("Pescatarian Challenge: Negative Food Value!", 5);
                         }
@@ -118,9 +118,9 @@ namespace DeathRun.Patchers
                 {
                     NitrogenLevel nitrogenLevel = Player.main.gameObject.GetComponent<NitrogenLevel>();
 
-                    if (DeathRun.saveData.nitroSave.safeDepth > 10f)
+                    if (DeathRunPlugin.saveData.nitroSave.safeDepth > 10f)
                     {
-                        DeathRun.saveData.nitroSave.safeDepth /= 2;
+                        DeathRunPlugin.saveData.nitroSave.safeDepth /= 2;
 
                         if (Time.time - ticksNotice > 60)
                         {
@@ -128,9 +128,9 @@ namespace DeathRun.Patchers
                             ErrorMessage.AddMessage("The tasty raw Boomerang helps purge Nitrogen from your bloodstream!");
                         }
 
-                        if (DeathRun.saveData.nitroSave.safeDepth < 10f)
+                        if (DeathRunPlugin.saveData.nitroSave.safeDepth < 10f)
                         {
-                            nitrogenLevel.nitrogenLevel = DeathRun.saveData.nitroSave.safeDepth * 10;
+                            nitrogenLevel.nitrogenLevel = DeathRunPlugin.saveData.nitroSave.safeDepth * 10;
                         }
                     }
                     else
@@ -152,7 +152,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ref Survival __instance)
         {
-            if ((DeathRun.saveData.playerSave.startedGame > 0) && (DayNightCycle.main.timePassedAsFloat >= DeathRun.saveData.playerSave.startedGame + (5 * 60)))
+            if ((DeathRunPlugin.saveData.playerSave.startedGame > 0) && (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.saveData.playerSave.startedGame + (5 * 60)))
             {
                 __instance.food  = Mathf.Clamp(__instance.food * .9f,  12f, 90.5f);
                 __instance.water = Mathf.Clamp(__instance.water * .9f, 12f, 90.5f);

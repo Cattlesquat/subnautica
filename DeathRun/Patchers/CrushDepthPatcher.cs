@@ -27,7 +27,7 @@ namespace DeathRun.Patchers
         {
             if (GameModeUtils.RequiresOxygen() && !PrisonManager.IsInsideAquarium(player.gameObject.transform.position))
             {
-                float depthOf = Ocean.main.GetDepthOf(player.gameObject);
+                float depthOf = Ocean.GetDepthOf(player.gameObject);
 
                 // Player's personal crush depth
                 if (crushEnabled)
@@ -41,7 +41,7 @@ namespace DeathRun.Patchers
                         }
                         if (UnityEngine.Random.value < 0.5f)
                         {
-                            float crushDepth = DeathRun.saveData.playerSave.crushDepth;
+                            float crushDepth = DeathRunPlugin.saveData.playerSave.crushDepth;
                             if (depthOf > crushDepth)
                             {
                                 float crush = depthOf - crushDepth;
@@ -76,7 +76,7 @@ namespace DeathRun.Patchers
         private static void DamagePlayer(float ouch)
         {
             LiveMixin component = Player.main.gameObject.GetComponent<LiveMixin>();
-            DeathRun.setCause("Crushed By Pressure");
+            DeathRunPlugin.setCause("Crushed By Pressure");
             component.TakeDamage(UnityEngine.Random.value * ouch / 2 + ouch / 2, default, DamageType.Normal, null);
         }
     }

@@ -25,7 +25,7 @@ namespace DeathRun.Patchers
         private static bool GetPreventPickup(Transform transform)
         {
             // If we're always allowed island food, no need to trouble ourselves
-            if (Config.ALWAYS.Equals(DeathRun.config.islandFood))
+            if (Config.ALWAYS.Equals(DeathRunPlugin.config.islandFood))
             {
                 return false;
             }
@@ -37,7 +37,7 @@ namespace DeathRun.Patchers
             }
 
             // If we're never allowed island food, then we're just never allowed it!
-            if (Config.NEVER.Equals(DeathRun.config.islandFood))
+            if (Config.NEVER.Equals(DeathRunPlugin.config.islandFood))
             {
                 return true;
             }
@@ -46,7 +46,7 @@ namespace DeathRun.Patchers
             if (LeakingRadiation.main == null || !CrashedShipExploder.main.IsExploded())
             {
                 // Then it's before the ship exploded
-                return Config.AFTER.Equals(DeathRun.config.islandFood);
+                return Config.AFTER.Equals(DeathRunPlugin.config.islandFood);
             }
 
             // If radiation is still active

@@ -16,7 +16,7 @@ namespace DeathRun.Items
             OnFinishedPatching += SetStaticTechType;
         }
 
-        protected override TechType BaseType { get; } = TechType.Stillsuit;
+        protected override TechType BaseType { get; } = TechType.WaterFiltrationSuit;
         protected override EquipmentType DiveSuit { get; } = EquipmentType.Body;
 
         protected override TechData GetBlueprintRecipe()
@@ -26,7 +26,7 @@ namespace DeathRun.Items
                 craftAmount = 1,
                 Ingredients = new List<Ingredient>(3)
                 {
-                    new Ingredient(TechType.Stillsuit, 1),
+                    new Ingredient(TechType.WaterFiltrationSuit, 1),
                     new Ingredient(DummySuitItems.RiverEelScaleID, 2),
                     new Ingredient(TechType.AramidFibers, 2),
                 }

@@ -30,28 +30,28 @@ namespace DeathRun.Patchers
             // Not the exploding fish, those are actually more dangerous hiding in ambush
             if (CraftData.GetTechType(__instance.gameObject) == TechType.Crash)
             {
-                DeathRun.crashFishSemaphore = true;
+                DeathRunPlugin.crashFishSemaphore = true;
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
+            else if (Config.DEATHRUN.Equals(DeathRunPlugin.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRunPlugin.config.creatureAggression))
             {
-                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.FULL_AGGRESSION)
                 {
                     maxSearchRings *= 3; //BR// Triple aggression search after 40 minutes
                 }
-                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                else if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.MORE_AGGRESSION)
                 {
                     maxSearchRings *= 2; //BR// Double aggression search after 20 minutes
                 }
             }
-            else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+            else if (Config.HARD.Equals(DeathRunPlugin.config.creatureAggression))
             {
-                if (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION)
+                if (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.MORE_AGGRESSION)
                 {
                     maxSearchRings += 1; //BR// One extra aggression ring after 20 minutes
                 }
             }
 
-            if (Ocean.main.GetDepthOf(Player.main.gameObject) <= 5)
+            if (Ocean.GetDepthOf(Player.main.gameObject) <= 5)
             {
                 if (maxSearchRings > __instance.maxSearchRings + 1) maxSearchRings = __instance.maxSearchRings + 1;
             }
@@ -66,7 +66,7 @@ namespace DeathRun.Patchers
                 __result = ecoTarget.GetGameObject();
             }
 
-            DeathRun.crashFishSemaphore = false;
+            DeathRunPlugin.crashFishSemaphore = false;
         }
     }
 
@@ -88,7 +88,7 @@ namespace DeathRun.Patchers
                 __result = false;
                 return;
             }
-            if (target == __instance.creature.friend)
+            if (target == __instance.creature.creatureFriend)
             {
                 __result = false;
                 return;
@@ -152,16 +152,16 @@ namespace DeathRun.Patchers
             }
 
             if ((((target != Player.main.gameObject) || Player.main.IsInside() || Player.main.precursorOutOfWater || PrecursorMoonPoolTrigger.inMoonpool) && (!target.GetComponent<Vehicle>() || (target.GetComponent<Vehicle>() != Player.main.currentMountedVehicle) || target.GetComponent<Vehicle>().precursorOutOfWater)) ||  // Must be player or vehicle
-                (Ocean.main.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
-                (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression) && !Config.DEATHRUN.Equals(DeathRun.config.creatureAggression)) ||            // Only on maximum aggression mode
-                (DayNightCycle.main.timePassedAsFloat < DeathRun.MORE_AGGRESSION) ||        // Not at very beginning of game
+                (Ocean.GetDepthOf(target) <= 5) ||                                     // Keeps reapers from eating us up on land
+                (!Config.EXORBITANT.Equals(DeathRunPlugin.config.creatureAggression) && !Config.DEATHRUN.Equals(DeathRunPlugin.config.creatureAggression)) ||            // Only on maximum aggression mode
+                (DayNightCycle.main.timePassedAsFloat < DeathRunPlugin.MORE_AGGRESSION) ||        // Not at very beginning of game
                 (CraftData.GetTechType(__instance.gameObject) == TechType.Crash))           // Not the explody fish (more fun from ambush!)
             {
                 __result = __instance.creature.GetCanSeeObject(target);
             }
             else
             {
-                if (!Config.EXORBITANT.Equals(DeathRun.config.creatureAggression)) {
+                if (!Config.EXORBITANT.Equals(DeathRunPlugin.config.creatureAggression)) {
                     __result = true; //BR// Can definitely see player "even through terrain"
                 } else
                 {
@@ -181,13 +181,13 @@ namespace DeathRun.Patchers
         public static bool PreFix(EcoTargetType type, Vector3 wsPos, EcoRegion.TargetFilter isTargetValid, ref float bestDist, ref IEcoTarget best)
         {
             // Explody fish runs regular code - everybody else runs postfix
-            return DeathRun.crashFishSemaphore;            
+            return DeathRunPlugin.crashFishSemaphore;            
         }
 
         [HarmonyPostfix]
         public static void PostFix(EcoRegion __instance, EcoTargetType type, Vector3 wsPos, EcoRegion.TargetFilter isTargetValid, ref float bestDist, ref IEcoTarget best)
         {
-            if (DeathRun.crashFishSemaphore)
+            if (DeathRunPlugin.crashFishSemaphore)
             {
                 return;
             }
@@ -220,16 +220,16 @@ namespace DeathRun.Patchers
                             }
                         }
 
-                        float depth = Ocean.main.GetDepthOf(ecoTarget.GetGameObject());
+                        float depth = Ocean.GetDepthOf(ecoTarget.GetGameObject());
                         if ((depth > 5) && !feeding)
                         {
-                            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
+                            if (Config.DEATHRUN.Equals(DeathRunPlugin.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRunPlugin.config.creatureAggression))
                             {
-                                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                                if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.FULL_AGGRESSION)
                                 {
                                     sqrMagnitude = 1; //BR// Player appears very close! (i.e. attractive target)
                                 }
-                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.MORE_AGGRESSION)
                                 {
                                     sqrMagnitude /= 4;
                                 }
@@ -238,13 +238,13 @@ namespace DeathRun.Patchers
                                     sqrMagnitude /= 2;
                                 }
                             }
-                            else if (Config.HARD.Equals(DeathRun.config.creatureAggression))
+                            else if (Config.HARD.Equals(DeathRunPlugin.config.creatureAggression))
                             {
-                                if (DayNightCycle.main.timePassedAsFloat >= DeathRun.FULL_AGGRESSION)
+                                if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.FULL_AGGRESSION)
                                 {
                                     sqrMagnitude /= 3; //BR// Player appears closer! (i.e. attractive target)
                                 }
-                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRun.MORE_AGGRESSION)
+                                else if (DayNightCycle.main.timePassedAsFloat >= DeathRunPlugin.MORE_AGGRESSION)
                                 {
                                     sqrMagnitude /= 2;
                                 }
@@ -288,7 +288,7 @@ namespace DeathRun.Patchers
                 return true; // Explody ambush fish just runs normal method
             }
 
-            if (Player.main.precursorOutOfWater || !Player.main.IsUnderwater() || PrecursorMoonPoolTrigger.inMoonpool || (Ocean.main.GetDepthOf(Player.main.gameObject) < 5))
+            if (Player.main.precursorOutOfWater || !Player.main.IsUnderwater() || PrecursorMoonPoolTrigger.inMoonpool || (Ocean.GetDepthOf(Player.main.gameObject) < 5))
             {
                 return true;
             }
@@ -300,14 +300,14 @@ namespace DeathRun.Patchers
             }
 
             //BR// Adjust aggression levels            
-            if (Config.DEATHRUN.Equals(DeathRun.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRun.config.creatureAggression))
+            if (Config.DEATHRUN.Equals(DeathRunPlugin.config.creatureAggression) || Config.EXORBITANT.Equals(DeathRunPlugin.config.creatureAggression))
             {
-                if (DayNightCycle.main.timePassedAsFloat > DeathRun.FULL_AGGRESSION)
+                if (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.FULL_AGGRESSION)
                 {
                     aggressionMultiplier = 4;
                     aggressionRadius = 6;
                 }
-                else if (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION)
+                else if (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.MORE_AGGRESSION)
                 {
                     aggressionMultiplier = 2;
                     aggressionRadius = 3;
@@ -317,7 +317,7 @@ namespace DeathRun.Patchers
                     return true;
                 }
             }
-            else if (Config.HARD.Equals(DeathRun.config.creatureAggression) && (DayNightCycle.main.timePassedAsFloat > DeathRun.MORE_AGGRESSION))
+            else if (Config.HARD.Equals(DeathRunPlugin.config.creatureAggression) && (DayNightCycle.main.timePassedAsFloat > DeathRunPlugin.MORE_AGGRESSION))
             {
                 aggressionMultiplier = 2;
                 aggressionRadius = 3;

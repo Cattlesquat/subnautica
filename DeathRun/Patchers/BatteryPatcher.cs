@@ -120,7 +120,7 @@ namespace DeathRun.Patchers
 
         internal static void PatchAll()
         {
-            if (Config.NORMAL.Equals(DeathRun.config.batteryCosts))
+            if (Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 // If we're leaving normal batteries alone, don't patch in our alternates.
                 return;
@@ -149,17 +149,17 @@ namespace DeathRun.Patchers
 
             int battSize;
             int powerSize;
-            if (Config.EXORBITANT.Equals(DeathRun.config.batteryCosts))
+            if (Config.EXORBITANT.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 battSize = 25;
                 powerSize = 75;
             }
-            else if (Config.DEATHRUN.Equals(DeathRun.config.batteryCosts))
+            else if (Config.DEATHRUN.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 battSize = 50;
                 powerSize = 125;
             }
-            else if (Config.HARD.Equals(DeathRun.config.batteryCosts))
+            else if (Config.HARD.Equals(DeathRunPlugin.config.batteryCosts))
             {
                 battSize = 75;
                 powerSize = 150;
@@ -212,7 +212,7 @@ namespace DeathRun.Patchers
 
         public override GameObject GetGameObject()
         {
-            GameObject prefab = CraftData.GetPrefabForTechType(this.BaseType);
+            GameObject prefab = CraftData.GetPrefabForTechTypeAsync(this.BaseType).GetResult();
             var obj = GameObject.Instantiate(prefab);
 
             Battery battery = obj.GetComponent<Battery>();
@@ -342,7 +342,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         private static void OnCraftEndPrefix(EnergyMixin __instance, TechType techType)
         {
-            if (!Config.NORMAL.Equals(DeathRun.config.batteryCosts) && !GameModeUtils.IsOptionActive(GameModeOption.Creative))
+            if (!Config.NORMAL.Equals(DeathRunPlugin.config.batteryCosts) && !GameModeUtils.IsOptionActive(GameModeOption.Creative))
             {
                 if (techType != TechType.MapRoomCamera)
                 {

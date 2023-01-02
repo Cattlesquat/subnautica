@@ -17,7 +17,7 @@ namespace DeathRun.Patchers
         [HarmonyPrefix]
         public static bool Prefix(ref Knife __instance, GUIHand hand)
         {
-			if (!Config.NONVIOLENT.Equals(DeathRun.config.nonViolent))
+			if (!Config.NONVIOLENT.Equals(DeathRunPlugin.config.nonViolent))
             {
 				return true;
 			}           

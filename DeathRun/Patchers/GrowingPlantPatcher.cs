@@ -17,11 +17,11 @@ namespace DeathRun.Patchers
         [HarmonyPostfix]
         public static void Postfix(GrowingPlant __instance, ref float __result)
         {
-            if (Config.FARMING_VERY_SLOW.Equals(DeathRun.config.farmingChallenge))
+            if (Config.FARMING_VERY_SLOW.Equals(DeathRunPlugin.config.farmingChallenge))
             {
                 __result *= 6;
             } 
-            else if (Config.FARMING_SLOW.Equals(DeathRun.config.farmingChallenge))
+            else if (Config.FARMING_SLOW.Equals(DeathRunPlugin.config.farmingChallenge))
             {
                 __result *= 3;
             }

@@ -24,6 +24,7 @@
  * message.Hide(); // Hides the message
  */
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -245,7 +246,7 @@ namespace Common
             cloneSize = true;
             if (textObject != null)
             {
-                textText.fontSize = uGUI.main.intro.mainText.text.fontSize;
+                textText.fontSize = (int) uGUI.main.intro.mainText.text.fontSize;
                 doAlignment();
             }
         }
@@ -253,7 +254,7 @@ namespace Common
         /**
          * Sets the font 
          */
-        public void setFont(Font useFont)
+        public void setFont(TMP_FontAsset useFont)
         {
             cloneFont = false;
             font = useFont;
@@ -286,7 +287,7 @@ namespace Common
             style = useStyle;
             if (textObject != null)
             {
-                textText.fontStyle = style;
+                textText.fontStyle = (FontStyles) style;
                 doAlignment();
             }
         }
@@ -312,7 +313,7 @@ namespace Common
             align = useAlign;
             if (textObject != null)
             {
-                textText.alignment = align;
+                textText.alignment = (TextAlignmentOptions) align;
                 doAlignment();
             }
         }
@@ -347,15 +348,15 @@ namespace Common
 
             switch (textText.alignment)
             {
-                case TextAnchor.UpperLeft:
-                case TextAnchor.MiddleLeft:
-                case TextAnchor.LowerLeft:
+                case TextAlignmentOptions.TopLeft:
+                case TextAlignmentOptions.Left:
+                case TextAlignmentOptions.BottomLeft:
                     displayX = x + width / 2;
                     break;
 
-                case TextAnchor.UpperRight:
-                case TextAnchor.MiddleRight:
-                case TextAnchor.LowerRight:
+                case TextAlignmentOptions.TopRight:
+                case TextAlignmentOptions.Right:
+                case TextAlignmentOptions.BottomRight:
                     displayX = x - width / 2;
                     break;
 
@@ -366,15 +367,15 @@ namespace Common
 
             switch (textText.alignment)
             {
-                case TextAnchor.UpperLeft:
-                case TextAnchor.UpperCenter:
-                case TextAnchor.UpperRight:
+                case TextAlignmentOptions.TopLeft:
+                case TextAlignmentOptions.Top:
+                case TextAlignmentOptions.TopRight:
                     displayY = y - height / 2;
                     break;
 
-                case TextAnchor.LowerLeft:
-                case TextAnchor.LowerCenter:
-                case TextAnchor.LowerRight:
+                case TextAlignmentOptions.BottomLeft:
+                case TextAlignmentOptions.Bottom:
+                case TextAlignmentOptions.BottomRight:
                     displayY = y + height / 2;
                     break;
 
@@ -393,7 +394,7 @@ namespace Common
         {
             // Make our own text object
             textObject = new GameObject("BasicText" + (++index));
-            textText = textObject.AddComponent<Text>();          // The text itself
+            textText = textObject.AddComponent<TextMeshProUGUI>();          // The text itself
             textFade = textObject.AddComponent<uGUI_TextFade>(); // The uGUI's helpful automatic fade component           
 
             // This makes the text box fit the text (rather than the other way around)
@@ -403,9 +404,9 @@ namespace Common
 
             // This clones the in game "Press Any Button To Begin" message's font size, style, etc.
             textText.font = cloneFont ? uGUI.main.intro.mainText.text.font : font;
-            textText.fontSize = cloneSize ? uGUI.main.intro.mainText.text.fontSize : size;
-            textText.fontStyle = cloneStyle ? uGUI.main.intro.mainText.text.fontStyle : style;
-            textText.alignment = cloneAlign ? uGUI.main.intro.mainText.text.alignment : align;
+            textText.fontSize = cloneSize ? (int) uGUI.main.intro.mainText.text.fontSize : size;
+            textText.fontStyle = cloneStyle ? uGUI.main.intro.mainText.text.fontStyle : (FontStyles) style;
+            textText.alignment = cloneAlign ? uGUI.main.intro.mainText.text.alignment : (TextAlignmentOptions) align;
             textText.color = cloneColor ? uGUI.main.intro.mainText.text.color : color;
             textText.material = cloneMaterial ? uGUI.main.intro.mainText.text.material : material;
 
@@ -441,12 +442,12 @@ namespace Common
         protected TextAnchor align { get; set; }      // text alignment
         protected Color color { get; set; }           // text color
         protected int size { get; set; }              // text size
-        protected Font font { get; set; }             // text font
+        protected TMP_FontAsset font { get; set; }             // text font
         protected FontStyle style { get; set; }       // text font style
         protected Material material { get; set; }     // text material
         protected GameObject textObject { get; set; } = null;          // Our game object
         protected uGUI_TextFade textFade { get; set; } = null;         // Our text fader
-        protected Text textText { get; set; } = null;                  // Our text object
+        protected TextMeshProUGUI textText { get; set; } = null;                  // Our text object
         protected ContentSizeFitter textFitter { get; set; } = null;   // Our content size fitter
 
         static int index = 0; // For giving unique names to the game objects

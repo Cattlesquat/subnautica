@@ -30,7 +30,7 @@ namespace DeathRun.NMBehaviours
             TechType tankSlot = Inventory.main.equipment.GetTechTypeInSlot("Tank");
             if (Player.main.IsSwimming() && GameModeUtils.RequiresOxygen())
             {
-                float playerDepth = Ocean.main.GetDepthOf(Player.main.gameObject);
+                float playerDepth = Ocean.GetDepthOf(Player.main.gameObject);
                 if ((tankSlot == O2TanksCore.PhotosynthesisSmallID || tankSlot == O2TanksCore.PhotosynthesisTankID) && playerDepth < 200f)
                 {
                     if (cachedDayNight == null) // Safety check

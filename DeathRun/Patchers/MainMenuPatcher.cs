@@ -15,63 +15,63 @@ namespace DeathRun.Patchers
     using System.Collections.Generic;
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("OnButtonSurvival")]
+    [HarmonyPatch(nameof(uGUI_MainMenu.OnButtonSurvival))]
     internal class SurvivalButtonPatcher
     {
         [HarmonyPrefix]
         public static bool Prefix()
         {
             DeathRunUtils.HideHighScores(true);
-            DeathRun.StartNewGame();
+            DeathRunPlugin.StartNewGame();
             return true;
         }
     }
 
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("OnButtonHardcore")]
+    [HarmonyPatch(nameof(uGUI_MainMenu.OnButtonHardcore))]
     internal class HardcoreButtonPatcher
     {
         [HarmonyPrefix]
         public static bool Prefix()
         {
             DeathRunUtils.HideHighScores(true);
-            DeathRun.StartNewGame();
+            DeathRunPlugin.StartNewGame();
             return true;
         }
     }
 
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("OnButtonFreedom")]
+    [HarmonyPatch(nameof(uGUI_MainMenu.OnButtonFreedom))]
     internal class FreedomButtonPatcher
     {
         [HarmonyPrefix]
         public static bool Prefix()
         {
             DeathRunUtils.HideHighScores(true);
-            DeathRun.StartNewGame();
+            DeathRunPlugin.StartNewGame();
             return true;
         }
     }
 
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("OnButtonCreative")]
+    [HarmonyPatch(nameof(uGUI_MainMenu.OnButtonCreative))]
     internal class CreativeButtonPatcher
     {
         [HarmonyPrefix]
         public static bool Prefix()
         {
             DeathRunUtils.HideHighScores(true);
-            DeathRun.StartNewGame();
+            DeathRunPlugin.StartNewGame();
             return true;
         }
     }
 
 
     [HarmonyPatch(typeof(uGUI_MainMenu))]
-    [HarmonyPatch("ShowPrimaryOptions")]
+    [HarmonyPatch(nameof(uGUI_MainMenu.ShowPrimaryOptions))]
     internal class ShowPrimaryOptionsPatcher
     {
         [HarmonyPrefix]
@@ -90,7 +90,7 @@ namespace DeathRun.Patchers
     }
 
     [HarmonyPatch(typeof(MainMenuLoadButton))]
-    [HarmonyPatch("Load")]
+    [HarmonyPatch(nameof(MainMenuLoadButton.Load))]
     internal class LoadButtonPatcher
     {
         [HarmonyPrefix]
@@ -105,7 +105,7 @@ namespace DeathRun.Patchers
     }
 
     [HarmonyPatch(typeof(SceneCleaner))]
-    [HarmonyPatch("Open")]
+    [HarmonyPatch(nameof(SceneCleaner.Open))]
     internal class SceneCleanerPatcher
     {
         [HarmonyPostfix]
@@ -120,7 +120,7 @@ namespace DeathRun.Patchers
      * UpdateLoadButtonState -- this lets us annotate the load buttons for individual games.
      */
     [HarmonyPatch(typeof(MainMenuLoadPanel))]
-    [HarmonyPatch("UpdateLoadButtonState")]
+    [HarmonyPatch(nameof(MainMenuLoadPanel.UpdateLoadButtonState))]
     internal class MainMenuLoadPanel_UpdateLoadButtonState_Patch
     {
         [HarmonyPostfix]
@@ -174,13 +174,13 @@ namespace DeathRun.Patchers
      * "save slot". This is entirely so we can have access to it when the list of saved games is being created on the main menu.
      */
     [HarmonyPatch(typeof(UserStoragePC))]
-    [HarmonyPatch("LoadSlotsAsync")]
+    [HarmonyPatch(nameof(UserStoragePC.LoadSlotsAsync))]
     internal class LoadSlots_Patch
     {
         [HarmonyPrefix]
         private static bool Prefix(ref List<string> fileNames)
         {
-            fileNames.Add(DeathRun.SaveFile);
+            fileNames.Add(DeathRunPlugin.SaveFile);
             return true;
         }
     }
@@ -190,7 +190,7 @@ namespace DeathRun.Patchers
      * will have access to it when the individual load slots are being drawn. Did I mention that Unity's user file system is insane?
      */
     [HarmonyPatch(typeof(SaveLoadManager))]
-    [HarmonyPatch("RegisterSaveGame")]
+    [HarmonyPatch(nameof(SaveLoadManager.RegisterSaveGame))]
     internal class RegisterSaveGame_Patch
     {
         [HarmonyPostfix]
@@ -199,7 +199,7 @@ namespace DeathRun.Patchers
             byte[] bytes;
 
             if (loadOperation.GetSuccessful()) {
-                if (loadOperation.files.TryGetValue(DeathRun.SaveFile, out bytes))
+                if (loadOperation.files.TryGetValue(DeathRunPlugin.SaveFile, out bytes))
                 {
                     DeathRunSaveData saveData = new DeathRunSaveData();
                     if (DeathRunSaveData.LoadFromBytes(bytes, out saveData)) 
@@ -215,13 +215,13 @@ namespace DeathRun.Patchers
      * Allows using a first aid it from "held in the hand" mode (so it can be in a quick slot)
      */
     [HarmonyPatch(typeof(QuickSlots))]
-    [HarmonyPatch("Drop")]
+    [HarmonyPatch(nameof(QuickSlots.Drop))]
     internal class DropToolPatcher
     {
         [HarmonyPrefix]
         public static bool Prefix(QuickSlots __instance)
         {
-            if ((__instance._heldItem == null) || !DeathRun.config.firstAidQuickSlot)
+            if ((__instance._heldItem == null) || !DeathRunPlugin.config.firstAidQuickSlot)
             {
                 return true;
             }

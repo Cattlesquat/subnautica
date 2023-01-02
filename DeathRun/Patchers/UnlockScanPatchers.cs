@@ -74,12 +74,12 @@ namespace DeathRun.Patchers
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedStillSuit))
                 {
                     KnownTech.Add(ReinforcedSuitsCore.ReinforcedStillSuit, true);
-                    DeathRun.saveData.playerSave.setCue("ReinforcedStillSuit", 10);
+                    DeathRunPlugin.saveData.playerSave.setCue("ReinforcedStillSuit", 10);
                     //ErrorMessage.AddMessage("Added blueprint for reinforced still suit to database");
                 }
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedSuit2ID))
                 {
-                    DeathRun.saveData.playerSave.setCue("ReinforcedSuit2", 5);
+                    DeathRunPlugin.saveData.playerSave.setCue("ReinforcedSuit2", 5);
                     KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit2ID, true);
                     //ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 2 to database");
                 }
@@ -88,16 +88,16 @@ namespace DeathRun.Patchers
             {
                 if (!KnownTech.Contains(ReinforcedSuitsCore.ReinforcedSuit3ID))
                 {
-                    DeathRun.saveData.playerSave.setCue("ReinforcedSuit3", 5);
+                    DeathRunPlugin.saveData.playerSave.setCue("ReinforcedSuit3", 5);
                     KnownTech.Add(ReinforcedSuitsCore.ReinforcedSuit3ID, true);
                     //ErrorMessage.AddMessage("Added blueprint for reinforced dive suit mark 3 to database");
                 }
             }
-            if (entryData.key == TechType.LavaLarva && DeathRun.config.enableSpecialtyTanks)
+            if (entryData.key == TechType.LavaLarva && DeathRunPlugin.config.enableSpecialtyTanks)
             {
                 if (!KnownTech.Contains(O2TanksCore.ChemosynthesisTankID))
                 {
-                    DeathRun.saveData.playerSave.setCue("ChemosynthesisTank", 5);
+                    DeathRunPlugin.saveData.playerSave.setCue("ChemosynthesisTank", 5);
                     KnownTech.Add(O2TanksCore.ChemosynthesisTankID, true);
                     //ErrorMessage.AddMessage("Added blueprint for chemosynthesis oxygen tank to database");
                 }
@@ -105,11 +105,11 @@ namespace DeathRun.Patchers
 
             if ((entryData.key == TechType.CaveSkeleton) || (entryData.key == TechType.GhostRayBlue) || (entryData.key == TechType.GhostRayRed))
             {
-                if (!KnownTech.Contains(DeathRun.decoModule.TechType))
+                if (!KnownTech.Contains(DeathRunPlugin.decoModule.TechType))
                 {
-                    DeathRun.saveData.playerSave.setCue("DecoModule", 5);
+                    DeathRunPlugin.saveData.playerSave.setCue("DecoModule", 5);
                     //PDAEncyclopedia.Add("DecoModule", true);
-                    KnownTech.Add(DeathRun.decoModule.TechType, true);
+                    KnownTech.Add(DeathRunPlugin.decoModule.TechType, true);
                 }
             }
             return true;
