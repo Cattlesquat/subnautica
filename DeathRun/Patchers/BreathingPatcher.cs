@@ -194,10 +194,10 @@ namespace DeathRun.Patchers
             __result = Math.Min(3f, __result);
         }
     }
-
+//Commenting out swim hint changes as the "Out of Air" message gets stuck on screen 
     /**
      * "Swim to Surface" message obviously inappropriate when surface air is poisoned, plus it always seemed "odd" at 300m anyway.
-     */
+     
     [HarmonyPatch(typeof(uGUI_PopupMessage))]
     [HarmonyPatch("SetText")]
     internal class SwimToSurfacePatcher
@@ -229,14 +229,14 @@ namespace DeathRun.Patchers
     {
         /**
          * This just grabs the handle to the HintSwimToSurface object "so we can fuck with it later"
-         */
+         
         [HarmonyPostfix]
         public static void PostFix (HintSwimToSurface __instance)
         {
             SwimToSurfacePatcher.setHinter(__instance);
         }
     }
-
+*/
     /**
      * I find it endlessly irritating that it won't let you deploy the pump when you're on the surface. 
      * It's not "challenging gameplay" it's just a bad interface. So this fixes it.
